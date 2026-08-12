@@ -1,0 +1,2654 @@
+<!DOCTYPE html>
+<!-- ============================================================
+  Hebith-FX  version 2.14
+  対応要件定義書: Hebith-FX 要件定義書 v2.14
+  対応デザインドキュメント: Hebith-FX Design Document Rev 2.14
+  ============================================================ -->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Hebith-FX v2.14</title><style>
+:root{
+--bg:#0b0c0f; --panel:#15171c; --panel2:#1d2027; --line:#2a2e37;
+--text:#c9ccd4; --dim:#616773;
+--time:#ff7a18; --pitch:#a56bff; --dest:#ff2d55; --space:#26d9c3;
+--loop:#ffd93d; --gran:#4da3ff; --glide:#ff6fb5; --haze:#8affc1;
+--synth:#7ee8fa; --arp:#ffb454; --dr:#ff5c5c;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;}
+html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--text);
+overflow:hidden;overscroll-behavior:none;font-family:'SF Mono',Menlo,monospace;}
+.disp{font-family:'Avenir Next Condensed','HelveticaNeue-CondensedBold','Arial Narrow',sans-serif;}
+#app{display:flex;flex-direction:column;height:100dvh;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);}
+/* header */
+header{display:flex;align-items:center;justify-content:space-between;padding:6px 10px 3px;flex-shrink:0;}
+.brand{font-size:17px;font-weight:700;letter-spacing:2px;}
+.brand b{color:var(--time);}
+.brand .ver{font-family:'SF Mono',Menlo,monospace;font-size:8px;font-weight:400;letter-spacing:1px;
+color:var(--dim);margin-left:7px;vertical-align:top;border:1px solid var(--line);
+border-radius:3px;padding:1px 4px;}
+/* LATCH は #kbCtl の中。見た目は隣の HOLD に揃える */
+#latchBtn{margin-left:auto;font-size:9px !important;letter-spacing:2px;padding:0 14px !important;
+color:var(--dim) !important;}
+#latchBtn.on{background:var(--dest) !important;border-color:var(--dest) !important;
+color:#0b0c0f !important;font-weight:700;}
+#scopeBox{margin:2px 10px 4px;height:28px;border:1px solid var(--line);border-radius:5px;
+background:#0e0f13;overflow:hidden;flex-shrink:0;}
+#scope{display:block;width:100%;height:100%;}
+/* transport */
+#trans{display:flex;gap:5px;padding:0 10px 5px;flex-shrink:0;}
+.song{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:3px 7px 4px;
+min-width:0;display:flex;flex-direction:column;justify-content:center;}
+.song .sl{font-size:7.5px;color:var(--dim);letter-spacing:1.5px;margin-bottom:3px;}
+.song .sb{display:flex;gap:4px;}
+.song .sb button{flex:1;background:var(--panel2);border:1px solid var(--line);color:var(--text);
+font:inherit;font-size:8.5px;letter-spacing:1px;padding:4px 0;border-radius:4px;}
+.song .sb button:active{background:var(--haze);border-color:var(--haze);color:#0b0c0f;font-weight:700;}
+.song .sb #saveBtn.flash{background:var(--haze);border-color:var(--haze);color:#0b0c0f;font-weight:700;}
+/* PLAY / STOP */
+#playBtn{flex:0 0 62px;background:var(--panel);border:1px solid var(--line);border-radius:5px;
+color:var(--text);font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;
+gap:2px;padding:3px 0;line-height:1;font-size:15px;}
+#playBtn .pl{font-size:7.5px;letter-spacing:1.5px;color:var(--dim);}
+#playBtn.playing{border-color:var(--haze);color:var(--haze);}
+#playBtn.playing .pl{color:var(--haze);}
+#playBtn.stopped{border-color:var(--dest);color:var(--dest);}
+#playBtn.stopped .pl{color:var(--dest);}
+/* generic knob box */
+.kb{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:3px 7px 4px;min-width:0;}
+.kb .kl{font-size:7.5px;color:var(--dim);letter-spacing:1.3px;display:flex;justify-content:space-between;gap:4px;}
+.kb .kl em{font-style:normal;color:var(--time);flex-shrink:0;}
+.kb input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--line);
+border-radius:2px;outline:none;margin-top:4px;display:block;}
+.kb input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+background:var(--time);border:2px solid var(--bg);}
+.kb.cy .kl em{color:var(--synth);} .kb.cy input::-webkit-slider-thumb{background:var(--synth);}
+.kb.am .kl em{color:var(--arp);}   .kb.am input::-webkit-slider-thumb{background:var(--arp);}
+.kb.hz .kl em{color:var(--haze);}  .kb.hz input::-webkit-slider-thumb{background:var(--haze);}
+/* XY */
+#xyWrap{margin:0 10px 5px;flex-shrink:0;}
+/* XY の方眼。共有パッドと各 FX パッドで同じものを使う */
+#xy,.pad,.alg,.xyc{background-image:linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px),
+linear-gradient(0deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:25% 100%,100% 25%;}
+#xy{position:relative;height:94px;border:1px solid var(--line);border-radius:6px;
+background-color:#101218;touch-action:none;overflow:hidden;}
+#xyDot{position:absolute;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;
+left:50%;top:50%;background:var(--time);color:var(--time);box-shadow:0 0 16px currentColor;pointer-events:none;
+transition:left .1s ease,top .1s ease,background .12s;}
+#xyDot.drag{transition:background .12s;}
+#xyName{position:absolute;top:5px;left:9px;font-size:10px;letter-spacing:2px;font-weight:700;color:var(--time);}
+#xyName.reset{animation:flash .35s ease;}
+@keyframes flash{0%{opacity:1;}40%{opacity:.15;}100%{opacity:1;}}
+#xyX{position:absolute;bottom:4px;right:9px;font-size:7.5px;color:var(--dim);letter-spacing:1.3px;pointer-events:none;}
+#xyY{position:absolute;top:50%;left:9px;transform:translateY(-50%) rotate(-90deg);transform-origin:left center;
+font-size:7.5px;color:var(--dim);letter-spacing:1.3px;pointer-events:none;white-space:nowrap;}
+/* tabs */
+#tabs{display:flex;gap:3px;padding:0 10px 5px;flex-shrink:0;}
+.tab{flex:1;background:var(--panel);border:1px solid var(--line);color:var(--dim);
+padding:7px 0;border-radius:5px;font:inherit;font-size:7.6px;letter-spacing:1px;position:relative;min-width:0;}
+.tab.sel{background:var(--panel2);color:var(--text);border-color:#4a505c;}
+.tab .dot{position:absolute;top:4px;right:4px;width:4px;height:4px;border-radius:50%;background:transparent;}
+.tab .dot.live{background:var(--haze);box-shadow:0 0 6px var(--haze);}
+#panes{flex:1 1 auto;min-height:0;padding:0 10px;}
+.pane{height:100%;display:none;}
+.pane.sel{display:block;}
+.scrollPane{overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;}
+/* 2層ペイン: 上は設定部でスクロールし、下の XY セル帯は動かない(F-6x) */
+.pane.sel.split{display:flex;flex-direction:column;}
+.split .scr{flex:1 1 auto;min-height:0;}
+.split .strip{flex-shrink:0;padding-top:5px;}
+/* modules */
+.mod{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:6px 8px 7px;margin-bottom:5px;}
+.mod .mt{font-size:8px;letter-spacing:2px;color:var(--synth);font-weight:700;margin-bottom:6px;}
+.mod.b .mt{color:var(--arp);}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+.row4{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
+.segs{display:flex;gap:3px;margin-bottom:5px;}
+.seg{flex:1;text-align:center;padding:6px 1px;font-size:8px;background:var(--panel2);
+border:1px solid var(--line);border-radius:4px;color:var(--dim);letter-spacing:.8px;}
+.seg.on{color:#0b0c0f;background:var(--synth);border-color:var(--synth);font-weight:700;}
+.segs.am .seg.on{background:var(--arp);border-color:var(--arp);}
+/* punch grid */
+#gridFx{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;height:100%;padding-bottom:4px;}
+/* .alg(Bokehlous のアルゴタイル)と .xyc(汎用 XY セル)も XY 面なので同じ箱を使う */
+.pad,.alg,.xyc{position:relative;border-radius:6px;border:1px solid var(--line);background-color:var(--panel);
+display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+touch-action:none;overflow:hidden;transition:transform .04s;}
+.pad .nm{font-size:12px;font-weight:700;letter-spacing:.4px;line-height:1;color:currentColor;}
+.pad .sub{font-size:6.5px;color:var(--dim);letter-spacing:.8px;}
+.pad::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:currentColor;opacity:.55;}
+.pad.time{color:var(--time);} .pad.pitch{color:var(--pitch);}
+.pad.dest{color:var(--dest);} .pad.space{color:var(--space);}
+.pad.hit{background-color:currentColor;transform:scale(.96);box-shadow:0 0 20px currentColor;}
+.pad.hit .nm{color:#0b0c0f;} .pad.hit .sub{color:rgba(0,0,0,.55);} .pad.hit::before{opacity:0;}
+/* F-29 engage済みだが非実効 */
+.pad.hit.sub2{background:transparent;box-shadow:none;transform:none;
+border-color:currentColor;border-style:dashed;}
+.pad.hit.sub2 .nm{color:currentColor;opacity:.55;}
+.pad.hit.sub2 .sub{color:var(--dim);}
+.pad.hit.sub2::before{opacity:.3;}
+/* 内蔵 XY (F-2a / F-3a)  i=ドット u=Y軸ラベル s=X軸ラベル */
+.pad i,.alg i,.xyc i{position:absolute;left:50%;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;
+border-radius:50%;background:#fff;box-shadow:0 0 7px currentColor;pointer-events:none;opacity:.35;}
+.pad.hit i,.alg.sel i{background:#0b0c0f;box-shadow:none;opacity:1;}
+.pad.hit.sub2 i{background:currentColor;}
+.xyc i{opacity:1;background:var(--synth);}
+.pad u,.pad s,.xyc u,.xyc s{position:absolute;font-size:5.5px;letter-spacing:.6px;color:var(--dim);
+text-decoration:none;pointer-events:none;white-space:nowrap;}
+.pad s,.xyc s{bottom:2px;right:4px;}
+.pad u,.xyc u{top:50%;left:3px;transform:translateY(-50%) rotate(-90deg);transform-origin:left center;}
+/* 汎用 XY セル。ペアで動かす 2 パラメータを 1 枚に載せる。
+   幅いっぱいなら 6/1、2 列に入れば 3/1 —— どちらでも高さが約 58px に揃う */
+.xyc{aspect-ratio:6/1;color:var(--synth);}
+.xyc.am{color:var(--arp);}
+.xyc.am i{background:var(--arp);}
+.row2 .xyc{aspect-ratio:3/1;}
+.xyc b{font-size:8px;letter-spacing:2px;color:currentColor;font-weight:700;pointer-events:none;}
+.xyc b em{font-style:normal;font-weight:400;letter-spacing:.5px;color:var(--dim);margin-left:5px;}
+.pad.hit u,.pad.hit s{color:rgba(0,0,0,.5);}
+.pad.hit.sub2 u,.pad.hit.sub2 s{color:var(--dim);}
+/* arp step editor */
+#steps{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;margin-bottom:6px;}
+.st{aspect-ratio:1/1;border:1px solid var(--line);background:var(--panel2);border-radius:4px;
+display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--dim);position:relative;}
+.st.g1{background:var(--arp);color:#0b0c0f;font-weight:700;border-color:var(--arp);}
+.st.g2{background:var(--dest);color:#0b0c0f;font-weight:700;border-color:var(--dest);}
+.st.o{background:var(--panel2);color:var(--arp);border-color:var(--arp);font-weight:700;}
+.st.o0{color:var(--dim);border-color:var(--line);font-weight:400;}
+.st.pit{background:var(--space);color:#0b0c0f;font-weight:700;border-color:var(--space);font-size:9px;}
+[data-seg="pat"] .seg.haspit::after{content:'♪';position:absolute;top:1px;right:3px;font-size:8px;color:var(--space);}
+[data-seg="pat"] .seg{position:relative;}
+#stRnd.flash{background:var(--space);color:#0b0c0f;border-color:var(--space);font-weight:700;}
+.st.beyond{opacity:.28;}
+.st.cur::after{content:'';position:absolute;inset:-3px;border:1.5px solid #fff;border-radius:6px;
+box-shadow:0 0 8px rgba(255,255,255,.6);}
+/* DRUM: 4x4 pads (VOICE/STEP 兼用) */
+#drPads{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:4px;}
+.dp{aspect-ratio:1/1;border:1px solid var(--line);background:var(--panel2);border-radius:6px;
+display:flex;align-items:center;justify-content:center;font-size:7.5px;letter-spacing:.3px;
+color:var(--dim);position:relative;text-align:center;padding:2px;line-height:1.15;}
+/* VOICE ページのパッドは LEVEL×TUNE の XY 面も兼ねる(F-19p)。STEP ページでは方眼を出さない */
+.dp.vp{background-image:linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px),
+linear-gradient(0deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:25% 100%,100% 25%;
+touch-action:none;overflow:hidden;}
+.dp i{position:absolute;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;
+background:var(--dr);box-shadow:0 0 6px var(--dr);pointer-events:none;}
+.dp.sel i{background:#fff;box-shadow:0 0 6px #fff;}
+.dp.sel{border-color:var(--dr);box-shadow:0 0 0 1.5px var(--dr) inset;}
+.dp.g1{background:var(--dr);color:#0b0c0f;font-weight:700;}
+.dp.g2{background:#fff;color:#0b0c0f;font-weight:700;border-color:#fff;}
+.dp.dcur::after{content:'';position:absolute;inset:-3px;border:1.5px solid #fff;border-radius:8px;
+box-shadow:0 0 8px rgba(255,255,255,.6);}
+/* ARP: chord slots */
+#chordSlots{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:2px;}
+#chordSlots:empty{display:none;}
+.cslot{flex:1;min-width:52px;background:var(--panel2);border:1px solid var(--line);border-radius:5px;
+padding:5px 4px;text-align:center;}
+.cslot .cd{display:block;font-size:11px;font-weight:700;color:var(--arp);letter-spacing:.5px;}
+.cslot .cb{display:block;font-size:7px;color:var(--dim);letter-spacing:.5px;margin-top:1px;}
+.cslot.cur{border-color:var(--arp);box-shadow:0 0 8px rgba(255,180,84,.4);}
+.cslot.edit{background:rgba(255,180,84,.14);border-color:var(--arp);}
+/* ARP: chain links */
+#chainSlots{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;}
+.clink{background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:5px 9px;text-align:center;}
+.clink .cp{font-size:12px;font-weight:700;color:var(--arp);}
+.clink .cbb{display:block;font-size:7px;color:var(--dim);margin-top:1px;}
+/* microcosm */
+/* 行間を広めに取り、タイル間にスクロールを始められる帯を残す(タイル上は touch-action:none) */
+#algos{display:grid;grid-template-columns:repeat(3,1fr);gap:6px 4px;margin-bottom:6px;}
+.alg{aspect-ratio:2/1;}   /* 箱そのものは .pad と共用 */
+.alg .an{font-size:10.5px;font-weight:700;line-height:1;color:currentColor;}
+.alg .ab{font-size:6px;color:var(--dim);letter-spacing:1px;}
+/* 軸名は 11 枚とも同じなのでタイルには書かず、グリッドの上に一度だけ置く */
+.ah{font-size:6.5px;letter-spacing:1.4px;color:var(--dim);margin:0 0 4px 2px;}
+.alg::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:currentColor;opacity:.5;}
+.alg.b0{color:var(--loop);} .alg.b1{color:var(--gran);}
+.alg.b2{color:var(--glide);} .alg.b3{color:var(--haze);}
+/* 地の色だけ差し替える。ショートハンドだと共有した方眼まで消える */
+.alg.sel{background-color:currentColor;box-shadow:0 0 14px currentColor;}
+.alg.sel .an{color:#0b0c0f;} .alg.sel .ab{color:rgba(0,0,0,.55);} .alg.sel::before{opacity:0;}
+/* sticky: タイルは touch-action:none でスクロールできないので、常に掴める帯を上端に残す */
+#mcOn{position:sticky;top:0;z-index:1;
+width:100%;background:var(--panel);border:1px solid var(--line);color:var(--dim);
+padding:8px 0;border-radius:5px;font:inherit;font-size:9.5px;letter-spacing:3px;font-weight:700;margin-bottom:6px;}
+#mcOn.on{background:var(--haze);border-color:var(--haze);color:#0b0c0f;box-shadow:0 0 16px rgba(138,255,193,.3);}
+#looper .lt{font-size:7.5px;letter-spacing:2px;color:var(--dim);margin-bottom:5px;display:flex;justify-content:space-between;}
+#looper .lt em{font-style:normal;color:var(--loop);}
+.lRow{display:flex;gap:4px;margin-bottom:5px;}
+.lBtn{flex:1;background:var(--panel2);border:1px solid var(--line);color:var(--dim);
+padding:8px 0;border-radius:5px;font:inherit;font-size:8.5px;letter-spacing:1.2px;}
+.lBtn.rec{color:var(--dest);border-color:var(--dest);}
+.lBtn.on{background:var(--loop);border-color:var(--loop);color:#0b0c0f;font-weight:700;}
+.lBtn.recOn{background:var(--dest);border-color:var(--dest);color:#0b0c0f;font-weight:700;animation:blink .6s steps(2,end) infinite;}
+@keyframes blink{50%{opacity:.45;}}
+/* keyboard */
+#kbWrap{flex-shrink:0;padding:5px 10px 6px;background:var(--panel);border-top:1px solid var(--line);}
+#kbCtl{display:flex;align-items:center;gap:5px;margin-bottom:5px;}
+#kbCtl button{background:var(--panel2);border:1px solid var(--line);color:var(--text);
+height:26px;border-radius:5px;font:inherit;font-size:12px;padding:0 12px;}
+#octLbl{font-size:9px;color:var(--synth);letter-spacing:1.2px;min-width:44px;text-align:center;}
+#holdBtn{font-size:9px !important;letter-spacing:2px;padding:0 16px !important;color:var(--dim) !important;}
+#holdBtn.on{background:var(--loop) !important;border-color:var(--loop) !important;color:#0b0c0f !important;font-weight:700;}
+#keys{display:flex;gap:2px;height:76px;touch-action:none;}
+.key{flex:1;border-radius:5px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px;
+font-size:7.5px;color:var(--dim);border:1px solid var(--line);
+background:linear-gradient(180deg,#191b22,#101319);transition:background .04s;}
+.key.blk{background:linear-gradient(180deg,#0a0b10,#050609);color:#353a45;}
+.key.dn{background:var(--synth) !important;color:#0b0c0f !important;box-shadow:0 0 12px var(--synth);}
+.key.arp{background:var(--arp) !important;color:#0b0c0f !important;}
+#ov{position:fixed;inset:0;background:var(--bg);z-index:99;display:flex;flex-direction:column;
+align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;}
+#ov .t{font-size:40px;font-weight:700;letter-spacing:3px;}
+#ov .t b{color:var(--time);}
+#ov .s{font-size:9.5px;color:var(--dim);letter-spacing:2px;line-height:2;}
+#ov .ovVer{margin-top:20px;font-size:9px;letter-spacing:3px;color:var(--dim);}
+#go{margin-top:12px;background:var(--time);color:#0b0c0f;border:none;padding:15px 44px;border-radius:6px;
+font:inherit;font-size:12px;font-weight:700;letter-spacing:3px;}
+.xyc.hz{color:var(--haze);}
+.xyc.hz i{background:var(--haze);}
+</style></head>
+<body>
+<div id="ov">
+  <div class="t disp">Hebith<b>-</b>FX</div>
+  <div class="s">SYNTH · ARPEGGIATOR · PUNCH-IN FX<br>GRANULAR ENGINE · LOOPER</div>
+  <button id="go">START</button>
+  <div class="ovVer">VERSION 2.14</div>
+</div>
+<div id="app">
+  <header>
+  <div class="brand disp">Hebith<b>-</b>FX<span class="ver">v2.14</span></div>
+  </header>
+  <div id="scopeBox"><canvas id="scope"></canvas></div>
+  <div id="trans">
+  <div class="kb"><div class="kl"><span>BPM</span><em id="vBpm">124</em></div>
+  <input type="range" id="sBpm" min="40" max="220" step="1" value="124"></div>
+  <div class="kb"><div class="kl"><span>MASTER VOL</span><em id="vVol">.80</em></div>
+  <input type="range" id="sVol" min="0" max="1" step="0.01" value="0.8"></div>
+  <button id="playBtn" class="playing" title="PLAY / STOP">▶︎<span class="pl">PLAY</span></button>
+  <div class="song">
+  <div class="sl">SONG</div>
+  <div class="sb">
+  <button id="saveBtn">SAVE</button>
+  <button id="loadBtn">LOAD</button>
+  </div>
+  <input type="file" id="loadFile" accept=".hwfx,.json,application/json" hidden>
+  </div>
+  </div>
+  <div id="tabs">
+  <button class="tab" data-t="synth">SYNTH</button>
+  <button class="tab" data-t="arp">ARP<span class="dot" id="dotArp"></span></button>
+  <button class="tab" data-t="drum">DRUM<span class="dot" id="dotDr"></span></button>
+  <button class="tab sel" data-t="fx">PUNCH<span class="dot" id="dotFx"></span></button>
+  <button class="tab" data-t="mc">BOKEH<span class="dot" id="dotMc"></span></button>
+  </div>
+  <div id="panes">
+  <!-- SYNTH -->
+  <!-- 上=スクロールする設定部 / 下=固定の XY セル帯(F-6x) -->
+  <div class="pane split" id="paneSynth">
+  <div class="scr scrollPane">
+  <div class="mod">
+  <div class="mt">OSC A</div>
+  <div class="segs" data-seg="aWave">
+  <div class="seg on" data-v="sawtooth">SAW</div><div class="seg" data-v="square">SQR</div>
+  <div class="seg" data-v="sine">SIN</div><div class="seg" data-v="triangle">TRI</div></div>
+  <div class="row2">
+  <div class="kb cy"><div class="kl"><span>OCT</span><em id="v_aOct">0</em></div><input type="range" id="k_aOct" min="-2" max="2" step="1" value="0"></div>
+  <div class="kb cy"><div class="kl"><span>NOISE</span><em id="v_nLvl">.00</em></div><input type="range" id="k_nLvl" min="0" max="1" step="0.01" value="0"></div>
+  </div>
+  <div class="xyc" data-c="oscA" style="margin-top:4px;"></div>
+  </div>
+  <div class="mod">
+  <div class="mt">OSC B</div>
+  <div class="segs" data-seg="bWave">
+  <div class="seg" data-v="sawtooth">SAW</div><div class="seg" data-v="square">SQR</div>
+  <div class="seg" data-v="sine">SIN</div><div class="seg on" data-v="triangle">TRI</div></div>
+  <div class="row2">
+  <div class="kb cy"><div class="kl"><span>OCT</span><em id="v_bOct">-1</em></div><input type="range" id="k_bOct" min="-2" max="2" step="1" value="-1"></div>
+  <div class="kb cy"><div class="kl"><span>PORTAMENTO</span><em id="v_glide">0ms</em></div><input type="range" id="k_glide" min="0" max="0.5" step="0.001" value="0"></div>
+  </div>
+  <div class="xyc" data-c="oscB" style="margin-top:4px;"></div>
+  </div>
+  <div class="mod">
+  <div class="mt">SYNTH FILTER</div>
+  <div class="segs" data-seg="fType">
+  <div class="seg on" data-v="lowpass">LPF</div><div class="seg" data-v="highpass">HPF</div>
+  <div class="seg" data-v="bandpass">BPF</div></div>
+  <div class="xyc" data-c="fmod"></div>
+  </div>
+  <div class="mod">
+  <div class="mt">ENVELOPE</div>
+  <div class="row2">
+  <div class="xyc" data-c="ampAR"></div><div class="xyc" data-c="ampDS"></div>
+  </div>
+  <div class="row2" style="margin-top:4px;">
+  <div class="xyc" data-c="fltAR"></div><div class="xyc" data-c="fltDS"></div>
+  </div>
+  </div>
+  <div class="mod">
+  <div class="mt">LFO</div>
+  <div class="segs" data-seg="lWave">
+  <div class="seg on" data-v="triangle">TRI</div><div class="seg" data-v="square">SQR</div>
+  <div class="seg" data-v="sh">S&amp;H</div></div>
+  <div class="segs" data-seg="lDest">
+  <div class="seg" data-v="pitch">PITCH</div><div class="seg on" data-v="filter">FILTER</div>
+  <div class="seg" data-v="amp">AMP</div></div>
+  <div class="segs" style="margin-bottom:0;" data-seg="lSync">
+  <div class="seg on" data-v="free">FREE</div><div class="seg" data-v="sync">BPM SYNC</div></div>
+  </div>
+  </div>
+  <div class="strip"><div class="row2">
+  <div class="xyc" data-c="filt"></div><div class="xyc" data-c="lfo"></div>
+  </div></div>
+  </div>
+  <!-- ARP (専用画面 F-16x) -->
+  <div class="pane split" id="paneArp">
+  <div class="scr scrollPane">
+  <!-- SCALE / KEY -->
+  <div class="mod b">
+  <div class="mt">SCALE / KEY</div>
+  <div class="row2">
+  <div class="kb am"><div class="kl"><span>KEY</span><em id="v_key">C</em></div>
+  <input type="range" id="k_key" min="0" max="11" step="1" value="0"></div>
+  <div class="kb am"><div class="kl"><span>SCALE</span><em id="v_scale">MAJOR</em></div>
+  <input type="range" id="k_scale" min="0" max="8" step="1" value="0"></div>
+  </div>
+  <div class="segs am" style="margin-top:5px;margin-bottom:0;">
+  <div class="seg on" id="lockOn">SCALE LOCK</div><div class="seg" id="lockOff">FREE</div></div>
+  </div>
+  <!-- CHORD PROGRESSION -->
+  <div class="mod b">
+  <div class="mt">CHORD <span id="chordModeLbl" style="color:var(--dim);font-weight:400;">OFF</span></div>
+  <div class="segs am" data-seg="cmode">
+  <div class="seg on" data-v="off">OFF</div><div class="seg" data-v="bar">AUTO</div>
+  <div class="seg" data-v="manual">MANUAL</div></div>
+  <div id="chordSlots"></div>
+  <div class="segs am" style="margin-top:5px;margin-bottom:0;">
+  <div class="seg" id="chordAdd">+ SLOT</div><div class="seg" id="chordDel">− SLOT</div>
+  <div class="seg" id="chordNext">NEXT ▶</div></div>
+  <div id="chordEdit" style="margin-top:6px;display:none;">
+  <div class="row2">
+  <div class="kb am"><div class="kl"><span>DEGREE</span><em id="v_deg">1 maj</em></div>
+  <input type="range" id="k_deg" min="0" max="6" step="1" value="0"></div>
+  <div class="kb am"><div class="kl"><span>BARS</span><em id="v_cbars">1</em></div>
+  <input type="range" id="k_cbars" min="1" max="4" step="1" value="1"></div>
+  </div>
+  <div class="segs am" data-seg="ctype" style="margin-top:4px;margin-bottom:0;">
+  <div class="seg on" data-v="triad">TRIAD</div><div class="seg" data-v="7th">7TH</div>
+  <div class="seg" data-v="sus4">SUS4</div><div class="seg" data-v="oct">+OCT</div></div>
+  </div>
+  </div>
+  <!-- LAYER SELECT -->
+  <div class="mod b">
+  <div class="mt">LAYER</div>
+  <div class="segs am">
+  <div class="seg on" id="layI">I &nbsp;LEAD</div><div class="seg" id="layII">II &nbsp;BASS</div></div>
+  <div class="segs am" style="margin-top:5px;margin-bottom:0;">
+  <div class="seg on" id="layOn">LAYER ON</div><div class="seg" id="layOff">OFF</div></div>
+  </div>
+  <!-- PATTERN SLOTS + CHAIN -->
+  <div class="mod b">
+  <div class="mt">PATTERN <span id="patLbl" style="color:var(--dim);font-weight:400;">A</span></div>
+  <div class="segs am" data-seg="pat">
+  <div class="seg on" data-v="A">A</div><div class="seg" data-v="B">B</div>
+  <div class="seg" data-v="C">C</div><div class="seg" data-v="D">D</div></div>
+  <div class="segs am" style="margin-top:4px;">
+  <div class="seg" id="patCopy">COPY →</div>
+  <div class="seg" id="chainToggle">CHAIN OFF</div></div>
+  <div id="chainEdit" style="display:none;">
+  <div id="chainSlots"></div>
+  <div class="segs am" style="margin-top:4px;margin-bottom:0;">
+  <div class="seg" id="chainAdd">+ LINK</div><div class="seg" id="chainDel">− LINK</div></div>
+  </div>
+  </div>
+  <!-- STEP EDITOR -->
+  <div class="mod b">
+  <div class="mt">STEPS <span id="pgLbl" style="color:var(--dim);font-weight:400;">GATE</span></div>
+  <div id="steps"></div>
+  <div class="segs am" style="margin-bottom:4px;">
+  <div class="seg on" id="pgGate">GATE</div><div class="seg" id="pgOct">OCT</div>
+  <div class="seg" id="pgPit">PITCH</div></div>
+  <div class="segs am" style="margin-bottom:5px;">
+  <div class="seg" id="stAll">ALL ON</div><div class="seg" id="stClr">CLEAR</div>
+  <div class="seg" id="stRnd">🎲 RANDOMIZE</div></div>
+  </div>
+  <!-- LAYER PARAMS -->
+  <div class="mod b">
+  <div class="mt">MOTION</div>
+  <div class="segs am" data-seg="mode">
+  <div class="seg on" data-v="up">UP</div><div class="seg" data-v="down">DOWN</div>
+  <div class="seg" data-v="updown">UP-DN</div></div>
+  <div class="segs am" data-seg="mode2">
+  <div class="seg" data-v="random">RANDOM</div><div class="seg" data-v="played">AS PLAYED</div>
+  <div class="seg" data-v="chord">CHORD</div></div>
+  <div class="segs am" data-seg="rate">
+  <div class="seg" data-v="8">1/8</div><div class="seg on" data-v="16">1/16</div>
+  <div class="seg" data-v="16t">1/16T</div><div class="seg" data-v="32">1/32</div></div>
+  <div class="row2">
+  <div class="kb am"><div class="kl"><span>LEVEL</span><em id="v_llevel">1.00</em></div>
+  <input type="range" id="k_llevel" min="0" max="1" step="0.01" value="1"></div>
+  <div class="kb am"><div class="kl"><span>STEP LENGTH</span><em id="v_len">16</em></div>
+  <input type="range" id="k_len" min="1" max="16" step="1" value="16"></div>
+  </div>
+  </div>
+  </div>
+  <div class="strip"><div class="row2">
+  <div class="xyc am" data-c="motion"></div><div class="xyc am" data-c="octave"></div>
+  </div></div>
+  </div>
+  <!-- DRUM -->
+  <div class="pane scrollPane" id="paneDrum">
+  <div class="mod b">
+  <div class="mt">DRUM <span id="drLbl" style="color:var(--dim);font-weight:400;">VOICE</span></div>
+  <div id="drPads"></div>
+  <div class="segs am" style="margin-top:5px;">
+  <div class="seg on" id="drPgVoice">VOICE</div><div class="seg" id="drPgStep">STEP</div></div>
+  <div class="segs am" style="margin-top:4px;margin-bottom:5px;">
+  <div class="seg" id="drAll">ALL ON</div><div class="seg" id="drClr">CLEAR</div>
+  <div class="seg on" id="drOn">ENGINE ON</div></div>
+  </div>
+  </div>
+  <!-- PUNCH FX -->
+  <div class="pane sel" id="paneFx"><div id="gridFx"></div></div>
+  <!-- BOKEHLOUS (granular engine) -->
+  <div class="pane split" id="paneMc">
+  <div class="scr scrollPane">
+  <button id="mcOn">ENGINE OFF</button>
+  <div class="ah">X ACTIVITY · Y SHAPE</div>
+  <div id="algos"></div>
+  <div class="row2" style="margin-bottom:5px;">
+  <div class="kb hz"><div class="kl"><span>ACTIVITY</span><em id="v_mAct">.50</em></div><input type="range" id="k_mAct" min="0" max="1" step="0.01" value="0.5"></div>
+  <div class="kb hz"><div class="kl"><span>SHAPE</span><em id="v_mShp">.50</em></div><input type="range" id="k_mShp" min="0" max="1" step="0.01" value="0.5"></div>
+  </div>
+  <div class="mod" id="looper">
+  <div class="lt"><span>LOOPER</span><em id="lStat">EMPTY</em></div>
+  <div class="lRow">
+  <button class="lBtn rec" id="lRec">REC</button><button class="lBtn" id="lPlay">PLAY</button>
+  <button class="lBtn" id="lOd">O.DUB</button><button class="lBtn" id="lClr">CLEAR</button>
+  </div>
+  <div class="kb hz"><div class="kl"><span>FADE</span><em id="v_fade">OFF</em></div><input type="range" id="k_fade" min="0" max="1" step="0.01" value="0"></div>
+  </div>
+  </div>
+  <div class="strip"><div class="row2">
+  <div class="xyc hz" data-c="buf"></div><div class="xyc hz" data-c="blend"></div>
+  </div></div>
+  </div>
+  </div>
+  <!-- 頻繁に触るものを親指の届く下部へ集める(F-6x) -->
+  <div id="xyWrap">
+  <div id="xy">
+  <div id="xyName">MASTER FILTER</div>
+  <div id="xyY">RESO</div>
+  <div id="xyX">CUTOFF →</div>
+  <div id="xyDot"></div>
+  </div>
+  </div>
+  <div id="kbWrap">
+  <div id="kbCtl">
+  <button id="octDn">−</button><span id="octLbl">OCT 4</span><button id="octUp">+</button>
+  <button id="latchBtn">LATCH</button><button id="holdBtn">HOLD</button>
+  </div>
+  <div id="keys"></div>
+  </div>
+</div><script>
+(function(){
+'use strict';
+
+/* DSP — GlitchCore → MicroCore → Looper   (F-2x / F-3x / F-4x) */
+const DSP_CORE = `
+class GlitchCore {
+  constructor(sr){
+    this.sr=sr; this.size=Math.floor(sr*4);
+    this.bL=new Float32Array(this.size); this.bR=new Float32Array(this.size);
+    this.w=0; this.mode='thru';
+    this.read=0; this.loopStart=0; this.loopLen=sr*0.25;
+    this.pbRate=1; this.stopRate=1; this.stopTime=0.8;
+    this.grains=[]; this.grainClock=0; this.grainDensity=24; this.grainSpread=0;
+    this.crushOn=false; this.bits=6;
+    this.decOn=false; this.dec=8; this.decCount=0; this.hL=0; this.hR=0;
+    this.gateOn=false; this.gateRate=8; this.gateDuty=0.5; this.gatePhase=0; this.gateG=1;
+    this.killOn=false; this.killG=1;
+  }
+  trigger(mode,o){
+    o=o||{}; this.mode=mode;
+    if(mode==='repeat'){
+      this.loopLen=Math.max(128,Math.floor((o.len||0.18)*this.sr));
+      this.loopStart=(this.w-this.loopLen+this.size)%this.size;
+      this.read=this.loopStart; this.pbRate=o.rate||1;
+    } else if(mode==='reverse'){
+      this.loopLen=Math.max(128,Math.floor((o.len||0.5)*this.sr));
+      this.loopStart=(this.w-this.loopLen+this.size)%this.size;
+      this.read=this.loopStart+this.loopLen-1; this.pbRate=o.rate||1;
+    } else if(mode==='stop'){
+      this.read=(this.w-2+this.size)%this.size;
+      this.stopRate=1; this.stopTime=o.time||0.8;
+    } else if(mode==='freeze'){
+      this.loopLen=Math.max(128,Math.floor((o.win||0.09)*this.sr));
+      this.loopStart=(this.w-this.loopLen+this.size)%this.size;
+      this.read=this.loopStart; this.pbRate=o.rate||1;
+    } else if(mode==='warp'){
+      this.loopLen=Math.max(128,Math.floor(0.14*this.sr));
+      this.loopStart=(this.w-this.loopLen+this.size)%this.size;
+      this.read=this.loopStart; this.pbRate=o.rate||1.5;
+    } else if(mode==='grain'){ this.grains=[]; this.grainClock=0; }
+  }
+  rel(){ this.mode='thru'; this.grains=[]; }
+  rd(b,p){ var s=this.size,i0=Math.floor(p),f=p-i0;
+    var a=b[((i0%s)+s)%s], c=b[(((i0+1)%s)+s)%s]; return a+(c-a)*f; }
+  process(inL,inR,outL,outR,n){
+    var m=this.mode;
+    for(var i=0;i<n;i++){
+      var xl=inL[i], xr=inR?inR[i]:inL[i], l,r;
+      if(m==='thru'||m==='stop'||m==='grain'){
+        this.bL[this.w]=xl; this.bR[this.w]=xr; this.w=(this.w+1)%this.size;
+      }
+      if(m==='thru'){ l=xl; r=xr; }
+      else if(m==='repeat'||m==='freeze'||m==='warp'){
+        l=this.rd(this.bL,this.read); r=this.rd(this.bR,this.read);
+        this.read+=this.pbRate;
+        var e=this.loopStart+this.loopLen;
+        if(this.read>=e) this.read-=this.loopLen;
+        if(this.read<this.loopStart) this.read+=this.loopLen;
+      } else if(m==='reverse'){
+        l=this.rd(this.bL,this.read); r=this.rd(this.bR,this.read);
+        this.read-=this.pbRate;
+        if(this.read<this.loopStart) this.read+=this.loopLen;
+      } else if(m==='stop'){
+        l=this.rd(this.bL,this.read); r=this.rd(this.bR,this.read);
+        this.read+=this.stopRate;
+        this.stopRate*=Math.pow(0.0004,1/Math.max(1,this.stopTime*this.sr));
+        if(this.stopRate<0.0009){ l=0; r=0; }
+      } else if(m==='grain'){
+        l=0; r=0; this.grainClock-=1;
+        if(this.grainClock<=0){
+          this.grainClock=this.sr/Math.max(2,this.grainDensity);
+          var dur=(0.025+Math.random()*0.11)*this.sr;
+          var st=(this.w-Math.random()*this.sr*0.7+this.size*2)%this.size;
+          var rt=1;
+          if(this.grainSpread>0){ var C=[0.5,0.5,0.75,1,1,1.5,2,2];
+            rt=1+(C[Math.floor(Math.random()*C.length)]-1)*this.grainSpread; }
+          this.grains.push({p:st,d:dur,t:0,r:rt,pan:Math.random()});
+          if(this.grains.length>26) this.grains.shift();
+        }
+        for(var g=this.grains.length-1;g>=0;g--){
+          var G=this.grains[g];
+          var env=0.5-0.5*Math.cos(6.28318530718*(G.t/G.d));
+          var s2=(this.rd(this.bL,G.p)+this.rd(this.bR,G.p))*0.5, v=s2*env;
+          l+=v*(1-G.pan)*1.3; r+=v*G.pan*1.3;
+          G.p+=G.r; G.t++;
+          if(G.t>=G.d) this.grains.splice(g,1);
+        }
+      } else { l=xl; r=xr; }
+      if(this.crushOn){ var lv=Math.pow(2,this.bits);
+        l=Math.round(l*lv)/lv; r=Math.round(r*lv)/lv; }
+      if(this.decOn){ if(this.decCount<=0){ this.hL=l; this.hR=r; this.decCount=this.dec; }
+        this.decCount--; l=this.hL; r=this.hR; }
+      if(this.gateOn){
+        this.gatePhase+=this.gateRate/this.sr;
+        if(this.gatePhase>=1) this.gatePhase-=1;
+        this.gateG+=((this.gatePhase<this.gateDuty?1:0)-this.gateG)*0.09;
+      } else { this.gateG+=(1-this.gateG)*0.09; }
+      l*=this.gateG; r*=this.gateG;
+      var kt=this.killOn?0:1;
+      this.killG+=(kt-this.killG)*0.005;
+      l*=this.killG; r*=this.killG;
+      outL[i]=l; outR[i]=r;
+    }
+  }
+}
+
+const MALG = [
+  {ln:[0.05,0.24], dn:[3,20],  pt:[1],                       rv:0,    jt:0.05, q:1, gl:0, it:0, tp:0, xf:0},
+  {ln:[0.08,0.42], dn:[2,13],  pt:[1,0.5],                   rv:0,    jt:0.03, q:1, gl:0, it:0, tp:0, xf:0},
+  {ln:[0.04,0.19], dn:[5,26],  pt:[1,1.1892,1.4983,2,1.4983],rv:0,    jt:0.02, q:1, gl:0, it:0, tp:0, xf:0},
+  {ln:[0.015,0.10],dn:[10,72], pt:[1],                       rv:0,    jt:0.6,  q:0, gl:0, it:0, tp:0, xf:0},
+  {ln:[0.10,0.55], dn:[2,10],  pt:[1],                       rv:0,    jt:0,    q:1, gl:0, it:0, tp:1, xf:0},
+  {ln:[0.04,0.30], dn:[8,54],  pt:[1],                       rv:0.5,  jt:0.85, q:0, gl:0, it:0, tp:0, xf:0},
+  {ln:[0.08,0.36], dn:[5,34],  pt:[1],                       rv:0.2,  jt:0.4,  q:0, gl:1, it:0, tp:0, xf:0},
+  {ln:[0.05,0.26], dn:[6,40],  pt:[0.5,1,1.5,2],             rv:0,    jt:0.3,  q:0, gl:0, it:0, tp:0, xf:0},
+  {ln:[0.15,0.70], dn:[6,24],  pt:[1],                       rv:0.15, jt:0.45, q:0, gl:0, it:0, tp:0, xf:1},
+  {ln:[0.22,0.95], dn:[3,16],  pt:[0.5,1,2],                 rv:0.65, jt:1,    q:0, gl:0, it:0, tp:0, xf:1},
+  {ln:[0.03,0.32], dn:[1.5,11],pt:[1,1,1,0.5,2],             rv:0.3,  jt:0.1,  q:1, gl:0, it:1, tp:0, xf:0}
+];
+
+class MicroCore {
+  constructor(sr){
+    this.sr=sr; this.size=Math.floor(sr*6);
+    this.bL=new Float32Array(this.size); this.bR=new Float32Array(this.size);
+    this.w=0; this.on=false; this.algo=0;
+    this.activity=0.5; this.shape=0.5; this.time=0.35; this.repeats=0.35; this.mix=0.55;
+    this.step=Math.floor(sr*0.121); this.gridPos=0;
+    this.spawnCd=0; this.grains=[]; this.arp=0;
+    this.fbL=0; this.fbR=0; this.lpL=0; this.lpR=0;
+    this.duck=0; this.duckG=1;
+  }
+  rd(b,p){ var s=this.size,i0=Math.floor(p),f=p-i0;
+    var a=b[((i0%s)+s)%s], c=b[(((i0+1)%s)+s)%s]; return a+(c-a)*f; }
+  process(inL,inR,outL,outR,n){
+    if(!this.on){ for(var k=0;k<n;k++){ outL[k]=inL[k]; outR[k]=inR[k];
+      this.bL[this.w]=inL[k]; this.bR[this.w]=inR[k]; this.w=(this.w+1)%this.size; }
+      if(this.grains.length) this.grains.length=0; return; }
+    var A=MALG[this.algo]||MALG[0];
+    var gLen=(A.ln[0]+(A.ln[1]-A.ln[0])*this.shape)*this.sr;
+    var dens=A.dn[0]+(A.dn[1]-A.dn[0])*this.activity;
+    var look=(0.03+this.time*this.time*2.2)*this.sr;
+    var iv=this.sr/Math.max(0.5,dens);
+    var grid=Math.max(64,Math.floor(this.step*0.5));
+    var fb=this.repeats*0.96;
+    var tone=0.06+(1-this.shape)*0.85;
+    var wet=this.mix, dry=1-this.mix*0.85;
+    for(var i=0;i<n;i++){
+      var xl=inL[i], xr=inR[i];
+      var wl=xl+this.fbL*fb, wr=xr+this.fbR*fb;
+      if(wl>1||wl<-1) wl=Math.tanh(wl);
+      if(wr>1||wr<-1) wr=Math.tanh(wr);
+      this.bL[this.w]=wl; this.bR[this.w]=wr;
+      this.gridPos++;
+      var tick=false;
+      if(this.gridPos>=grid){ this.gridPos=0; tick=true; }
+      this.spawnCd--;
+      var go = A.q ? (tick && this.spawnCd<=0) : (this.spawnCd<=0);
+      if(go && this.grains.length<32){
+        this.spawnCd=iv;
+        var back=look;
+        if(A.tp) back=look*(1+Math.floor(Math.random()*4))*0.35;
+        back+=(Math.random()*2-1)*look*A.jt;
+        if(back<64) back=64;
+        var pos=(this.w-back+this.size*2)%this.size;
+        var rate;
+        if(A.pt.length>1){
+          if(this.algo===2){ rate=A.pt[this.arp%A.pt.length]; this.arp++; }
+          else rate=A.pt[Math.floor(Math.random()*A.pt.length)];
+        } else rate=1;
+        var rev=Math.random()<A.rv?-1:1;
+        var dur=gLen*(0.7+Math.random()*0.6);
+        var dr=0;
+        if(A.gl){ var tgt=rate*(Math.random()<0.5?0.5:2); dr=(tgt-rate)/dur; }
+        this.grains.push({p:rev<0?pos+dur*rate:pos, d:dur, t:0, r:rate*rev, dr:dr,
+                          pan:0.5+(Math.random()-0.5)*(0.3+A.jt*0.7)});
+        if(A.it){ this.duck=dur; }
+      }
+      var gl=0, gr=0;
+      for(var g=this.grains.length-1;g>=0;g--){
+        var G=this.grains[g];
+        var ph=G.t/G.d;
+        var env=A.xf ? (0.5-0.5*Math.cos(6.28318530718*ph))
+                     : (ph<0.08 ? ph/0.08 : (ph>0.85 ? (1-ph)/0.15 : 1));
+        var sL=this.rd(this.bL,G.p), sR=this.rd(this.bR,G.p);
+        gl+=sL*env*(1-G.pan)*1.4; gr+=sR*env*G.pan*1.4;
+        G.p+=G.r; if(G.dr) G.r+=G.dr; G.t++;
+        if(G.t>=G.d) this.grains.splice(g,1);
+      }
+      this.lpL+=(gl-this.lpL)*tone; this.lpR+=(gr-this.lpR)*tone;
+      gl=this.lpL; gr=this.lpR;
+      if(gl>1.4||gl<-1.4) gl=Math.tanh(gl);
+      if(gr>1.4||gr<-1.4) gr=Math.tanh(gr);
+      this.fbL=gl; this.fbR=gr;
+      if(this.duck>0){ this.duck--; this.duckG+=(0-this.duckG)*0.02; }
+      else this.duckG+=(1-this.duckG)*0.01;
+      var dg = A.it ? this.duckG : 1;
+      outL[i]=xl*dry*dg + gl*wet;
+      outR[i]=xr*dry*dg + gr*wet;
+      this.w=(this.w+1)%this.size;
+    }
+  }
+}
+
+class Looper {
+  constructor(sr){
+    this.sr=sr; this.max=Math.floor(sr*20);
+    this.bL=new Float32Array(this.max); this.bR=new Float32Array(this.max);
+    this.len=0; this.p=0; this.state='idle'; this.od=false; this.fade=1;
+  }
+  cmd(c){
+    if(c==='rec'){ this.state='rec'; this.len=0; this.p=0; }
+    else if(c==='play'){ if(this.state==='rec'){ this.p=0; this.state=this.len>0?'play':'idle'; }
+      else if(this.state==='play'){ this.state='stop'; }
+      else if(this.len>0){ this.p=0; this.state='play'; } }
+    else if(c==='stop'){ this.state=this.len>0?'stop':'idle'; }
+    else if(c==='clear'){ this.state='idle'; this.len=0; this.p=0; this.bL.fill(0); this.bR.fill(0); }
+  }
+  process(inL,inR,outL,outR,n){
+    for(var i=0;i<n;i++){
+      var xl=inL[i], xr=inR[i], ol=xl, o2=xr;
+      if(this.state==='rec'){
+        if(this.len<this.max){ this.bL[this.len]=xl; this.bR[this.len]=xr; this.len++; }
+        else { this.state='play'; this.p=0; }
+      } else if(this.state==='play'){
+        var a=this.bL[this.p], b=this.bR[this.p];
+        ol+=a; o2+=b;
+        if(this.od){ this.bL[this.p]=a*this.fade+xl; this.bR[this.p]=b*this.fade+xr; }
+        else if(this.fade<1){ this.bL[this.p]=a*this.fade; this.bR[this.p]=b*this.fade; }
+        this.p++; if(this.p>=this.len) this.p=0;
+      }
+      outL[i]=ol; outR[i]=o2;
+    }
+  }
+}
+`;
+
+const WORKLET_SRC = DSP_CORE + `
+class GP extends AudioWorkletProcessor{
+  constructor(){
+    super();
+    this.g=new GlitchCore(sampleRate); this.m=new MicroCore(sampleRate); this.l=new Looper(sampleRate);
+    this.t1L=new Float32Array(128); this.t1R=new Float32Array(128);
+    this.t2L=new Float32Array(128); this.t2R=new Float32Array(128);
+    this.port.onmessage=(e)=>{
+      const d=e.data;
+      if(d.t==='set'){ (d.s==='m'?this.m:d.s==='l'?this.l:this.g)[d.k]=d.v; }
+      else if(d.t==='trig') this.g.trigger(d.mode,d.opts);
+      else if(d.t==='rel') this.g.rel();
+      else if(d.t==='lcmd'){ this.l.cmd(d.c); this.port.postMessage({t:'lst',s:this.l.state,len:this.l.len/sampleRate}); }
+    };
+  }
+  process(inputs,outputs){
+    const ip=inputs[0], op=outputs[0], n=op[0].length;
+    if(this.t1L.length!==n){
+      this.t1L=new Float32Array(n); this.t1R=new Float32Array(n);
+      this.t2L=new Float32Array(n); this.t2R=new Float32Array(n);
+    }
+    const iL=(ip&&ip[0])?ip[0]:new Float32Array(n);
+    const iR=(ip&&ip[1])?ip[1]:iL;
+    this.g.process(iL,iR,this.t1L,this.t1R,n);
+    this.m.process(this.t1L,this.t1R,this.t2L,this.t2R,n);
+    this.l.process(this.t2L,this.t2R,op[0],op[1]||op[0],n);
+    return true;
+  }
+}
+registerProcessor('glitch',GP);
+`;
+
+/* MUSIC THEORY — スケール / コード(F-12x / F-13x) */
+const SCALES={
+  major:[0,2,4,5,7,9,11], minor:[0,2,3,5,7,8,10],
+  dorian:[0,2,3,5,7,9,10], phrygian:[0,1,3,5,7,8,10],
+  mixolydian:[0,2,4,5,7,9,10], harmonicMinor:[0,2,3,5,7,8,11],
+  pentaMajor:[0,2,4,7,9], pentaMinor:[0,3,5,7,10],
+  chromatic:[0,1,2,3,4,5,6,7,8,9,10,11]
+};
+const SCALE_LABEL={
+  major:'MAJOR', minor:'MINOR', dorian:'DORIAN', phrygian:'PHRYGIAN',
+  mixolydian:'MIXOLYD', harmonicMinor:'HARM MIN',
+  pentaMajor:'PENTA MAJ', pentaMinor:'PENTA MIN', chromatic:'CHROMATIC'
+};
+const SCALE_ORDER=['major','minor','dorian','phrygian','mixolydian','harmonicMinor','pentaMajor','pentaMinor','chromatic'];
+
+function scaleSnap(midi,key,scaleName){
+  if(scaleName==='chromatic') return midi;
+  const sc=SCALES[scaleName];
+  const rel=(((midi-key)%12)+12)%12, oct=Math.floor((midi-key)/12);
+  let best=sc[0]; for(const s of sc){ if(s<=rel) best=s; }
+  return key+oct*12+best;
+}
+function chordNotes(key,scaleName,degree,type){
+  const sc=SCALES[scaleName], n=sc.length;
+  const steps = type==='7th'?[0,2,4,6] : type==='sus4'?[0,3,4] : type==='oct'?[0,2,4,7] : [0,2,4];
+  return steps.map(st=>{ const idx=(degree+st)%n, oct=Math.floor((degree+st)/n); return key+sc[idx]+oct*12; });
+}
+function chordQuality(key,scaleName,degree){
+  const nts=chordNotes(key,scaleName,degree,'triad');
+  const t=nts[1]-nts[0], f=nts[2]-nts[0];
+  if(t===4&&f===7) return 'maj'; if(t===3&&f===7) return 'min';
+  if(t===3&&f===6) return 'dim'; if(t===4&&f===8) return 'aug';
+  return '';
+}
+function mkPat(){ return { gates:new Array(16).fill(1), octs:new Array(16).fill(0), pits:new Array(16).fill(null), len:16 }; }
+
+/* DRUM PART (F-19x) — 16 ボイス定義 | kind:'tone' → param は TUNE(半音, -12〜+12)/ kind:'noise' → param は DECAY(0〜1 正規化) */
+const DRUM_VOICES=[
+  {name:'KICK',     kind:'tone',  param:0},
+  {name:'SNARE',    kind:'noise', param:0.45},
+  {name:'RIM',      kind:'noise', param:0.25},
+  {name:'CLAP',     kind:'noise', param:0.45},
+  {name:'CH HH',    kind:'noise', param:0.15},
+  {name:'OH HH',    kind:'noise', param:0.55},
+  {name:'TOM LO',   kind:'tone',  param:-4},
+  {name:'TOM HI',   kind:'tone',  param:4},
+  {name:'CRASH',    kind:'noise', param:0.8},
+  {name:'BELL',     kind:'tone',  param:0},
+  {name:'PLUCK',    kind:'tone',  param:0},
+  {name:'PERC 1',   kind:'tone',  param:2},
+  {name:'PERC 2',   kind:'noise', param:0.3},
+  {name:'SHAKER',   kind:'noise', param:0.25},
+  {name:'BLIP',     kind:'tone',  param:0},
+  {name:'NOISE HIT',kind:'noise', param:0.4},
+];
+const DRUM_LEVELS=[0.95,0.85,0.75,0.8,0.7,0.7,0.85,0.85,0.65,0.6,0.75,0.75,0.7,0.6,0.7,0.7];
+function mkDrumState(){
+  return { on:true, page:'voice', sel:0,
+    voices: DRUM_VOICES.map((v,i)=>({ level:DRUM_LEVELS[i], param:v.param, gates:new Array(16).fill(0) })) };
+}
+
+/* 固定音程 (F-17x): {deg, oct} をスケール度数+オクターブで保持し、キー/スケールに追従 */
+function pitchToMidi(key, scaleName, p){
+  const sc=SCALES[scaleName], n=sc.length;
+  return key + sc[((p.deg%n)+n)%n] + Math.floor(p.deg/n)*12 + p.oct*12;
+}
+function patHasPitch(P){ return P.pits && P.pits.some(x=>x!==null); }
+
+/* STATE   (N-08: 全状態を集約) */
+const ST = {
+  bpm:124, vol:0.8, latch:false, tab:'fx', octave:4, hold:false, playing:true,
+  SY:{ aWave:'sawtooth',aOct:0,aDet:0,aLvl:0.9,
+       bWave:'triangle',bOct:-1,bDet:7,bLvl:0.5, nLvl:0,
+       fType:'lowpass',cutoff:0.65,reso:6,envAmt:0.4,keyTrk:0.3,
+       aA:0.01,aD:0.25,aS:0.6,aR:0.3,
+       fA:0.005,fD:0.18,fS:0.25,fR:0.2,
+       lWave:'triangle',lRate:3,lSync:false,lDepth:0,lDest:'filter', glide:0 },
+  AR:{
+    // グローバル(両レイヤー共有)
+    key:60, scale:'major', scaleLock:true, swing:0,
+    activeLayer:'I',   // 編集対象レイヤー
+    // コード進行
+    chord:{ mode:'off', manualIdx:0, curIdx:0,
+            slots:[ {deg:0,type:'triad',bars:1},{deg:5,type:'triad',bars:1},
+                    {deg:3,type:'triad',bars:1},{deg:4,type:'triad',bars:1} ] },
+    // レイヤー I / II
+    I:{ on:true,  mode:'up',   rate:'16', gate:0.55, range:1, octOff:0,  level:1.0,
+        curPat:'A', chainOn:false, chain:[{pat:'A',bars:1}],
+        pats:{ A:mkPat(),B:mkPat(),C:mkPat(),D:mkPat() } },
+    II:{ on:false, mode:'up',   rate:'8',  gate:0.6,  range:1, octOff:-2, level:0.85,
+        curPat:'A', chainOn:false, chain:[{pat:'A',bars:1}],
+        pats:{ A:mkPat(),B:mkPat(),C:mkPat(),D:mkPat() } }
+  },
+  MC:{ on:false, algo:0, time:0.35, repeats:0.35, mix:0.55, space:0.15,
+       act:new Array(11).fill(0.5), shp:new Array(11).fill(0.5) },   // F-39
+  LP:{ fade:0, od:false },
+  DR: mkDrumState(),
+  XY:{}   // F-56  key -> {x,y}
+};
+
+/* AUDIO GRAPH */
+let ctx, master, analyser, scopeArr, node=null, useWorklet=false, fbCores=null;
+let srcBus, postBus, mFilt;
+let shaper, foldWet, foldDry, ringOsc, ringGain, ringWet, ringDry;
+let combDly, combFb, combWet, combDry;
+let throwSend, throwDly, throwFb, spaceSend, spaceConv, spaceGain, mcSpace;
+let lfoOsc, lfoSH, lfoOscG, lfoSHG, lfoOut, lfoPitch, lfoFilter, lfoAmp;
+let noiseBuf=null;
+
+const mtof = m => 440*Math.pow(2,(m-69)/12);
+const nowT = () => ctx.currentTime;
+const ramp = (p,v,t)=>{ try{ p.setTargetAtTime(v,nowT(),t||0.012); }catch(e){ try{p.value=v;}catch(e2){} } };
+const clamp = (v,a,b)=> v<a?a:(v>b?b:v);
+
+function makeIR(sec,decay){
+  const len=Math.floor(ctx.sampleRate*sec), b=ctx.createBuffer(2,len,ctx.sampleRate);
+  for(let c=0;c<2;c++){ const d=b.getChannelData(c);
+    for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay); }
+  return b;
+}
+function foldCurve(a){
+  const n=2048,c=new Float32Array(n);
+  for(let i=0;i<n;i++){ const x=(i/(n-1))*2-1; c[i]=clamp(Math.sin(x*Math.PI*a),-1,1); }
+  return c;
+}
+
+async function initAudio(){
+  ctx = new (window.AudioContext||window.webkitAudioContext)();
+
+  // noise buffer
+  noiseBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate*2), ctx.sampleRate);
+  { const d=noiseBuf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; }
+
+  srcBus = ctx.createGain();
+
+  // FOLD
+  shaper=ctx.createWaveShaper(); shaper.curve=foldCurve(1); shaper.oversample='2x';
+  foldWet=ctx.createGain(); foldWet.gain.value=0;
+  foldDry=ctx.createGain(); foldDry.gain.value=1;
+  const foldOut=ctx.createGain();
+  srcBus.connect(shaper).connect(foldWet).connect(foldOut);
+  srcBus.connect(foldDry).connect(foldOut);
+
+  // RING
+  ringOsc=ctx.createOscillator(); ringOsc.type='sine'; ringOsc.frequency.value=180;
+  ringGain=ctx.createGain(); ringGain.gain.value=0; ringOsc.connect(ringGain.gain);
+  ringWet=ctx.createGain(); ringWet.gain.value=0;
+  ringDry=ctx.createGain(); ringDry.gain.value=1;
+  const ringOut=ctx.createGain();
+  foldOut.connect(ringGain).connect(ringWet).connect(ringOut);
+  foldOut.connect(ringDry).connect(ringOut);
+  ringOsc.start();
+
+  // COMB
+  combDly=ctx.createDelay(0.05); combDly.delayTime.value=0.004;
+  combFb=ctx.createGain(); combFb.gain.value=0.85;
+  combDly.connect(combFb).connect(combDly);
+  combWet=ctx.createGain(); combWet.gain.value=0;
+  combDry=ctx.createGain(); combDry.gain.value=1;
+  const combOut=ctx.createGain();
+  ringOut.connect(combDly).connect(combWet).connect(combOut);
+  ringOut.connect(combDry).connect(combOut);
+
+  // MASTER FILTER
+  mFilt=ctx.createBiquadFilter(); mFilt.type='lowpass';
+  mFilt.frequency.value=14000; mFilt.Q.value=1;
+  combOut.connect(mFilt);
+
+  // WORKLET
+  let ok=false;
+  if(ctx.audioWorklet){
+    try{
+      const url=URL.createObjectURL(new Blob([WORKLET_SRC],{type:'application/javascript'}));
+      await ctx.audioWorklet.addModule(url);
+      node=new AudioWorkletNode(ctx,'glitch',{numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[2]});
+      node.port.onmessage=e=>{ if(e.data.t==='lst') looperUI(e.data.s,e.data.len); };
+      useWorklet=true; ok=true;
+    }catch(e){ ok=false; }
+  }
+  if(!ok){
+    const F=new Function(DSP_CORE+'; return {G:GlitchCore,M:MicroCore,L:Looper};')();
+    fbCores={g:new F.G(ctx.sampleRate),m:new F.M(ctx.sampleRate),l:new F.L(ctx.sampleRate)};
+    node=ctx.createScriptProcessor(1024,2,2);
+    let t1L,t1R,t2L,t2R;
+    node.onaudioprocess=function(ev){
+      const ib=ev.inputBuffer,ob=ev.outputBuffer,n=ob.length;
+      if(!t1L||t1L.length!==n){ t1L=new Float32Array(n);t1R=new Float32Array(n);
+        t2L=new Float32Array(n);t2R=new Float32Array(n); }
+      fbCores.g.process(ib.getChannelData(0),ib.getChannelData(1),t1L,t1R,n);
+      fbCores.m.process(t1L,t1R,t2L,t2R,n);
+      fbCores.l.process(t2L,t2R,ob.getChannelData(0),ob.getChannelData(1),n);
+    };
+  }
+  postBus=ctx.createGain();
+  mFilt.connect(node).connect(postBus);
+
+  // THROW
+  /* 上限は音価指定の最長(1/1)が最遅 BPM で要る長さ: 40BPM の 4 拍 = 6 秒(F-2f) */
+  throwDly=ctx.createDelay(8); throwDly.delayTime.value=0.22;
+  throwFb=ctx.createGain(); throwFb.gain.value=0.7;
+  const tf=ctx.createBiquadFilter(); tf.type='bandpass'; tf.frequency.value=1400; tf.Q.value=0.7;
+  throwDly.connect(tf).connect(throwFb).connect(throwDly);
+  throwSend=ctx.createGain(); throwSend.gain.value=0;
+
+  // SPACE
+  spaceConv=ctx.createConvolver(); spaceConv.buffer=makeIR(3.4,2.4);
+  spaceSend=ctx.createGain(); spaceSend.gain.value=0;
+  mcSpace=ctx.createGain(); mcSpace.gain.value=ST.MC.space*1.4;
+  spaceGain=ctx.createGain(); spaceGain.gain.value=1.1;
+
+  master=ctx.createGain(); master.gain.value=ST.vol;
+  analyser=ctx.createAnalyser(); analyser.fftSize=1024;
+  scopeArr=new Uint8Array(analyser.fftSize);
+
+  postBus.connect(master);
+  postBus.connect(throwSend).connect(throwDly); throwDly.connect(master);
+  postBus.connect(spaceSend).connect(spaceConv);
+  postBus.connect(mcSpace).connect(spaceConv);
+  spaceConv.connect(spaceGain).connect(master);
+
+  const lim=ctx.createWaveShaper();
+  const lc=new Float32Array(4096);
+  for(let i=0;i<4096;i++){ const x=(i/4095)*4-2; lc[i]=Math.tanh(x*1.1); }
+  lim.curve=lc; lim.oversample='2x';
+  master.connect(lim).connect(analyser); analyser.connect(ctx.destination);
+
+  // LFO (F-87)
+  lfoOut=ctx.createGain(); lfoOut.gain.value=1;
+  lfoOsc=ctx.createOscillator(); lfoOsc.type='triangle'; lfoOsc.frequency.value=3;
+  lfoOscG=ctx.createGain(); lfoOscG.gain.value=1;
+  lfoOsc.connect(lfoOscG).connect(lfoOut); lfoOsc.start();
+  const shBuf=ctx.createBuffer(1,ctx.sampleRate,ctx.sampleRate);
+  { const d=shBuf.getChannelData(0), steps=8, sl=Math.floor(d.length/steps);
+    for(let s=0;s<steps;s++){ const v=Math.random()*2-1;
+      for(let i=0;i<sl;i++) d[s*sl+i]=v; } }
+  lfoSH=ctx.createBufferSource(); lfoSH.buffer=shBuf; lfoSH.loop=true; lfoSH.playbackRate.value=3;
+  lfoSHG=ctx.createGain(); lfoSHG.gain.value=0;
+  lfoSH.connect(lfoSHG).connect(lfoOut); lfoSH.start();
+  lfoPitch=ctx.createGain(); lfoPitch.gain.value=0;
+  lfoFilter=ctx.createGain(); lfoFilter.gain.value=0;
+  lfoAmp=ctx.createGain(); lfoAmp.gain.value=0;
+  lfoOut.connect(lfoPitch); lfoOut.connect(lfoFilter); lfoOut.connect(lfoAmp);
+
+  pushLFO(); pushMicro();
+}
+
+function send(o){ if(useWorklet) node.port.postMessage(o); }
+function gSet(k,v){ useWorklet? send({t:'set',s:'g',k,v}) : fbCores&&(fbCores.g[k]=v); }
+function mSet(k,v){ useWorklet? send({t:'set',s:'m',k,v}) : fbCores&&(fbCores.m[k]=v); }
+function lSet(k,v){ useWorklet? send({t:'set',s:'l',k,v}) : fbCores&&(fbCores.l[k]=v); }
+function gTrig(m,o){ useWorklet? send({t:'trig',mode:m,opts:o||{}}) : fbCores&&fbCores.g.trigger(m,o||{}); }
+function gRel(){ useWorklet? send({t:'rel'}) : fbCores&&fbCores.g.rel(); }
+function lCmd(c){
+  if(useWorklet) send({t:'lcmd',c});
+  else if(fbCores){ fbCores.l.cmd(c); looperUI(fbCores.l.state, fbCores.l.len/ctx.sampleRate); }
+}
+function pushMicro(){
+  if(!ctx) return;
+  const M=ST.MC;
+  mSet('on',M.on); mSet('algo',M.algo);
+  mSet('activity',M.act[M.algo]); mSet('shape',M.shp[M.algo]);
+  mSet('time',M.time); mSet('repeats',M.repeats); mSet('mix',M.mix);
+  mSet('step',Math.floor(ctx.sampleRate*(60/ST.bpm/4)));
+  if(mcSpace) ramp(mcSpace.gain, M.space*1.4, 0.02);
+}
+function pushLFO(){
+  if(!ctx) return;
+  const S=ST.SY;
+  const isSH = S.lWave==='sh';
+  ramp(lfoOscG.gain, isSH?0:1, 0.01);
+  ramp(lfoSHG.gain, isSH?1:0, 0.01);
+  if(!isSH) lfoOsc.type = S.lWave;
+  const rate = S.lSync ? (ST.bpm/60)*S.lRateSyncMul() : S.lRate;
+  ramp(lfoOsc.frequency, rate, 0.02);
+  ramp(lfoSH.playbackRate, rate, 0.02);
+  ramp(lfoPitch.gain,  S.lDest==='pitch'  ? S.lDepth*120  : 0, 0.02);
+  ramp(lfoFilter.gain, S.lDest==='filter' ? S.lDepth*4500 : 0, 0.02);
+  ramp(lfoAmp.gain,    S.lDest==='amp'    ? S.lDepth*0.55 : 0, 0.02);
+}
+ST.SY.lRateSyncMul = function(){
+  // lRate(0..1) を音価倍率へ: 1/1,1/2,1/4,1/8,1/16,1/32 (4分音符基準)
+  const M=[0.25,0.5,1,2,4,8];
+  return M[clamp(Math.floor(this.lRate*6),0,5)];
+};
+
+/* SYNTH VOICES  (F-8x) */
+const activeVoices = [];   // {midi,nodes...,released}
+const heldVoices = new Map(); // midi -> voice (ARP OFF 時の持続和音)
+let lastFreq = null;
+
+function voiceCount(){ return activeVoices.length; }
+
+/* DRUM ENGINE (F-19x) — 軽量な専用ワンショット合成 | SYNTH のボイスアーキテクチャ(OSC A/B)は流用しない(F-195)。 | 出力は srcBus へ直結し、パンチイン FX / Bokehlous の対象に含める(F-19l)。 */
+function drEnv(param, t, peak, atk, dec){
+  param.cancelScheduledValues(t);
+  param.setValueAtTime(0,t);
+  param.linearRampToValueAtTime(Math.max(0.0001,peak), t+atk);
+  param.exponentialRampToValueAtTime(0.0001, t+atk+dec);
+}
+function triggerDrum(idx, t, accent){
+  if(!ctx) return;
+  const dv=DRUM_VOICES[idx], sv=ST.DR.voices[idx];
+  const lvl = sv.level * (accent?1.3:1);
+  if(lvl<=0.001) return;
+  const g=ctx.createGain(); g.gain.value=1; g.connect(srcBus);
+  const tune=sv.param;       // kind:'tone' → 半音オフセット
+  const dec01=Math.max(0,Math.min(1,sv.param));  // kind:'noise' → 0..1 正規化(負値は0扱い)
+
+  switch(dv.name){
+    case 'KICK': {
+      const o=ctx.createOscillator(); o.type='sine';
+      const f0=54*Math.pow(2,tune/12);
+      o.frequency.setValueAtTime(f0*3.4,t);
+      o.frequency.exponentialRampToValueAtTime(Math.max(22,f0),t+0.085);
+      const og=ctx.createGain(); drEnv(og.gain,t,lvl,0.002,0.34);
+      o.connect(og).connect(g); o.start(t); o.stop(t+0.42);
+      break;
+    }
+    case 'TOM LO': case 'TOM HI': {
+      const base=dv.name==='TOM LO'?108:185;
+      const f0=base*Math.pow(2,tune/12);
+      const o=ctx.createOscillator(); o.type='triangle';
+      o.frequency.setValueAtTime(f0*1.5,t);
+      o.frequency.exponentialRampToValueAtTime(f0,t+0.075);
+      const og=ctx.createGain(); drEnv(og.gain,t,lvl,0.002,0.3);
+      o.connect(og).connect(g); o.start(t); o.stop(t+0.4);
+      break;
+    }
+    case 'BELL': {
+      const f0=540*Math.pow(2,tune/12);
+      [1,2.4,3.8].forEach((ratio,i)=>{
+        const o=ctx.createOscillator(); o.type='sine'; o.frequency.value=f0*ratio;
+        const og=ctx.createGain(); drEnv(og.gain,t,lvl*(i===0?1:0.4),0.001,0.85-i*0.15);
+        o.connect(og).connect(g); o.start(t); o.stop(t+1.0);
+      });
+      break;
+    }
+    case 'PLUCK': {
+      const f0=320*Math.pow(2,tune/12);
+      const o=ctx.createOscillator(); o.type='triangle'; o.frequency.value=f0;
+      const filt=ctx.createBiquadFilter(); filt.type='lowpass'; filt.Q.value=6;
+      filt.frequency.setValueAtTime(f0*8,t);
+      filt.frequency.exponentialRampToValueAtTime(f0*1.2,t+0.15);
+      const og=ctx.createGain(); drEnv(og.gain,t,lvl,0.001,0.22);
+      o.connect(filt).connect(og).connect(g); o.start(t); o.stop(t+0.3);
+      break;
+    }
+    case 'PERC 1': {
+      const f0=250*Math.pow(2,tune/12);
+      const o=ctx.createOscillator(); o.type='sine';
+      o.frequency.setValueAtTime(f0*1.6,t);
+      o.frequency.exponentialRampToValueAtTime(f0,t+0.05);
+      const og=ctx.createGain(); drEnv(og.gain,t,lvl,0.001,0.16);
+      o.connect(og).connect(g); o.start(t); o.stop(t+0.25);
+      break;
+    }
+    case 'BLIP': {
+      const f0=900*Math.pow(2,tune/12);
+      const o=ctx.createOscillator(); o.type='square';
+      o.frequency.setValueAtTime(f0,t);
+      o.frequency.exponentialRampToValueAtTime(Math.max(80,f0*0.15),t+0.07);
+      const og=ctx.createGain(); drEnv(og.gain,t,lvl*0.8,0.001,0.09);
+      o.connect(og).connect(g); o.start(t); o.stop(t+0.15);
+      break;
+    }
+    default: {  // ノイズ系: SNARE / RIM / CLAP / CH HH / OH HH / CRASH / PERC 2 / SHAKER / NOISE HIT
+      let durMin=0.05,durMax=0.5, ftype='lowpass', freq=8000, tone=null;
+      switch(dv.name){
+        case 'SNARE':  durMin=0.08; durMax=0.35; ftype='bandpass'; freq=1800; tone={f:180,type:'triangle'}; break;
+        case 'RIM':    durMin=0.015; durMax=0.06; ftype='bandpass'; freq=2600; break;
+        case 'CLAP':   durMin=0.06; durMax=0.3;  ftype='bandpass'; freq=1500; break;
+        case 'CH HH':  durMin=0.02; durMax=0.12; ftype='highpass'; freq=7000; break;
+        case 'OH HH':  durMin=0.15; durMax=0.6;  ftype='highpass'; freq=6500; break;
+        case 'CRASH':  durMin=0.4;  durMax=2.4;  ftype='highpass'; freq=5500; break;
+        case 'PERC 2': durMin=0.03; durMax=0.18; ftype='bandpass'; freq=2200; break;
+        case 'SHAKER': durMin=0.03; durMax=0.2;  ftype='highpass'; freq=6000; break;
+      }
+      const dur=durMin+(durMax-durMin)*dec01;
+      const ns=ctx.createBufferSource(); ns.buffer=noiseBuf; ns.loop=true;
+      const filt=ctx.createBiquadFilter(); filt.type=ftype; filt.frequency.value=freq;
+      filt.Q.value = ftype==='bandpass'?1.4:0.8;
+      const og=ctx.createGain(); drEnv(og.gain,t,lvl,0.001,dur);
+      ns.connect(filt).connect(og).connect(g);
+      ns.start(t); ns.stop(t+dur+0.05);
+      if(tone){
+        const to=ctx.createOscillator(); to.type=tone.type; to.frequency.value=tone.f;
+        const tog=ctx.createGain(); drEnv(tog.gain,t,lvl*0.6,0.001,dur*0.5);
+        to.connect(tog).connect(g); to.start(t); to.stop(t+dur+0.05);
+      }
+    }
+  }
+}
+
+function makeVoice(midi, t, accent, level){
+  const S = ST.SY;
+  const lv = (level===undefined?1:level);
+  const f = mtof(midi);
+  const fA = mtof(midi + S.aOct*12), fB = mtof(midi + S.bOct*12);
+  const gl = S.glide;
+
+  const oscA=ctx.createOscillator(); oscA.type=S.aWave; oscA.detune.value=S.aDet;
+  const oscB=ctx.createOscillator(); oscB.type=S.bWave; oscB.detune.value=S.bDet;
+  if(gl>0 && lastFreq){
+    const rA=lastFreq*(fA/f), rB=lastFreq*(fB/f);
+    oscA.frequency.setValueAtTime(Math.max(8,rA),t);
+    oscA.frequency.exponentialRampToValueAtTime(fA,t+gl);
+    oscB.frequency.setValueAtTime(Math.max(8,rB),t);
+    oscB.frequency.exponentialRampToValueAtTime(fB,t+gl);
+  } else { oscA.frequency.setValueAtTime(fA,t); oscB.frequency.setValueAtTime(fB,t); }
+  lastFreq = f;
+
+  const gA=ctx.createGain(); gA.gain.value=S.aLvl;
+  const gB=ctx.createGain(); gB.gain.value=S.bLvl;
+  let noise=null, gN=null;
+  if(S.nLvl>0.001){
+    noise=ctx.createBufferSource(); noise.buffer=noiseBuf; noise.loop=true;
+    gN=ctx.createGain(); gN.gain.value=S.nLvl*0.5;
+  }
+
+  const filt=ctx.createBiquadFilter(); filt.type=S.fType; filt.Q.value=S.reso;
+  const trem=ctx.createGain(); trem.gain.value=1;
+  const amp=ctx.createGain(); amp.gain.value=0;
+
+  oscA.connect(gA).connect(filt);
+  oscB.connect(gB).connect(filt);
+  if(noise){ noise.connect(gN).connect(filt); }
+  filt.connect(trem).connect(amp).connect(srcBus);
+
+  // LFO 接続
+  try{ lfoPitch.connect(oscA.detune); lfoPitch.connect(oscB.detune); }catch(e){}
+  try{ lfoFilter.connect(filt.frequency); }catch(e){}
+  try{ lfoAmp.connect(trem.gain); }catch(e){}
+
+  // AMP ENV
+  const peak = (accent ? 0.85 : 0.62) * lv;
+  amp.gain.cancelScheduledValues(t);
+  amp.gain.setValueAtTime(0,t);
+  amp.gain.linearRampToValueAtTime(peak, t+Math.max(0.001,S.aA));
+  amp.gain.linearRampToValueAtTime(peak*S.aS, t+S.aA+Math.max(0.001,S.aD));
+
+  // FILTER ENV (F-8h 独立)
+  const kt = Math.pow(2, ((midi-60)/12)*S.keyTrk);
+  const base = clamp(20*Math.pow(600,S.cutoff)*kt, 20, 18000);
+  const amt = S.envAmt * 9000 * (accent?1.5:1);
+  const pk  = clamp(base+amt, 20, 18000);
+  const sus = clamp(base+amt*S.fS, 20, 18000);
+  filt.frequency.cancelScheduledValues(t);
+  filt.frequency.setValueAtTime(base, t);
+  filt.frequency.linearRampToValueAtTime(pk, t+Math.max(0.001,S.fA));
+  filt.frequency.linearRampToValueAtTime(sus, t+S.fA+Math.max(0.001,S.fD));
+
+  oscA.start(t); oscB.start(t); if(noise) noise.start(t);
+
+  const v={midi,oscA,oscB,noise,gA,gB,gN,filt,trem,amp,base,released:false,t0:t};
+  activeVoices.push(v);
+  // F-81 voice steal
+  let guard=0;
+  while(activeVoices.filter(x=>!x.released).length>8 && guard++<24){
+    const old=activeVoices.find(x=>!x.released);
+    if(!old) break;
+    releaseVoice(old, ctx.currentTime, true);
+  }
+  return v;
+}
+
+function releaseVoice(v, t, fast){
+  if(!v || v.released) return;
+  v.released=true;
+  const S=ST.SY;
+  const rA = fast ? 0.02 : Math.max(0.005,S.aR);
+  const rF = fast ? 0.02 : Math.max(0.005,S.fR);
+  try{
+    v.amp.gain.cancelScheduledValues(t);
+    v.amp.gain.setValueAtTime(Math.max(0.0001,v.amp.gain.value), t);
+    v.amp.gain.linearRampToValueAtTime(0, t+rA);
+    v.filt.frequency.cancelScheduledValues(t);
+    v.filt.frequency.setValueAtTime(v.filt.frequency.value, t);
+    v.filt.frequency.linearRampToValueAtTime(v.base, t+rF);
+  }catch(e){}
+  const dead = t + Math.max(rA,rF) + 0.06;
+  try{ v.oscA.stop(dead); v.oscB.stop(dead); if(v.noise) v.noise.stop(dead); }catch(e){}
+  setTimeout(()=>{
+    try{ lfoPitch.disconnect(v.oscA.detune); }catch(e){}
+    try{ lfoPitch.disconnect(v.oscB.detune); }catch(e){}
+    try{ lfoFilter.disconnect(v.filt.frequency); }catch(e){}
+    try{ lfoAmp.disconnect(v.trem.gain); }catch(e){}
+    [v.oscA,v.oscB,v.noise,v.gA,v.gB,v.gN,v.filt,v.trem,v.amp].forEach(n=>{ try{ n&&n.disconnect(); }catch(e){} });
+    const i=activeVoices.indexOf(v); if(i>=0) activeVoices.splice(i,1);
+  }, Math.max(0,(dead-ctx.currentTime))*1000 + 120);
+}
+
+function updateVoiceFilters(){
+  if(!ctx) return;
+  const S=ST.SY;
+  activeVoices.forEach(v=>{
+    if(v.released) return;
+    const kt=Math.pow(2,((v.midi-60)/12)*S.keyTrk);
+    const base=clamp(20*Math.pow(600,S.cutoff)*kt,20,18000);
+    v.base=base;
+    const sus=clamp(base+S.envAmt*9000*S.fS,20,18000);
+    try{ v.filt.frequency.setTargetAtTime(sus, nowT(), 0.03); }catch(e){}
+  });
+}
+function triggerNote(midi, t, dur, accent, level){
+  const v = makeVoice(midi, t, accent, level);
+  releaseVoice(v, t+Math.max(0.01,dur), false);
+}
+function startHeld(midi){
+  if(heldVoices.has(midi)) return;
+  heldVoices.set(midi, makeVoice(midi, ctx.currentTime, false));
+}
+function stopHeld(midi){
+  const v=heldVoices.get(midi);
+  if(v){ releaseVoice(v, ctx.currentTime, false); heldVoices.delete(midi); }
+}
+function stopAllHeld(){ [...heldVoices.keys()].forEach(stopHeld); }
+
+/* NOTE POOL / KEYBOARD  (F-9x) */
+const pressed = new Set();
+let pool = [];   // 鍵盤由来のノートプール(keyPool)
+
+// ARP I が停止していて、かつコード進行も使わない場合のみ、鍵盤和音をドローン保持する
+function droneActive(){ return !ST.AR.I.on && ST.AR.chord.mode==='off'; }
+
+function poolChanged(){
+  if(!droneActive()){ stopAllHeld(); }
+  else {
+    [...heldVoices.keys()].forEach(m=>{ if(!pool.includes(m)) stopHeld(m); });
+    pool.forEach(m=>startHeld(m));
+  }
+  buildLayers();
+  paintKeys();
+}
+function keyDown(midi){
+  if(ctx && ctx.state==='suspended') ctx.resume();
+  if(ST.hold){
+    // HOLD 中: 押すたびに積み上げる。既に保持中の鍵を押したら抜く(トグル)
+    if(pool.includes(midi)) pool = pool.filter(n=>n!==midi);
+    else pool.push(midi);
+  } else {
+    if(!pool.includes(midi)) pool.push(midi);
+  }
+  pressed.add(midi);
+  poolChanged();
+}
+function keyUp(midi){
+  pressed.delete(midi);
+  if(!ST.hold) pool = pool.filter(n=>n!==midi);
+  poolChanged();
+}
+function setHold(on){
+  ST.hold=on;
+  if(!on) pool=[...pressed];   // OFF: 今物理的に押している鍵だけ残す(押していなければ消音)
+  // ON: 現行プールをそのまま保持する(押す前の和音を引き継ぐ)
+  poolChanged();
+}
+
+/* ARPEGGIATOR ENGINE  (F-10x〜F-16x) | 各レイヤーが自分のレートで独立に次ステップ時刻を進める。 | 小節位置はマスター(1/16×16)で追い、コード進行・チェインを駆動。 */
+let nextTime=0, barClock=0, curBar=0;       // マスター: 1/16 グリッドで小節を数える
+let gridIdx=0;
+let litNotes=[];
+let curStepUI={ I:-1, II:-1 };
+let curDrumStep=-1;
+const layerRun={ I:{next:0, step:0, seqPos:0}, II:{next:0, step:0, seqPos:0} };
+
+function stepsPerBeatOf(rate){ return {'8':2,'16':4,'16t':6,'32':8}[rate]||4; }
+function stepDur(rate){ return 60/ST.bpm/stepsPerBeatOf(rate); }
+function gridDur(){ return 60/ST.bpm/4; }   // 1/16
+
+function chordPoolForBar(bar){
+  const C=ST.AR.chord;
+  if(C.mode==='off' || !C.slots.length) return pool.slice();
+  if(pool.length) return pool.slice();       // F-136 押鍵優先
+  let slot;
+  if(C.mode==='bar'){
+    const total=C.slots.reduce((s,c)=>s+(c.bars||1),0)||1;
+    let b=((bar%total)+total)%total;
+    slot=C.slots[0];
+    for(const c of C.slots){ const bb=c.bars||1; if(b<bb){ slot=c; break; } b-=bb; }
+    C.curIdx=C.slots.indexOf(slot);
+  } else { C.curIdx=C.manualIdx%C.slots.length; slot=C.slots[C.curIdx]; }
+  return chordNotes(ST.AR.key, ST.AR.scale, slot.deg, slot.type||'triad');
+}
+function activePattern(L, bar){
+  if(!L.chainOn || !L.chain.length) return L.pats[L.curPat];
+  const total=L.chain.reduce((s,c)=>s+(c.bars||1),0)||1;
+  let b=((bar%total)+total)%total;
+  for(const c of L.chain){ const bb=c.bars||1; if(b<bb) return L.pats[c.pat]||L.pats.A; b-=bb; }
+  return L.pats[L.curPat];
+}
+function layerSeq(L, basePool){
+  if(!basePool.length) return [];
+  const base=(L.mode==='played')?basePool.slice():basePool.slice().sort((a,b)=>a-b);
+  let s=[]; for(let o=0;o<L.range;o++) for(const n of base) s.push(n+o*12);
+  if(L.mode==='down') s.reverse();
+  if(L.mode==='updown'&&s.length>2) s=s.concat(s.slice().reverse().slice(1,-1));
+  return s;
+}
+function lockNote(midi){ return ST.AR.scaleLock ? scaleSnap(midi, ST.AR.key, ST.AR.scale) : midi; }
+function buildLayers(){ /* 走行位置は保持。seqは発火時に引き直す(F-109) */ }
+
+function fireLayer(lk, t){
+  const L=ST.AR[lk];
+  if(!L.on) return;
+  const bar=Math.floor(barClock/16);
+  const basePool=chordPoolForBar(bar);
+  const seq=layerSeq(L, basePool);
+  const pat=activePattern(L, bar);
+  const R=layerRun[lk];
+  const stepNo=R.step % pat.len;
+  const sd=stepDur(L.rate);
+  const g0=pat.gates[stepNo];
+  const fp=pat.pits ? pat.pits[stepNo] : null;   // 固定音程
+  if(g0>0){
+    const oc=(pat.octs[stepNo]+L.octOff)*12;
+    const dur=Math.max(0.02, sd*L.gate);
+    if(fp){
+      // F-175: 固定音程は方向モードを無視して鳴らす(プール非依存)
+      const n=lockNote(pitchToMidi(ST.AR.key, ST.AR.scale, fp)+oc);
+      triggerNote(n,t,dur,g0===2,L.level);
+      litNotes.push(n);
+    } else if(seq.length){
+      if(L.mode==='chord'){
+        const notes=basePool.slice().sort((a,b)=>a-b).map(n=>lockNote(n+oc));
+        notes.forEach(n=>triggerNote(n,t,dur,g0===2,L.level));
+        litNotes.push(...notes);
+      } else {
+        let idx;
+        if(L.mode==='random') idx=Math.floor(Math.random()*seq.length);
+        else { idx=R.seqPos%seq.length; R.seqPos++; }
+        const n=lockNote(seq[idx]+oc);
+        triggerNote(n,t,dur,g0===2,L.level);
+        litNotes.push(n);
+      }
+    }
+  }
+  curStepUI[lk]=stepNo;
+  R.step++;
+}
+
+const uiQueue=[];   // {t, bar, lit, stepI, stepII, dstep} — 音の再生時刻に合わせてUIを更新するためのキュー
+function scheduler(){
+  if(!ctx) return;
+  if(!ST.playing){ setTimeout(scheduler,25); return; }   // F-182 停止中は走行しない
+  const swing=ST.AR.swing;
+  const HOR=ctx.currentTime+0.15;
+
+  // マスターグリッド(小節カウント + UI + コード送り)
+  const gd=gridDur();
+  while(nextTime < HOR){
+    litNotes=[];
+    const bar=Math.floor(gridIdx/16);
+    curBar=bar;
+    // このグリッド時刻に各レイヤーが該当すれば発火(独立クロック)
+    LAYER_KEYS_EACH(bar);
+    // ドラム(F-19e〜F-19g): マスター1/16グリッドと1:1、ARPのスイングを共有(F-19f)
+    let dstep=-1;
+    if(ST.DR.on){
+      dstep = gridIdx % 16;
+      const dt = (dstep%2===1) ? nextTime + gd*swing*0.5 : nextTime;
+      for(let vi=0; vi<16; vi++){
+        const g0=ST.DR.voices[vi].gates[dstep];
+        if(g0>0) triggerDrum(vi, dt, g0===2);
+      }
+    }
+    // UI更新は個別setTimeoutではなく、rAFループが読むキューに積むだけにする
+    // (setTimeoutの乱発はメインスレッドを圧迫し、ボタン操作の取りこぼしを招くため)
+    uiQueue.push({ t:nextTime, bar, lit:litNotes.slice(), stepI:curStepUI.I, stepII:curStepUI.II, dstep });
+    if(uiQueue.length>64) uiQueue.shift();   // 異常時の暴走防止
+    nextTime+=gd; gridIdx++; barClock=gridIdx;
+  }
+  setTimeout(scheduler,25);
+}
+
+/* UI更新ループ(rAF駆動)。音の再生時刻を過ぎたキュー項目だけを適用してから1回だけ描画する。
+   setTimeoutを刻みごとに個別発行する方式をやめ、フレームに1回へ集約することで
+   シーケンサ稼働中でもボタン操作の取りこぼしが起きないようにする。 */
+function uiLoop(){
+  requestAnimationFrame(uiLoop);
+  if(!ctx) return;
+  let updated=false;
+  const now=ctx.currentTime;
+  while(uiQueue.length && uiQueue[0].t<=now){
+    const ev=uiQueue.shift();
+    curBar=ev.bar; litNotes=ev.lit; curStepUI.I=ev.stepI; curStepUI.II=ev.stepII; curDrumStep=ev.dstep;
+    updated=true;
+  }
+  if(updated){
+    paintKeys();                                  // 鍵盤は常時表示(F-61)なので常に更新
+    if(ST.tab==='arp'){ paintSteps(); paintChord(); }  // ARPタブ表示中のみ描画(無駄な描画を避ける)
+    if(ST.tab==='drum' && ST.DR.page==='step'){ paintDrum(); }  // STEPページ表示中のみ再生位置を反映
+  }
+}
+
+// F-184 先頭に戻して走行位置をリセット
+function resetTransport(){
+  const t0=(ctx?ctx.currentTime:0)+0.08;
+  nextTime=t0; gridIdx=0; barClock=0; curBar=0;
+  layerRun.I.next=t0; layerRun.I.step=0; layerRun.I.seqPos=0;
+  layerRun.II.next=t0; layerRun.II.step=0; layerRun.II.seqPos=0;
+  ST.AR.chord.curIdx=0; ST.AR.chord.manualIdx=0;
+  curStepUI.I=-1; curStepUI.II=-1; litNotes=[]; curDrumStep=-1;
+  uiQueue.length=0;
+}
+function setPlaying(on){
+  ST.playing=on;
+  const btn=$('playBtn');
+  btn.classList.toggle('playing',on);
+  btn.classList.toggle('stopped',!on);
+  btn.firstChild.nodeValue = on ? '▶︎' : '■';
+  btn.querySelector('.pl').textContent = on ? 'PLAY' : 'STOP';
+  if(on) resetTransport();   // STOP → PLAY は先頭から
+  else { litNotes=[]; }       // F-183 新規発音のみ停止(鳴っている音は自然減衰)
+  paintKeys(); paintSteps(); updateDots();
+}
+
+// 各レイヤーを独立レートで進める。マスター1/16グリッド上に、レイヤーの
+// ステップ時刻が来ていれば発火する(グリッド内の端数はサブスケジュール)。
+const LAYER_KEYS=['I','II'];
+function LAYER_KEYS_EACH(bar){
+  const gd=gridDur();
+  const swing=ST.AR.swing;
+  LAYER_KEYS.forEach(lk=>{
+    const L=ST.AR[lk];
+    if(!L.on) return;
+    const sd=stepDur(L.rate);
+    const R=layerRun[lk];
+    if(R.next < nextTime+gd-1e-6){
+      // このグリッド区間 [nextTime, nextTime+gd) に入るステップを全部発火
+      while(R.next < nextTime+gd-1e-6){
+        let t=Math.max(R.next, nextTime);
+        // スイング: 区間内の裏(奇数ステップ)を後ろへ
+        if((R.step%2)===1) t+=sd*swing*0.5;
+        fireLayer(lk, t);
+        R.next+=sd;
+      }
+    }
+  });
+}
+
+/* PUNCH-IN FX  (F-2x)   set(x,y) が唯一のパラメータ適用口 */
+
+/* --- 音価グリッド (F-2f / B-03) ---
+   4分音符を 1 とした拍数。T=3連。x(0..1) を 10 段のどれかへ量子化して秒へ直す。
+   DSP は秒と Hz で受けているので、BPM 追従はこの層だけで完結する(DSP は無改造)。 */
+const NV=[['1/64',0.0625],['1/32',0.125],['1/16T',1/6],['1/16',0.25],['1/8T',1/3],
+          ['1/8',0.5],['1/4T',2/3],['1/4',1],['1/2',2],['1/1',4]];
+function nvIdx(x){ return clamp(Math.floor(x*NV.length),0,NV.length-1); }
+function nvSec(x){ return NV[nvIdx(x)][1]*60/ST.bpm; }
+function nvName(x){ return NV[nvIdx(x)][0]; }
+
+const FX=[
+ /* nv は「この FX は音価指定」の印であり、X 軸ラベルへ出す音価名を返す関数でもある。
+    len の上限は GlitchCore のバッファ(4 秒)。遅い BPM の 1/1 が超えるので丸める */
+ {id:'repeat',nm:'REPEAT',sub:'BEAT LOOP',cls:'time',buf:1,nv:nvName,xL:'LOOP LEN',yL:'PITCH',def:[0.60,0.33],
+  on(x,y){}, off(){},
+  set(x,y){ gTrig('repeat',{len:Math.min(nvSec(x),3.9),rate:0.5+y*1.5}); }},
+ {id:'reverse',nm:'REVERSE',sub:'BACKWARD',cls:'time',buf:1,xL:'LENGTH',yL:'SPEED',def:[0.37,0.38],
+  on(){}, off(){},
+  set(x,y){ gTrig('reverse',{len:0.06+x*1.2,rate:0.4+y*1.6}); }},
+ {id:'stop',nm:'TAPE',sub:'STOP',cls:'time',buf:1,xL:'STOP TIME',yL:'—',def:[0.30,0.50],
+  on(){}, off(){},
+  set(x){ gTrig('stop',{time:0.08+x*2.4}); }},
+ /* RATE は「速さ」なので右へ行くほど短い音価。音価テーブルは長さの昇順なので軸を反転する */
+ /* 既定は 1/32。旧テーブルの既定 16Hz が 124BPM の 1/32(62ms)にあたるので、速さの性格を保つ */
+ {id:'stutter',nm:'STUTTER',sub:'TRANCE GATE',cls:'time',nv:x=>nvName(1-x),xL:'RATE',yL:'DUTY',def:[0.85,0.53],
+  on(){ gSet('gateOn',true); }, off(){ gSet('gateOn',false); },
+  set(x,y){ gSet('gateRate',1/nvSec(1-x)); gSet('gateDuty',0.05+y*0.85); }},
+
+ {id:'warpup',nm:'WARP▲',sub:'PITCH UP',cls:'pitch',buf:1,xL:'AMOUNT',yL:'—',def:[0.15,0.50],
+  on(){}, off(){}, set(x){ gTrig('warp',{rate:1.05+x*2.95}); }},
+ {id:'warpdn',nm:'WARP▼',sub:'PITCH DOWN',cls:'pitch',buf:1,xL:'AMOUNT',yL:'—',def:[0.53,0.50],
+  on(){}, off(){}, set(x){ gTrig('warp',{rate:Math.max(0.06,0.95-x*0.85)}); }},
+ {id:'ring',nm:'RING',sub:'MODULATOR',cls:'pitch',xL:'FREQ',yL:'MIX',def:[0.45,0.80],
+  on(){ ramp(ringWet.gain,1,0.008); ramp(ringDry.gain,0,0.008); },
+  off(){ ramp(ringWet.gain,0,0.02); ramp(ringDry.gain,1,0.02); },
+  set(x,y){ ramp(ringOsc.frequency,12*Math.pow(400,x),0.01);
+    ramp(ringWet.gain,0.25+y*0.9,0.01); ramp(ringDry.gain,(1-y)*0.7,0.01); }},
+ {id:'comb',nm:'COMB',sub:'RESONATOR',cls:'pitch',xL:'TUNE',yL:'FEEDBACK',def:[0.50,0.73],
+  on(){ ramp(combWet.gain,1,0.01); ramp(combDry.gain,0.15,0.01); },
+  off(){ ramp(combWet.gain,0,0.03); ramp(combDry.gain,1,0.03); },
+  set(x,y){ ramp(combDly.delayTime,0.0004+(1-x)*0.018,0.01); ramp(combFb.gain,0.5+y*0.48,0.01); }},
+
+ {id:'crush',nm:'CRUSH',sub:'BIT REDUCE',cls:'dest',xL:'BITS',yL:'—',def:[0.76,0.50],
+  on(){ gSet('crushOn',true); }, off(){ gSet('crushOn',false); },
+  set(x){ gSet('bits',12-x*10.5); }},
+ {id:'decim',nm:'DECIM',sub:'SAMPLE RATE',cls:'dest',xL:'FACTOR',yL:'—',def:[0.28,0.50],
+  on(){ gSet('decOn',true); }, off(){ gSet('decOn',false); },
+  set(x){ gSet('dec',Math.round(1+x*x*120)); }},
+ {id:'fold',nm:'FOLD',sub:'WAVEFOLDER',cls:'dest',xL:'DRIVE',yL:'MIX',def:[0.19,0.88],
+  on(){ ramp(foldWet.gain,1,0.008); ramp(foldDry.gain,0,0.008); },
+  off(){ ramp(foldWet.gain,0,0.02); ramp(foldDry.gain,1,0.02); },
+  set(x,y){ shaper.curve=foldCurve(0.8+x*9); ramp(foldWet.gain,0.3+y*0.8,0.01); }},
+ {id:'kill',nm:'KILL',sub:'MUTE',cls:'dest',xL:'—',yL:'—',def:[0.50,0.50],
+  on(){ gSet('killOn',true); }, off(){ gSet('killOn',false); }, set(){}},
+
+ {id:'freeze',nm:'FREEZE',sub:'SUSTAIN',cls:'space',buf:1,xL:'WINDOW',yL:'PITCH',def:[0.30,0.33],
+  on(){}, off(){}, set(x,y){ gTrig('freeze',{win:0.006+x*0.28,rate:0.5+y*1.5}); }},
+ {id:'grain',nm:'GRAIN',sub:'CLOUD',cls:'space',buf:1,xL:'DENSITY',yL:'SPREAD',def:[0.30,0.50],
+  on(){}, off(){},
+  set(x,y){ gSet('grainDensity',3+x*90); gSet('grainSpread',y); },
+  trig(){ gTrig('grain',{}); }},
+ /* delayTime の上限は throwDly の maxDelayTime(8 秒)。40BPM の 1/1 = 6 秒まで収まる */
+ {id:'throw',nm:'THROW',sub:'DELAY',cls:'space',nv:nvName,xL:'TIME',yL:'FEEDBACK',def:[0.55,0.59],
+  on(){ ramp(throwSend.gain,0.9,0.01); }, off(){ ramp(throwSend.gain,0,0.04); },
+  set(x,y){ ramp(throwDly.delayTime,nvSec(x),0.02); ramp(throwFb.gain,0.3+y*0.68,0.02); }},
+ {id:'space',nm:'SPACE',sub:'REVERB',cls:'space',xL:'SEND',yL:'TAIL',def:[0.50,0.32],
+  on(){ ramp(spaceSend.gain,0.8,0.02); }, off(){ ramp(spaceSend.gain,0,0.12); },
+  set(x,y){ ramp(spaceSend.gain,0.15+x*1.3,0.02); ramp(spaceGain.gain,0.4+y*2.2,0.02); }}
+];
+const FXMAP={}; FX.forEach(f=>FXMAP[f.id]=f);
+
+/* --- F-56 XY 状態 ---
+   ST.XY が持つのは 16 種の FX と共有パッドの対象(mfilt)だけ。シンセフィルター・
+   ドラムボイス・Bokehlous の値は ST.SY / ST.DR / ST.MC が唯一の出所で、
+   それぞれの操作子(F-6a / F-19p / F-3a)が直接読み書きする。ここへ写しを持たない。 */
+FX.forEach(f=> ST.XY[f.id]={x:f.def[0],y:f.def[1]});
+ST.XY['mfilt']={x:0.95,y:0.02};
+const XYDEF={};
+Object.keys(ST.XY).forEach(k=>XYDEF[k]={...ST.XY[k]});   // F-57 のリセット先
+
+/* --- F-28 バッファモードスタック --- */
+const bufStack=[];
+const engaged=new Set();
+
+function applyBufTop(){
+  if(!ctx) return;
+  if(bufStack.length===0){ gRel(); }
+  else{
+    const f=FXMAP[bufStack[bufStack.length-1]];
+    const s=ST.XY[f.id]; f.set(s.x,s.y); if(f.trig) f.trig();
+  }
+  paintPads();
+}
+/* 唯一の適用口。ST.XY は必ず更新し、実効中のときだけ DSP へ送る。
+   バッファ系はスタック最上位のみ実効で、下位は座標だけ持ち無音で待つ(F-28) */
+function setFx(fx,x,y){
+  ST.XY[fx.id]={x,y};
+  if(!engaged.has(fx.id)) return;
+  if(fx.buf && bufStack[bufStack.length-1]!==fx.id) return;
+  fx.set(x,y);
+}
+function engage(fx){
+  if(engaged.has(fx.id)) return;
+  if(ctx&&ctx.state==='suspended') ctx.resume();
+  engaged.add(fx.id);
+  const s=ST.XY[fx.id];
+  fx.on(s.x,s.y);
+  if(fx.buf){ bufStack.push(fx.id); applyBufTop(); }
+  else fx.set(s.x,s.y);          // F-56c
+  paintPads(); updateDots();
+}
+function disengage(fx){
+  if(!engaged.has(fx.id)) return;
+  engaged.delete(fx.id);
+  fx.off();
+  if(fx.buf){ const i=bufStack.indexOf(fx.id); if(i>=0) bufStack.splice(i,1); applyBufTop(); }
+  paintPads(); updateDots();
+}
+/* BPM が変わったら音価も秒数が変わる。engage 中の同期 FX へ座標を打ち直す(F-2f)。
+   REPEAT はこれがバッファの切り直しになり、一度だけ継ぎ目が鳴る —— BPM 変更は
+   意図的な操作なので、古い長さで回り続けるより切り直すほうが正しい。 */
+function fxRebpm(){
+  FX.forEach(f=>{ if(!f.nv||!engaged.has(f.id)) return;
+    const s=ST.XY[f.id]; setFx(f,s.x,s.y); });
+}
+
+/* XY PAD  (F-5x) */
+const $=id=>document.getElementById(id);
+/* #xyName / #xyX / #xyY は対象名と軸名の表示(F-53)。対象が固定になったので中身は
+   HTML に書いたまま動かない。JS が触るのは長押しリセットを受ける #xyName だけ。 */
+const xyEl=$('xy'), xyDot=$('xyDot'), xyName=$('xyName');
+
+/* 共有パッドはマスターフィルター専用。タブによらず対象は変わらない。
+   各タブのパラメータはそれぞれのパッド / タイル / セルが自前の XY を持つ(F-2a / F-3a / F-6a)。 */
+/* ドットを ST.XY.mfilt へ合わせ直す。DSP へは再送出しない(F-59)。
+   呼ぶのは起動時とソング読み込み後だけ —— 対象が切り替わらなくなり F-58 は廃止された(v2.13) */
+function refreshXY(){
+  const s=ST.XY.mfilt;
+  xyDot.classList.remove('drag');
+  xyDot.style.left=(s.x*100)+'%'; xyDot.style.top=((1-s.y)*100)+'%';
+}
+function applyXY(x,y){
+  ST.XY.mfilt={x,y};
+  ramp(mFilt.frequency,40*Math.pow(450,x),0.01); ramp(mFilt.Q,0.7+y*24,0.01);
+}
+let xyDrag=false;
+function xyPos(cx,cy){
+  const r=xyEl.getBoundingClientRect();
+  return [clamp((cx-r.left)/r.width,0,1), clamp(1-(cy-r.top)/r.height,0,1)];
+}
+xyEl.addEventListener('pointerdown',e=>{
+  if(e.target===xyName) return;
+  e.preventDefault(); xyDrag=true; xyEl.setPointerCapture(e.pointerId);
+  xyDot.classList.add('drag');
+  const [x,y]=xyPos(e.clientX,e.clientY);
+  xyDot.style.left=(x*100)+'%'; xyDot.style.top=((1-y)*100)+'%'; applyXY(x,y);
+});
+xyEl.addEventListener('pointermove',e=>{ if(!xyDrag) return;
+  const [x,y]=xyPos(e.clientX,e.clientY);
+  xyDot.style.left=(x*100)+'%'; xyDot.style.top=((1-y)*100)+'%'; applyXY(x,y); });
+xyEl.addEventListener('pointerup',()=>{ xyDrag=false; });
+xyEl.addEventListener('pointercancel',()=>{ xyDrag=false; });
+
+/* F-57 対象名長押しでリセット */
+let rsTimer=null;
+xyName.addEventListener('pointerdown',e=>{
+  e.preventDefault(); e.stopPropagation();
+  rsTimer=setTimeout(()=>{
+    ST.XY.mfilt={...XYDEF.mfilt};
+    refreshXY(); applyXY(ST.XY.mfilt.x, ST.XY.mfilt.y);
+    xyName.classList.remove('reset'); void xyName.offsetWidth; xyName.classList.add('reset');
+  },500);
+});
+['pointerup','pointercancel','pointerleave'].forEach(ev=>
+  xyName.addEventListener(ev,()=>{ clearTimeout(rsTimer); }));
+
+/* UI BUILD */
+/* --- FX pads --- */
+const gridFx=$('gridFx');
+FX.forEach((fx,i)=>{
+  const el=document.createElement('div');
+  el.className='pad '+fx.cls; el.dataset.i=i;
+  /* i=ドット u=Y軸 s=X軸(裸タグはN-04対策)。使わない軸は要素ごと出さない */
+  el.innerHTML='<div class="nm disp">'+fx.nm+'</div><div class="sub">'+fx.sub+'</div>'
+    +(fx.yL!=='—'?'<u>'+fx.yL+'</u>':'')+(fx.xL!=='—'?'<s>'+fx.xL+'</s>':'')+'<i></i>';
+  fx.el=el; fx.dot=el.lastChild;
+  /* 音価指定の FX は数値が見えないと狙えない。X 軸ラベルへ音価を併記する(F-2f) */
+  if(fx.nv) fx.nvEl=el.querySelector('s');
+  gridFx.appendChild(el);
+});
+/* #gridFx へ委譲し pointerId ごとに対象を持つ(E-06/F-24)。鍵盤と違い当たり判定は押下時の
+   一度きり — 隣のパッドへ滑って二つ目が engage するのを防ぐため */
+/* 押下時に掴んだ矩形に対する正規化。FX パッドと算法タイルで共用。Y は下が 0 */
+function padPos(r,e){ return [ clamp((e.clientX-r.left)/r.width,0,1),
+                               clamp(1-(e.clientY-r.top)/r.height,0,1) ]; }
+{
+  const ptr={}, q={};   // pointerId -> {f,r} / fxId -> [x,y]
+  let raf=0;
+  const flush=()=>{ raf=0;
+    for(const id in q){ const v=q[id]; delete q[id];
+      const f=FXMAP[id]; setFx(f,v[0],v[1]); padDot(f); } };
+  const pos=(p,e)=>padPos(p.r,e);
+  gridFx.addEventListener('pointerdown',e=>{
+    const el=e.target.closest('.pad'); if(!el) return;
+    e.preventDefault(); gridFx.setPointerCapture(e.pointerId);
+    const fx=FX[+el.dataset.i];
+    /* .hit の scale(.96) が乗る前の矩形を掴んで使い回す(move ごとの再計測も避ける) */
+    const p=ptr[e.pointerId]={f:fx, r:el.getBoundingClientRect(), sx:e.clientX, sy:e.clientY,
+                             off:ST.latch&&engaged.has(fx.id)};
+    /* LATCH 中の engage 済みパッドは解除候補。動かさずに離せば OFF、なぞれば XY 調整に化ける */
+    if(p.off) return;
+    const [x,y]=pos(p,e);
+    /* 先に仕込む。engage が F-56c でこれを一度だけ適用 → gTrig 系でも二重に鳴らない */
+    ST.XY[fx.id]={x,y};
+    if(engaged.has(fx.id)) setFx(fx,x,y); else engage(fx);
+    padDot(fx);
+  });
+  /* ドラッグ中は 1 フレーム 1 回へ集約(F-2c)。押下時は集約せず即時(N-01) */
+  gridFx.addEventListener('pointermove',e=>{
+    const p=ptr[e.pointerId]; if(!p) return;
+    if(p.off){   // 6px 越えたら解除をやめて調整へ
+      if(Math.hypot(e.clientX-p.sx,e.clientY-p.sy)<6) return;
+      p.off=false;
+    }
+    q[p.f.id]=pos(p,e);
+    if(!raf) raf=requestAnimationFrame(flush);
+  });
+  const rel=e=>{
+    const p=ptr[e.pointerId]; if(!p) return;
+    delete ptr[e.pointerId];
+    if(p.off){ disengage(p.f); return; }   // 動かさずに離した = LATCH 解除
+    if(ST.latch) return;
+    for(const k in ptr) if(ptr[k].f===p.f) return;   // 同じパッドを他の指が押している
+    disengage(p.f);
+  };
+  gridFx.addEventListener('pointerup',rel);
+  gridFx.addEventListener('pointercancel',rel);
+}
+/* ドットは ST.XY の可視化。座標が動く経路だけが呼ぶ(paintPads は engage 状態しか変えない) */
+function padDot(fx){ const s=ST.XY[fx.id];
+  fx.dot.style.left=(s.x*100)+'%'; fx.dot.style.top=((1-s.y)*100)+'%';
+  if(fx.nvEl) fx.nvEl.textContent=fx.xL+' '+fx.nv(s.x); }
+function paintDots(){ FX.forEach(padDot); }
+/* BPM だけが変わったとき用。座標は動いていないのでラベルだけ打ち直す */
+function paintNv(){ FX.forEach(f=>{ if(f.nvEl) padDot(f); }); }
+paintDots();
+function paintPads(){       // F-29
+  const top = bufStack.length ? bufStack[bufStack.length-1] : null;
+  FX.forEach(f=>{
+    const on=engaged.has(f.id);
+    f.el.classList.toggle('hit',on);
+    f.el.classList.toggle('sub2', on && !!f.buf && f.id!==top);
+  });
+}
+
+/* --- XY セル (F-6a) ---
+   ペアで動かすパラメータを 1 枚に載せる汎用セル。PUNCH パッド / BOKEH タイルと違い
+   セル自身は何も選択せず、2 軸を書くだけ。markup 側は <div class="xyc" data-c="id"> だけ置く。 */
+/* 0..1 の正規化値と実値のあいだの変換。既存スライダーの min/max をそのまま写す */
+const lin=(a,b)=>({to:v=>a+v*(b-a), from:r=>(r-a)/(b-a)});
+const T15=lin(0.001,1.5), T20=lin(0.005,2), DET=lin(-50,50);
+/* 音色パラメータをボイスへ流し込む。bindK が持っていた副作用と同じ */
+const vall=(fn)=>activeVoices.forEach(x=>{try{fn(x);}catch(e){}});
+const XYC=[
+ {id:'filt', n:'FILTER',
+  x:{l:'CUTOFF', g:()=>ST.SY.cutoff, s:v=>{ST.SY.cutoff=v; updateVoiceFilters();},
+     f:v=>Math.round(v*100)+'%'},
+  y:{l:'RESO', g:()=>ST.SY.reso/30, s:v=>{ST.SY.reso=v*30;
+       vall(x=>x.filt.Q.setTargetAtTime(ST.SY.reso,nowT(),0.02)); updateVoiceFilters();},
+     f:v=>(v*30).toFixed(1)}},
+ {id:'fmod', n:'FILTER MOD',
+  x:{l:'ENV AMT', g:()=>(ST.SY.envAmt+1)/2, s:v=>{ST.SY.envAmt=v*2-1; updateVoiceFilters();},
+     f:v=>{const r=v*2-1; return (r>=0?'+':'')+r.toFixed(2).replace('0.','.').replace('-0.','-.');}},
+  y:{l:'KEY TRK', g:()=>ST.SY.keyTrk, s:v=>{ST.SY.keyTrk=v; updateVoiceFilters();}, f:v=>f2(v)}},
+ {id:'oscA', n:'OSC A',
+  x:{l:'DETUNE', g:()=>DET.from(ST.SY.aDet), s:v=>{ST.SY.aDet=Math.round(DET.to(v));
+       vall(x=>x.oscA.detune.setTargetAtTime(ST.SY.aDet,nowT(),0.02));},
+     f:v=>String(Math.round(DET.to(v)))},
+  y:{l:'LEVEL', g:()=>ST.SY.aLvl, s:v=>{ST.SY.aLvl=v;
+       vall(x=>x.gA.gain.setTargetAtTime(v,nowT(),0.02));}, f:v=>f2(v)}},
+ {id:'oscB', n:'OSC B',
+  x:{l:'DETUNE', g:()=>DET.from(ST.SY.bDet), s:v=>{ST.SY.bDet=Math.round(DET.to(v));
+       vall(x=>x.oscB.detune.setTargetAtTime(ST.SY.bDet,nowT(),0.02));},
+     f:v=>String(Math.round(DET.to(v)))},
+  y:{l:'LEVEL', g:()=>ST.SY.bLvl, s:v=>{ST.SY.bLvl=v;
+       vall(x=>x.gB.gain.setTargetAtTime(v,nowT(),0.02));}, f:v=>f2(v)}},
+ {id:'ampAR', n:'AMP A·R',
+  x:{l:'ATTACK', g:()=>T15.from(ST.SY.aA), s:v=>{ST.SY.aA=T15.to(v);}, f:v=>ms(T15.to(v))},
+  y:{l:'RELEASE', g:()=>T20.from(ST.SY.aR), s:v=>{ST.SY.aR=T20.to(v);}, f:v=>ms(T20.to(v))}},
+ {id:'ampDS', n:'AMP D·S',
+  x:{l:'DECAY', g:()=>T15.from(ST.SY.aD), s:v=>{ST.SY.aD=T15.to(v);}, f:v=>ms(T15.to(v))},
+  y:{l:'SUSTAIN', g:()=>ST.SY.aS, s:v=>{ST.SY.aS=v;}, f:v=>f2(v)}},
+ {id:'fltAR', n:'FLT A·R',
+  x:{l:'ATTACK', g:()=>T15.from(ST.SY.fA), s:v=>{ST.SY.fA=T15.to(v);}, f:v=>ms(T15.to(v))},
+  y:{l:'RELEASE', g:()=>T20.from(ST.SY.fR), s:v=>{ST.SY.fR=T20.to(v);}, f:v=>ms(T20.to(v))}},
+ {id:'fltDS', n:'FLT D·S',
+  x:{l:'DECAY', g:()=>T15.from(ST.SY.fD), s:v=>{ST.SY.fD=T15.to(v);}, f:v=>ms(T15.to(v))},
+  y:{l:'SUSTAIN', g:()=>ST.SY.fS, s:v=>{ST.SY.fS=v;}, f:v=>f2(v)}},
+ /* LFO RATE はスライダー時代から 0..1 の生値が正で、SY.lRate は SYNC の有無で
+    Hz か音価インデックスに化ける。FREE のときだけ逆算して生値へ戻す。 */
+ {id:'lfo', n:'LFO',
+  x:{l:'RATE', g:()=>ST.SY.lSync?ST.SY.lRate:Math.log(ST.SY.lRate/0.05)/Math.log(400),
+     s:v=>{ST.SY.lRate=ST.SY.lSync?v:0.05*Math.pow(400,v); pushLFO();},
+     f:v=>ST.SY.lSync?['1/1','1/2','1/4','1/8','1/16','1/32'][clamp(Math.floor(v*6),0,5)]
+                     :(0.05*Math.pow(400,v)).toFixed(2)},
+  y:{l:'DEPTH', g:()=>ST.SY.lDepth, s:v=>{ST.SY.lDepth=v; pushLFO();}, f:v=>f2(v)}},
+ /* GATE はレイヤー別、SWING は全体共通。スコープが違うのでラベルで示す(F-164) */
+ {id:'motion', n:'MOTION',
+  x:{l:'GATE·L', g:()=>(curLayer().gate-0.05)/0.95, s:v=>{curLayer().gate=0.05+v*0.95;},
+     f:v=>Math.round((0.05+v*0.95)*100)+'%'},
+  y:{l:'SWING', g:()=>ST.AR.swing/0.75, s:v=>{ST.AR.swing=v*0.75;},
+     f:v=>Math.round(v*75)+'%'}},
+ {id:'octave', n:'OCTAVE',
+  x:{l:'RANGE·L', g:()=>(curLayer().range-1)/3, s:v=>{curLayer().range=1+Math.round(v*3);},
+     f:v=>String(1+Math.round(v*3))},
+  y:{l:'OFFSET·L', g:()=>(curLayer().octOff+3)/4, s:v=>{curLayer().octOff=Math.round(v*4-3);},
+     f:v=>{const r=Math.round(v*4-3); return (r>0?'+':'')+r;}}},
+ /* Bokehlous のアルゴ横断パラメータ。ACTIVITY×SHAPE はタイルが持つ(F-3a) */
+ {id:'buf', n:'BUFFER',
+  x:{l:'TIME', g:()=>ST.MC.time, s:v=>{ST.MC.time=v; mSet('time',v);}, f:v=>f2(v)},
+  y:{l:'REPEATS', g:()=>ST.MC.repeats, s:v=>{ST.MC.repeats=v; mSet('repeats',v);}, f:v=>f2(v)}},
+ {id:'blend', n:'BLEND',
+  x:{l:'MIX', g:()=>ST.MC.mix, s:v=>{ST.MC.mix=v; mSet('mix',v);}, f:v=>f2(v)},
+  y:{l:'SPACE', g:()=>ST.MC.space, s:v=>{ST.MC.space=v; if(mcSpace) ramp(mcSpace.gain,v*1.4,0.02);},
+     f:v=>f2(v)}}
+];
+const XYCMAP={};
+XYC.forEach(c=>{
+  XYCMAP[c.id]=c;
+  const el=document.querySelector('.xyc[data-c="'+c.id+'"]'); if(!el) return;
+  el.innerHTML='<b>'+c.n+' <em></em></b><u>'+c.y.l+'</u><s>'+c.x.l+' →</s><i></i>';
+  c.val=el.querySelector('em'); c.dot=el.children[3];
+});
+/* 値はセルの上にしか出ないので、タイトルの隣に並べる
+   (回転した Y 軸ラベルへ併記すると 56px の高さで見切れる) */
+function xycPaint(c){
+  if(!c.dot) return;
+  const x=c.x.g(), y=c.y.g();
+  c.dot.style.left=(x*100)+'%'; c.dot.style.top=((1-y)*100)+'%';
+  c.val.textContent=c.x.f(x)+' · '+c.y.f(y);
+}
+function xycPaintAll(){ XYC.forEach(xycPaint); }
+function setXYC(id,x,y){ const c=XYCMAP[id]; c.x.s(x); c.y.s(y); xycPaint(c); }
+/* セルのドラッグ。矩形は押下時に一度だけ掴み、move は rAF で 1 フレーム 1 回へ集約する。
+   pointerId ごとに対象を持つので、二本指で別々のセルを同時に動かせる(E-06)。 */
+/* 名前は xycDrag。xy-pad.js に共有パッド用の xyDrag(真偽値)が既にある */
+function xycDrag(box, sel, apply){
+  const ptr={}, q={}; let raf=0;
+  const flush=()=>{ raf=0; for(const k in q){ const v=q[k]; delete q[k]; apply(k,v[0],v[1]); } };
+  box.addEventListener('pointerdown',e=>{
+    const el=e.target.closest(sel); if(!el) return;
+    e.preventDefault(); box.setPointerCapture(e.pointerId);
+    const p=ptr[e.pointerId]={k:el.dataset.c, r:el.getBoundingClientRect()};
+    const v=padPos(p.r,e); apply(p.k,v[0],v[1]);   // 押下時は集約せず即時(N-01)
+  });
+  box.addEventListener('pointermove',e=>{
+    const p=ptr[e.pointerId]; if(!p) return;
+    q[p.k]=padPos(p.r,e); if(!raf) raf=requestAnimationFrame(flush);
+  });
+  const rel=e=>{ delete ptr[e.pointerId]; };
+  box.addEventListener('pointerup',rel); box.addEventListener('pointercancel',rel);
+}
+xycDrag($('panes'),'.xyc',setXYC);
+/* 初回描画は boot.js から。書式化の f2 / ms は後続モジュールの const で、
+   ここでは まだ TDZ にいる */
+
+/* --- BOKEHLOUS --- */
+const ALGOS=[
+  {n:'MOSAIC',b:'LOOP',bi:0},{n:'SUB LOOP',b:'LOOP',bi:0},{n:'ARP LOOP',b:'LOOP',bi:0},
+  {n:'GRANULES',b:'GRANULES',bi:1},{n:'MULTI DLY',b:'GRANULES',bi:1},{n:'DIFFUSE',b:'GRANULES',bi:1},
+  {n:'WARP',b:'GLIDE',bi:2},{n:'PITCH',b:'GLIDE',bi:2},{n:'BLUR',b:'GLIDE',bi:2},
+  {n:'HAZE',b:'HAZE',bi:3},{n:'INTERRUPT',b:'HAZE',bi:3}
+];
+const algBox=$('algos');
+ALGOS.forEach((a,i)=>{
+  const el=document.createElement('div');
+  el.className='alg b'+a.bi+(i===0?' sel':''); el.dataset.i=i;
+  el.innerHTML='<div class="an disp">'+a.n+'</div><div class="ab">'+a.b+'</div><i></i>';
+  a.dot=el.lastChild;   /* .pad と違い el は持たない。.sel の一括更新は querySelectorAll で足りる */
+  algBox.appendChild(el);
+});
+function selAlg(i){
+  ST.MC.algo=i;
+  algBox.querySelectorAll('.alg').forEach((x,j)=>x.classList.toggle('sel',j===i));
+  if(!ST.MC.on){ ST.MC.on=true; $('mcOn').classList.add('on'); $('mcOn').textContent='ENGINE ON'; }  // F-33
+  // F-39 アルゴ別に保持した ACTIVITY/SHAPE へ復帰
+  $('k_mAct').value=ST.MC.act[i]; $('v_mAct').textContent=ST.MC.act[i].toFixed(2).slice(1);
+  $('k_mShp').value=ST.MC.shp[i]; $('v_mShp').textContent=ST.MC.shp[i].toFixed(2).slice(1);
+  algDot(i); pushMicro(); updateDots();
+}
+/* 選択中アルゴの ACTIVITY×SHAPE の唯一の適用口。スライダー表示も DSP もドットもここから同期する */
+function setMc(x,y){ const a=ST.MC.algo;
+  ST.MC.act[a]=x; ST.MC.shp[a]=y;
+  $('k_mAct').value=x; $('v_mAct').textContent=x.toFixed(2).slice(1);
+  $('k_mShp').value=y; $('v_mShp').textContent=y.toFixed(2).slice(1);
+  mSet('activity',x); mSet('shape',y); algDot(a);
+}
+/* #algos へ委譲し pointerdown で受ける(E-06)。タイルは v2.12 まで click バインドだった。
+   アルゴは同時に 1 つしか鳴らないので、指が増えたら最後に押したタイルが持ち主になり、
+   それ以前の指の move は無視する(F-3c)。 */
+{
+  let own=-1, rect=null, q=null, raf=0;
+  const flush=()=>{ raf=0; setMc(q[0],q[1]); };
+  algBox.addEventListener('pointerdown',e=>{
+    const el=e.target.closest('.alg'); if(!el) return;
+    e.preventDefault(); algBox.setPointerCapture(e.pointerId);
+    own=e.pointerId; rect=el.getBoundingClientRect();
+    const i=+el.dataset.i, p=padPos(rect,e);
+    /* 絶対座標。先に仕込めば selAlg の復帰行がそのまま押下点のスライダー同期になり、
+       pushMicro も新しい値を送る。押下時は集約せず即時(N-01)。 */
+    ST.MC.act[i]=p[0]; ST.MC.shp[i]=p[1];
+    selAlg(i);
+  });
+  /* ドラッグ中は 1 フレーム 1 回へ集約(F-3b) */
+  algBox.addEventListener('pointermove',e=>{
+    if(e.pointerId!==own) return;
+    q=padPos(rect,e); if(!raf) raf=requestAnimationFrame(flush);
+  });
+  const rel=e=>{ if(e.pointerId===own) own=-1; };
+  algBox.addEventListener('pointerup',rel);
+  algBox.addEventListener('pointercancel',rel);
+}
+/* ドットは ST.MC.act/shp の可視化。座標が動く経路だけが呼ぶ */
+function algDot(i){ const d=ALGOS[i].dot;
+  d.style.left=(ST.MC.act[i]*100)+'%'; d.style.top=((1-ST.MC.shp[i])*100)+'%'; }
+function algDots(){ ALGOS.forEach((a,i)=>algDot(i)); }
+algDots();
+$('mcOn').addEventListener('click',()=>{
+  ST.MC.on=!ST.MC.on;
+  $('mcOn').classList.toggle('on',ST.MC.on);
+  $('mcOn').textContent=ST.MC.on?'ENGINE ON':'ENGINE OFF';
+  mSet('on',ST.MC.on); updateDots();
+});
+
+/* --- ARP: アクティブレイヤー / 編集中パターンへのアクセサ --- */
+function curLayer(){ return ST.AR[ST.AR.activeLayer]; }
+function curPat(){ const L=curLayer(); return L.pats[L.curPat]; }
+let editPage='gate';   // gate / oct / pitch 編集ページ
+
+/* --- ARP steps --- */
+const stepsBox=$('steps');
+function scaleLen(){ return SCALES[ST.AR.scale].length; }
+for(let i=0;i<16;i++){
+  const el=document.createElement('div');
+  el.className='st'; el.dataset.i=i;
+  el.addEventListener('click',()=>{
+    const P=curPat();
+    if(editPage==='gate') P.gates[i]=(P.gates[i]+1)%3;
+    else if(editPage==='oct'){ const o=[-1,0,1,2]; P.octs[i]=o[(o.indexOf(P.octs[i])+1)%4]; }
+    else { // pitch: null → 度数0..(N*range-1) を巡回 → null
+      const N=scaleLen(), span=N*curLayer().range;
+      if(P.pits[i]===null) P.pits[i]={deg:0,oct:0};
+      else {
+        const cur=P.pits[i].deg + P.pits[i].oct*N;
+        const nx=cur+1;
+        if(nx>=span) P.pits[i]=null;             // 一周したら方向モードに戻す
+        else P.pits[i]={deg:nx%N, oct:Math.floor(nx/N)};
+      }
+    }
+    paintSteps(); if(editPage==='pitch') paintPatSlots();
+  });
+  stepsBox.appendChild(el);
+}
+function paintSteps(){
+  const L=curLayer(), P=L.pats[L.curPat];
+  const litStep = curStepUI[ST.AR.activeLayer];
+  stepsBox.querySelectorAll('.st').forEach((el,i)=>{
+    el.className='st';
+    if(i>=P.len) el.classList.add('beyond');
+    if(editPage==='gate'){
+      if(P.gates[i]===1) el.classList.add('g1');
+      else if(P.gates[i]===2) el.classList.add('g2');
+      el.textContent = P.gates[i]===2?'A':(P.gates[i]===1?'●':'');
+    } else if(editPage==='oct'){
+      el.classList.add(P.octs[i]===0?'o0':'o');
+      el.textContent = P.octs[i]>0?('+'+P.octs[i]):(P.octs[i]<0?String(P.octs[i]):'0');
+    } else { // pitch
+      const p=P.pits[i];
+      if(p){ el.classList.add('pit');
+        const m=pitchToMidi(ST.AR.key,ST.AR.scale,p);
+        el.textContent=NOTE_NAMES[((m%12)+12)%12];
+      } else { el.classList.add('o0'); el.textContent='—'; }
+    }
+    if(i===litStep && L.on) el.classList.add('cur');
+  });
+}
+$('pgGate').addEventListener('click',()=>{ setEditPage('gate'); });
+$('pgOct').addEventListener('click',()=>{ setEditPage('oct'); });
+$('pgPit').addEventListener('click',()=>{ setEditPage('pitch'); });
+function setEditPage(pg){
+  editPage=pg;
+  $('pgGate').classList.toggle('on',pg==='gate');
+  $('pgOct').classList.toggle('on',pg==='oct');
+  $('pgPit').classList.toggle('on',pg==='pitch');
+  $('pgLbl').textContent = pg==='gate'?'GATE':pg==='oct'?'OCTAVE':'PITCH';
+  paintSteps();
+}
+$('stAll').addEventListener('click',()=>{ const P=curPat();
+  if(editPage==='gate') P.gates.fill(1); else if(editPage==='oct') P.octs.fill(0);
+  else { for(let i=0;i<16;i++) P.pits[i]={deg:0,oct:0}; }
+  paintSteps(); paintPatSlots(); });
+$('stClr').addEventListener('click',()=>{ const P=curPat();
+  if(editPage==='gate') P.gates.fill(0);
+  else if(editPage==='oct') P.octs.fill(0);
+  else { P.pits=new Array(16).fill(null); }    // F-177 固定音程クリア
+  paintSteps(); paintPatSlots(); });
+/* F-171 RANDOMIZE: スケール全体からランダムな固定音程を生成(ON ステップのみ) */
+$('stRnd').addEventListener('click',()=>{
+  const P=curPat(), N=scaleLen(), range=curLayer().range;
+  for(let i=0;i<P.len;i++){
+    if(P.gates[i]>0){
+      const deg=Math.floor(Math.random()*N);
+      const oct=Math.floor(Math.random()*range);
+      P.pits[i]={deg,oct};
+    } else P.pits[i]=null;
+  }
+  for(let i=P.len;i<16;i++) P.pits[i]=null;
+  setEditPage('pitch');
+  $('stRnd').classList.add('flash'); setTimeout(()=>$('stRnd').classList.remove('flash'),300);
+  paintSteps(); paintPatSlots();
+});
+
+/* --- ARP: SCALE / KEY (F-12x) --- */
+const NOTE_NAMES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+function syncScaleUI(){
+  $('k_key').value=ST.AR.key-60>=0?(ST.AR.key-60):(ST.AR.key-48);
+  $('v_key').textContent=NOTE_NAMES[((ST.AR.key%12)+12)%12];
+  $('v_scale').textContent=SCALE_LABEL[ST.AR.scale];
+  $('k_scale').value=SCALE_ORDER.indexOf(ST.AR.scale);
+  $('lockOn').classList.toggle('on',ST.AR.scaleLock);
+  $('lockOff').classList.toggle('on',!ST.AR.scaleLock);
+}
+$('k_key').addEventListener('input',e=>{ ST.AR.key=60+parseInt(e.target.value);
+  $('v_key').textContent=NOTE_NAMES[((ST.AR.key%12)+12)%12]; paintChord(); });
+$('k_scale').addEventListener('input',e=>{ ST.AR.scale=SCALE_ORDER[parseInt(e.target.value)];
+  $('v_scale').textContent=SCALE_LABEL[ST.AR.scale]; paintChord(); });
+$('lockOn').addEventListener('click',()=>{ ST.AR.scaleLock=true; syncScaleUI(); });
+$('lockOff').addEventListener('click',()=>{ ST.AR.scaleLock=false; syncScaleUI(); });
+
+/* --- ARP: CHORD PROGRESSION (F-13x) --- */
+let editSlot=-1;
+const chordSlotsBox=$('chordSlots');
+/* コードスロットはイベント委譲で1回だけリスナーを貼る(要素の使い回しと両立させるため) */
+chordSlotsBox.addEventListener('click', e=>{
+  const el=e.target.closest('.cslot'); if(!el) return;
+  const i=+el.dataset.i;
+  editSlot=(editSlot===i?-1:i); showChordEdit(); paintChord();
+});
+function paintChord(){
+  const C=ST.AR.chord;
+  $('chordModeLbl').textContent = C.mode==='off'?'OFF':(C.mode==='bar'?'AUTO':'MANUAL');
+  document.querySelectorAll('[data-seg="cmode"] .seg').forEach(s=>s.classList.toggle('on',s.dataset.v===C.mode));
+  // スロット数が変わらない限り既存 DOM を使い回す(演奏中の毎ティック再構築を避ける。
+  // タップ中に要素が差し替わって操作を取りこぼす不具合の防止にもなる)
+  let els=chordSlotsBox.children;
+  if(els.length!==C.slots.length){
+    chordSlotsBox.innerHTML='';
+    for(let i=0;i<C.slots.length;i++){
+      const el=document.createElement('div');
+      el.className='cslot'; el.dataset.i=i;
+      el.innerHTML='<span class="cd"></span><span class="cb"></span>';
+      chordSlotsBox.appendChild(el);
+    }
+    els=chordSlotsBox.children;
+  }
+  C.slots.forEach((sl,i)=>{
+    const el=els[i];
+    el.className='cslot'+(i===C.curIdx&&C.mode!=='off'?' cur':'')+(i===editSlot?' edit':'');
+    const q=chordQuality(ST.AR.key,ST.AR.scale,sl.deg);
+    const tp = sl.type==='7th'?'7':sl.type==='sus4'?'sus':sl.type==='oct'?'+8':'';
+    el.children[0].textContent=(sl.deg+1)+' '+q;
+    el.children[1].textContent=tp+' · '+sl.bars+'b';
+  });
+}
+function showChordEdit(){
+  const on=editSlot>=0 && editSlot<ST.AR.chord.slots.length;
+  $('chordEdit').style.display=on?'block':'none';
+  if(on){
+    const sl=ST.AR.chord.slots[editSlot];
+    $('k_deg').value=sl.deg; $('v_deg').textContent=(sl.deg+1)+' '+chordQuality(ST.AR.key,ST.AR.scale,sl.deg);
+    $('k_cbars').value=sl.bars; $('v_cbars').textContent=sl.bars;
+    document.querySelectorAll('[data-seg="ctype"] .seg').forEach(s=>s.classList.toggle('on',s.dataset.v===sl.type));
+  }
+}
+document.querySelectorAll('[data-seg="cmode"] .seg').forEach(s=>{
+  s.addEventListener('pointerdown',()=>{ ST.AR.chord.mode=s.dataset.v; ST.AR.chord.manualIdx=0;
+    poolChanged(); paintChord(); updateDots(); });
+});
+$('chordAdd').addEventListener('click',()=>{ const C=ST.AR.chord;
+  if(C.slots.length<8){ C.slots.push({deg:0,type:'triad',bars:1}); paintChord(); } });
+$('chordDel').addEventListener('click',()=>{ const C=ST.AR.chord;
+  if(C.slots.length>1){ C.slots.pop(); if(editSlot>=C.slots.length) editSlot=-1; showChordEdit(); paintChord(); } });
+$('chordNext').addEventListener('click',()=>{ const C=ST.AR.chord;
+  C.manualIdx=(C.manualIdx+1)%C.slots.length; poolChanged(); paintChord(); });
+$('k_deg').addEventListener('input',e=>{ if(editSlot<0)return; const sl=ST.AR.chord.slots[editSlot];
+  sl.deg=parseInt(e.target.value); $('v_deg').textContent=(sl.deg+1)+' '+chordQuality(ST.AR.key,ST.AR.scale,sl.deg); paintChord(); });
+$('k_cbars').addEventListener('input',e=>{ if(editSlot<0)return; const sl=ST.AR.chord.slots[editSlot];
+  sl.bars=parseInt(e.target.value); $('v_cbars').textContent=sl.bars; paintChord(); });
+document.querySelectorAll('[data-seg="ctype"] .seg').forEach(s=>{
+  s.addEventListener('pointerdown',()=>{ if(editSlot<0)return;
+    ST.AR.chord.slots[editSlot].type=s.dataset.v;
+    document.querySelectorAll('[data-seg="ctype"] .seg').forEach(x=>x.classList.toggle('on',x===s));
+    paintChord(); });
+});
+
+/* --- ARP: LAYER SELECT (F-15x) --- */
+function syncLayerUI(){
+  const L=curLayer();
+  $('patLbl').textContent=L.curPat;
+  document.querySelectorAll('[data-seg="pat"] .seg').forEach(s=>s.classList.toggle('on',s.dataset.v===L.curPat));
+  $('layOn').classList.toggle('on',L.on); $('layOff').classList.toggle('on',!L.on);
+  // MOTION 系
+  document.querySelectorAll('[data-seg="mode"] .seg,[data-seg="mode2"] .seg')
+    .forEach(s=>s.classList.toggle('on',s.dataset.v===L.mode));
+  document.querySelectorAll('[data-seg="rate"] .seg').forEach(s=>s.classList.toggle('on',s.dataset.v===L.rate));
+  xycPaintAll();   // GATE / RANGE / OFFSET はレイヤー別。セルの表示も切り替わる
+  $('k_llevel').value=L.level; $('v_llevel').textContent=L.level.toFixed(2);
+  $('k_len').value=L.pats[L.curPat].len; $('v_len').textContent=L.pats[L.curPat].len;
+  $('chainToggle').textContent=L.chainOn?'CHAIN ON':'CHAIN OFF';
+  $('chainToggle').classList.toggle('on',L.chainOn);
+  $('chainEdit').style.display=L.chainOn?'block':'none';
+  paintChain();
+  paintPatSlots();
+  paintSteps();
+}
+/* F-178: 固定音程を持つパターンをスロット上で判別 */
+function paintPatSlots(){
+  const L=curLayer();
+  document.querySelectorAll('[data-seg="pat"] .seg').forEach(s=>{
+    const P=L.pats[s.dataset.v];
+    s.classList.toggle('haspit', !!(P && patHasPitch(P)));
+  });
+}
+function selectLayer(lk){
+  ST.AR.activeLayer=lk;
+  $('layI').classList.toggle('on',lk==='I'); $('layII').classList.toggle('on',lk==='II');
+  editSlot=-1; showChordEdit();
+  syncLayerUI();
+}
+$('layI').addEventListener('click',()=>selectLayer('I'));
+$('layII').addEventListener('click',()=>selectLayer('II'));
+$('layOn').addEventListener('click',()=>{ curLayer().on=true; syncLayerUI(); poolChanged(); updateDots(); });
+$('layOff').addEventListener('click',()=>{ curLayer().on=false; syncLayerUI(); poolChanged(); updateDots(); });
+
+/* --- ARP: PATTERN SLOTS + CHAIN (F-14x) --- */
+document.querySelectorAll('[data-seg="pat"] .seg').forEach(s=>{
+  s.addEventListener('pointerdown',()=>{ curLayer().curPat=s.dataset.v;
+    document.querySelectorAll('[data-seg="pat"] .seg').forEach(x=>x.classList.toggle('on',x===s));
+    $('patLbl').textContent=s.dataset.v;
+    $('k_len').value=curPat().len; $('v_len').textContent=curPat().len;
+    paintSteps(); paintPatSlots(); });
+});
+$('patCopy').addEventListener('click',()=>{ const L=curLayer();
+  const order=['A','B','C','D']; const from=L.curPat;
+  const to=order[(order.indexOf(from)+1)%4];
+  L.pats[to]=JSON.parse(JSON.stringify(L.pats[from]));
+  alert('パターン '+from+' → '+to+' にコピーしました'); });
+$('chainToggle').addEventListener('click',()=>{ const L=curLayer(); L.chainOn=!L.chainOn; syncLayerUI(); });
+
+const chainSlotsBox=$('chainSlots');
+function paintChain(){
+  const L=curLayer();
+  chainSlotsBox.innerHTML='';
+  L.chain.forEach((lk,i)=>{
+    const el=document.createElement('div');
+    el.className='clink';
+    el.innerHTML='<span class="cp">'+lk.pat+'</span><span class="cbb">'+lk.bars+'b</span>';
+    el.addEventListener('click',()=>{
+      // タップで pat 巡回、長押し(ここでは右側タップ簡易)で bars 巡回
+      const order=['A','B','C','D']; lk.pat=order[(order.indexOf(lk.pat)+1)%4]; paintChain();
+    });
+    // bars 変更用に二本指相当: ダブルクリックで bars
+    el.addEventListener('dblclick',()=>{ const b=[1,2,4,8]; lk.bars=b[(b.indexOf(lk.bars)+1)%4]; paintChain(); });
+    chainSlotsBox.appendChild(el);
+  });
+}
+$('chainAdd').addEventListener('click',()=>{ const L=curLayer();
+  if(L.chain.length<8){ L.chain.push({pat:'A',bars:1}); paintChain(); } });
+$('chainDel').addEventListener('click',()=>{ const L=curLayer();
+  if(L.chain.length>1){ L.chain.pop(); paintChain(); } });
+
+/* --- keyboard --- */
+const NN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const BLK=new Set([1,3,6,8,10]);
+const keysBox=$('keys');
+for(let i=0;i<13;i++){
+  const el=document.createElement('div');
+  const pc=i%12;
+  el.className='key'+(BLK.has(pc)?' blk':'');
+  el.dataset.off=i;
+  if(!BLK.has(pc)) el.textContent=NN[pc];
+  keysBox.appendChild(el);
+}
+function offToMidi(o){ return (ST.octave+1)*12 + o; }
+function paintKeys(){
+  const anyArp = ST.AR.I.on || ST.AR.II.on;
+  keysBox.querySelectorAll('.key').forEach(el=>{
+    const m=offToMidi(+el.dataset.off);
+    el.classList.toggle('dn', pool.includes(m));
+    el.classList.toggle('arp', anyArp && litNotes.includes(m));
+  });
+}
+{
+  const ptr={};
+  const keyAt=(x,y)=>{ const e=document.elementFromPoint(x,y); return (e&&e.classList.contains('key'))?e:null; };
+  keysBox.addEventListener('pointerdown',e=>{
+    const el=keyAt(e.clientX,e.clientY); if(!el) return;
+    e.preventDefault(); keysBox.setPointerCapture(e.pointerId);
+    const m=offToMidi(+el.dataset.off); ptr[e.pointerId]=m; keyDown(m);
+  });
+  keysBox.addEventListener('pointermove',e=>{
+    if(!(e.pointerId in ptr)) return;
+    const el=keyAt(e.clientX,e.clientY); if(!el) return;
+    const m=offToMidi(+el.dataset.off);
+    if(m!==ptr[e.pointerId]){ keyUp(ptr[e.pointerId]); ptr[e.pointerId]=m; keyDown(m); }
+  });
+  const rel=e=>{ if(e.pointerId in ptr){ keyUp(ptr[e.pointerId]); delete ptr[e.pointerId]; } };
+  keysBox.addEventListener('pointerup',rel);
+  keysBox.addEventListener('pointercancel',rel);
+}
+$('octUp').addEventListener('click',()=>{ ST.octave=Math.min(7,ST.octave+1); $('octLbl').textContent='OCT '+ST.octave; paintKeys(); });
+$('octDn').addEventListener('click',()=>{ ST.octave=Math.max(1,ST.octave-1); $('octLbl').textContent='OCT '+ST.octave; paintKeys(); });
+$('holdBtn').addEventListener('click',e=>{ setHold(!ST.hold); e.target.classList.toggle('on',ST.hold); });
+
+/* --- tabs --- */
+document.querySelectorAll('.tab').forEach(b=>{
+  b.addEventListener('click',()=>{
+    ST.tab=b.dataset.t;
+    document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('sel',x===b));
+    $('paneSynth').classList.toggle('sel',ST.tab==='synth');
+    $('paneArp').classList.toggle('sel',ST.tab==='arp');
+    $('paneDrum').classList.toggle('sel',ST.tab==='drum');
+    $('paneFx').classList.toggle('sel',ST.tab==='fx');
+    $('paneMc').classList.toggle('sel',ST.tab==='mc');
+    if(ST.tab==='drum') paintDrum();
+    refreshXY();
+  });
+});
+function updateDots(){
+  $('dotFx').classList.toggle('live',engaged.size>0);
+  $('dotMc').classList.toggle('live',ST.MC.on);
+  const arpLive=ST.playing && (ST.AR.I.on||ST.AR.II.on) && (pool.length>0 || ST.AR.chord.mode!=='off');
+  $('dotArp').classList.toggle('live',arpLive);
+  $('dotDr').classList.toggle('live', ST.playing && ST.DR.on);
+}
+
+/* --- generic binders --- */
+function segGroup(sel, cb){
+  document.querySelectorAll(sel).forEach(g=>{
+    g.querySelectorAll('.seg').forEach(s=>{
+      s.addEventListener('pointerdown',()=>{
+        g.querySelectorAll('.seg').forEach(x=>x.classList.remove('on'));
+        s.classList.add('on'); cb(g.dataset.seg, s.dataset.v);
+      });
+    });
+  });
+}
+function bindK(id, get, set, fmt){
+  const el=$('k_'+id), lb=$('v_'+id);
+  el.addEventListener('input',()=>{ const v=parseFloat(el.value); set(v); if(lb) lb.textContent=fmt(v); });
+}
+const f2=v=>v.toFixed(2).slice(v<0?0:1);
+const ms=v=> v<1 ? Math.round(v*1000)+'m' : v.toFixed(2)+'s';
+
+/* SYNTH bindings */
+const SY=ST.SY;
+/* ペアで動かすものは XY セルへ移した(F-6a)。ここに残るのは単独で動かすものだけ(F-6d) */
+bindK('aOct',0,v=>SY.aOct=v,v=>String(v));
+bindK('bOct',0,v=>SY.bOct=v,v=>String(v));
+bindK('nLvl',0,v=>SY.nLvl=v,f2);
+bindK('glide',0,v=>SY.glide=v,v=>Math.round(v*1000)+'ms');
+
+/* ST.SY を UI と DSP へ一括反映する。ソング読み込みの復元口。
+   操作子が無い項目は $() が null を返すので黙って飛ばす —— スライダーを
+   セルへ移していく間、この関数は書き換えずに済む。 */
+function syncSynthUI(){
+  const put=(id,val,txt)=>{ const k=$('k_'+id); if(k) k.value=val; const t=$('v_'+id); if(t) t.textContent=txt; };
+  put('aOct',SY.aOct,String(SY.aOct)); put('bOct',SY.bOct,String(SY.bOct));
+  put('nLvl',SY.nLvl,f2(SY.nLvl)); put('glide',SY.glide,Math.round(SY.glide*1000)+'ms');
+  /* セグメント群の選択表示 */
+  const seg=(g,v)=>document.querySelectorAll('[data-seg="'+g+'"] .seg')
+    .forEach(s=>s.classList.toggle('on', s.dataset.v===v));
+  seg('aWave',SY.aWave); seg('bWave',SY.bWave); seg('fType',SY.fType);
+  seg('lWave',SY.lWave); seg('lDest',SY.lDest); seg('lSync',SY.lSync?'sync':'free');
+  /* DSP へ反映 */
+  activeVoices.forEach(x=>{ try{
+    x.oscA.type=SY.aWave; x.oscB.type=SY.bWave; x.filt.type=SY.fType;
+    x.oscA.detune.setTargetAtTime(SY.aDet,nowT(),0.02); x.oscB.detune.setTargetAtTime(SY.bDet,nowT(),0.02);
+    x.gA.gain.setTargetAtTime(SY.aLvl,nowT(),0.02);     x.gB.gain.setTargetAtTime(SY.bLvl,nowT(),0.02);
+    x.filt.Q.setTargetAtTime(SY.reso,nowT(),0.02);
+  }catch(e){} });
+  updateVoiceFilters(); pushLFO();
+  xycPaintAll();   // スライダーを廃した項目はセルが表示を持つ
+}
+
+segGroup('[data-seg="aWave"]',(g,v)=>{SY.aWave=v; activeVoices.forEach(x=>{try{x.oscA.type=v;}catch(e){}});});
+segGroup('[data-seg="bWave"]',(g,v)=>{SY.bWave=v; activeVoices.forEach(x=>{try{x.oscB.type=v;}catch(e){}});});
+segGroup('[data-seg="fType"]',(g,v)=>{SY.fType=v; activeVoices.forEach(x=>{try{x.filt.type=v;}catch(e){}});});
+segGroup('[data-seg="lWave"]',(g,v)=>{SY.lWave=v; pushLFO();});
+segGroup('[data-seg="lDest"]',(g,v)=>{SY.lDest=v; pushLFO();});
+segGroup('[data-seg="lSync"]',(g,v)=>{
+  /* SY.lRate の単位が切り替わる。先に生値(0..1)へ戻してから入れ直す */
+  const raw = SY.lSync ? SY.lRate : Math.log(SY.lRate/0.05)/Math.log(400);
+  SY.lSync=(v==='sync');
+  SY.lRate = SY.lSync ? raw : 0.05*Math.pow(400,raw);
+  pushLFO(); xycPaintAll();
+});
+
+/* ARP bindings — すべてアクティブレイヤーに作用 */
+bindK('len',0,v=>{curPat().len=v; paintSteps();},v=>String(v));
+bindK('llevel',0,v=>{curLayer().level=v;},v=>v.toFixed(2));
+
+/* DRUM UI (F-19x) — 4×4 パッドの VOICE / STEP 兼用 */
+const drPadsBox=$('drPads');
+for(let i=0;i<16;i++){
+  const el=document.createElement('div');
+  el.className='dp'; el.dataset.i=i;
+  el.innerHTML='<span></span><i></i>';   // span=名前/番号  i=XY ドット(VOICE ページのみ)
+  drPadsBox.appendChild(el);
+}
+/* VOICE ページのパッドは XY も兼ねる(F-19p)。ただしタップは選択と試奏なので、
+   PUNCH の LATCH と同じくしきい値を越えてなぞったときだけ調整に化ける。 */
+{
+  const ptr={}, q={}; let raf=0;
+  const flush=()=>{ raf=0;
+    for(const k in q){ const v=q[k]; delete q[k]; setDrumXY(+k,v[0],v[1]); } };
+  drPadsBox.addEventListener('pointerdown',e=>{
+    const el=e.target.closest('.dp'); if(!el) return;
+    e.preventDefault(); drPadsBox.setPointerCapture(e.pointerId);
+    const i=+el.dataset.i;
+    if(ST.DR.page!=='voice'){
+      const gv=ST.DR.voices[ST.DR.sel];
+      gv.gates[i]=(gv.gates[i]+1)%3;                          // F-19a OFF→ON→ACCENT
+      paintDrum(); return;
+    }
+    ptr[e.pointerId]={i, r:el.getBoundingClientRect(), sx:e.clientX, sy:e.clientY, moved:false};
+    selectDrumVoice(i);
+    if(ctx) triggerDrum(i, ctx.currentTime+0.01, false);      // F-199 試奏
+  });
+  drPadsBox.addEventListener('pointermove',e=>{
+    const p=ptr[e.pointerId]; if(!p) return;
+    if(!p.moved){ if(Math.hypot(e.clientX-p.sx,e.clientY-p.sy)<6) return; p.moved=true; }
+    q[p.i]=padPos(p.r,e); if(!raf) raf=requestAnimationFrame(flush);
+  });
+  const rel=e=>{ delete ptr[e.pointerId]; };
+  drPadsBox.addEventListener('pointerup',rel); drPadsBox.addEventListener('pointercancel',rel);
+}
+/* X=TUNE または DECAY(ボイスの性格で意味が変わる。F-19i) / Y=LEVEL */
+function setDrumXY(i,x,y){
+  const dv=DRUM_VOICES[i], sv=ST.DR.voices[i];
+  sv.param = dv.kind==='tone' ? Math.round(x*24-12) : x;
+  sv.level = y;
+  drumDot(i);
+}
+function drumDot(i){
+  const el=drPadsBox.children[i], d=el.lastChild;
+  if(ST.DR.page!=='voice'){ d.style.display='none'; return; }
+  d.style.display='';
+  const dv=DRUM_VOICES[i], sv=ST.DR.voices[i];
+  const x = dv.kind==='tone' ? (sv.param+12)/24 : sv.param;
+  d.style.left=(x*100)+'%'; d.style.top=((1-sv.level)*100)+'%';
+}
+function selectDrumVoice(i){ ST.DR.sel=i; paintDrum(); }
+function paintDrum(){
+  const page=ST.DR.page, sel=ST.DR.sel;
+  drPadsBox.querySelectorAll('.dp').forEach((el,i)=>{
+    el.className='dp'+(page==='voice'?' vp':'');
+    el.firstChild.textContent = page==='voice' ? DRUM_VOICES[i].name : String(i+1);
+    if(page==='voice'){ if(i===sel) el.classList.add('sel'); }
+    else {
+      const gv=ST.DR.voices[sel];
+      if(gv.gates[i]===1) el.classList.add('g1');
+      else if(gv.gates[i]===2) el.classList.add('g2');
+      if(i===curDrumStep && ST.DR.on) el.classList.add('dcur');
+    }
+    drumDot(i);
+  });
+}
+$('drPgVoice').addEventListener('click',()=>{ ST.DR.page='voice';
+  $('drPgVoice').classList.add('on'); $('drPgStep').classList.remove('on'); $('drLbl').textContent='VOICE'; paintDrum(); });
+$('drPgStep').addEventListener('click',()=>{ ST.DR.page='step';
+  $('drPgStep').classList.add('on'); $('drPgVoice').classList.remove('on'); $('drLbl').textContent='STEP'; paintDrum(); });
+$('drAll').addEventListener('click',()=>{ ST.DR.voices[ST.DR.sel].gates.fill(1); paintDrum(); });
+$('drClr').addEventListener('click',()=>{ ST.DR.voices[ST.DR.sel].gates.fill(0); paintDrum(); });
+$('drOn').addEventListener('click',()=>{ ST.DR.on=!ST.DR.on;
+  $('drOn').classList.toggle('on',ST.DR.on);
+  $('drOn').textContent=ST.DR.on?'ENGINE ON':'ENGINE OFF';
+  updateDots(); });
+function setMode(v){
+  curLayer().mode=v;
+  document.querySelectorAll('[data-seg="mode"] .seg,[data-seg="mode2"] .seg')
+    .forEach(s=>s.classList.toggle('on', s.dataset.v===v));
+}
+document.querySelectorAll('[data-seg="mode"] .seg,[data-seg="mode2"] .seg').forEach(s=>{
+  s.addEventListener('pointerdown',()=>setMode(s.dataset.v));
+});
+segGroup('[data-seg="rate"]',(g,v)=>{curLayer().rate=v;});
+
+/* MICRO bindings */
+bindK('mAct',0,v=>{ST.MC.act[ST.MC.algo]=v; mSet('activity',v); algDot(ST.MC.algo);},f2);
+bindK('mShp',0,v=>{ST.MC.shp[ST.MC.algo]=v; mSet('shape',v); algDot(ST.MC.algo);},f2);
+bindK('fade',0,v=>{ST.LP.fade=v; lSet('fade', v===0?1:1-v*0.12);},v=> v===0?'OFF':Math.round(v*100)+'%');
+
+/* LOOPER */
+$('lRec').addEventListener('click',()=>{ if(ctx&&ctx.state==='suspended') ctx.resume(); lCmd('rec'); });
+$('lPlay').addEventListener('click',()=>lCmd('play'));
+$('lClr').addEventListener('click',()=>lCmd('clear'));
+$('lOd').addEventListener('click',e=>{ ST.LP.od=!ST.LP.od; e.target.classList.toggle('on',ST.LP.od); lSet('od',ST.LP.od); });
+function looperUI(state,len){
+  $('lRec').classList.toggle('recOn',state==='rec');
+  $('lPlay').classList.toggle('on',state==='play');
+  $('lStat').textContent = state==='rec'?'RECORDING'
+    : state==='play'?('PLAY  '+len.toFixed(2)+'s')
+    : state==='stop'?('STOP  '+len.toFixed(2)+'s'):'EMPTY';
+}
+
+/* TRANSPORT */
+$('sBpm').addEventListener('input',e=>{ ST.bpm=+e.target.value; $('vBpm').textContent=ST.bpm;
+  if(ctx){ mSet('step',Math.floor(ctx.sampleRate*(60/ST.bpm/4))); if(ST.SY.lSync) pushLFO(); }
+  fxRebpm(); paintNv(); });   // 音価指定の FX は秒数が変わる(F-2f)
+$('sVol').addEventListener('input',e=>{ ST.vol=+e.target.value; $('vVol').textContent=ST.vol.toFixed(2);
+  if(master) ramp(master.gain,ST.vol,0.01); });
+$('latchBtn').addEventListener('click',e=>{ ST.latch=!ST.latch;
+  e.target.classList.toggle('on',ST.latch);
+  if(!ST.latch) FX.slice().forEach(f=>disengage(f)); });
+
+/* SONG STATE — file I/O (全状態の保存 / 復元) */
+/* ソングフォーマットの版数。アプリの版数とは独立で、構造が変わったときだけ上げる
+   (v2.10 の改名では app 欄の値しか変わっていないため 2.9 のまま)。 */
+const SONG_VERSION = '2.13';
+/* .hwfx の app 欄に書く識別子。'HW-FX' は改名前の値で、既存ソングを読むために受け付ける。 */
+const APP_ID = 'Hebith-FX';
+const APP_ID_ACCEPT = new Set([APP_ID, 'HW-FX']);
+
+function collectState(){
+  // スライダーの生値を全取得(丸め誤差なく再現するため)
+  const sliders={};
+  document.querySelectorAll('input[type=range]').forEach(el=>{ if(el.id) sliders[el.id]=el.value; });
+  // セグメント選択(波形/フィルタ種別/LFO 等)
+  const segs={};
+  document.querySelectorAll('[data-seg]').forEach(g=>{
+    const on=g.querySelector('.seg.on'); if(on&&on.dataset.v!==undefined) segs[g.dataset.seg]=on.dataset.v;
+  });
+  // ARP 専用スライダ/セグメントは arp オブジェクトで別管理するため汎用capfrom除外
+  const ARP_SLIDERS=new Set(['k_key','k_scale','k_deg','k_cbars','k_range','k_gate','k_len','k_octoff','k_llevel','k_swing']);
+  const ARP_SEGS=new Set(['cmode','ctype','mode','mode2','rate','pat']);
+  const sliders2={}; Object.keys(sliders).forEach(k=>{ if(!ARP_SLIDERS.has(k)) sliders2[k]=sliders[k]; });
+  const segs2={}; Object.keys(segs).forEach(k=>{ if(!ARP_SEGS.has(k)) segs2[k]=segs[k]; });
+  return {
+    app:APP_ID, version:SONG_VERSION, saved:new Date().toISOString(),
+    bpm:ST.bpm, vol:ST.vol, octave:ST.octave, tab:ST.tab,
+    hold:ST.hold, latch:ST.latch, playing:ST.playing,
+    pool:pool.slice(),
+    /* SYNTH は ST.SY が正。sliders/segs は v2.12 以前が読めるように併記するだけで、
+       読み込み側は sy を優先する(スライダーを廃した項目は sliders に現れないため) */
+    sy:JSON.parse(JSON.stringify(ST.SY)),
+    sliders:sliders2, segs:segs2,
+    arp:(()=>{ const a=JSON.parse(JSON.stringify(ST.AR));   // 2レイヤー+コード+チェイン全構造
+      if(a.chord) a.chord.curIdx=0;   // 再生位置は実行時状態。復元時は先頭へ戻す(F-184)ため保存しない
+      return a; })(),
+    dr:JSON.parse(JSON.stringify(ST.DR)),    // F-19o ドラムパターン+パラメータ+ON/OFF
+    mc:{ on:ST.MC.on, algo:ST.MC.algo, time:ST.MC.time, repeats:ST.MC.repeats,
+         mix:ST.MC.mix, space:ST.MC.space, act:ST.MC.act.slice(), shp:ST.MC.shp.slice() },
+    lp:{ fade:ST.LP.fade, od:ST.LP.od },
+    xy:JSON.parse(JSON.stringify(ST.XY))
+  };
+}
+
+function saveSong(){
+  const data=collectState();
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const ts=new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
+  a.href=url; a.download=APP_ID+'_song_'+ts+'.hwfx';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+  const btn=$('saveBtn'); btn.classList.add('flash'); setTimeout(()=>btn.classList.remove('flash'),400);
+}
+
+function fireInput(id,val){
+  const el=$(id); if(!el) return;
+  el.value=val; el.dispatchEvent(new Event('input',{bubbles:true}));
+}
+function fireSeg(group,val){
+  const seg=document.querySelector('[data-seg="'+group+'"] .seg[data-v="'+val+'"]');
+  if(seg) seg.dispatchEvent(new Event('pointerdown',{bubbles:true}));
+}
+
+function applyState(d){
+  if(!d||!APP_ID_ACCEPT.has(d.app)){ alert(APP_ID+' のソングファイルではありません'); return; }
+  if(d.sy){
+    /* v2.13 以降: SYNTH は ST.SY をそのまま戻す。操作子が何であれ影響を受けない */
+    Object.assign(ST.SY, d.sy); syncSynthUI();
+  } else {
+    /* v2.12 以前: スライダーとセグメントの DOM を経由して戻す */
+    if(d.segs){
+      if(d.segs.lSync!==undefined) fireSeg('lSync', d.segs.lSync);   // 後続スライダの解釈に影響するので先に
+      Object.entries(d.segs).forEach(([g,v])=>{ if(g!=='lSync'&&g!=='mode'&&g!=='mode2') fireSeg(g,v); });
+    }
+    if(d.sliders) Object.entries(d.sliders).forEach(([id,v])=>fireInput(id,v));
+  }
+
+  // --- ARP(2レイヤー+コード+チェイン全構造) ---
+  if(d.arp){
+    // 旧v2.4以前のフラット構造は無視(新規キーがあるもののみ採用)
+    if(d.arp.I && d.arp.II){
+      ST.AR = JSON.parse(JSON.stringify(d.arp));
+      // v2.5以前のパターンには pits が無い → 補う(F-179 後方互換)
+      ['I','II'].forEach(lk=>{ const L=ST.AR[lk];
+        ['A','B','C','D'].forEach(p=>{ const P=L.pats[p];
+          if(P && !P.pits) P.pits=new Array(16).fill(null); }); });
+      editSlot=-1; setEditPage('gate');
+      syncScaleUI(); paintChord(); showChordEdit();
+      selectLayer(ST.AR.activeLayer||'I');
+      paintSteps(); paintPatSlots();
+    }
+  }
+
+  // --- ドラム(F-19o)---
+  if(d.dr && Array.isArray(d.dr.voices) && d.dr.voices.length===16){
+    ST.DR = JSON.parse(JSON.stringify(d.dr));
+    $('drOn').classList.toggle('on',ST.DR.on);
+    $('drOn').textContent=ST.DR.on?'ENGINE ON':'ENGINE OFF';
+    $('drPgVoice').classList.toggle('on',ST.DR.page==='voice');
+    $('drPgStep').classList.toggle('on',ST.DR.page==='step');
+    $('drLbl').textContent=ST.DR.page==='voice'?'VOICE':'STEP';
+    paintDrum();
+  }
+
+  // --- Bokehlous ---
+  if(d.mc){
+    ST.MC.act = (d.mc.act||ST.MC.act).slice();
+    ST.MC.shp = (d.mc.shp||ST.MC.shp).slice();
+    ST.MC.algo = d.mc.algo||0;
+    ST.MC.time=d.mc.time; ST.MC.repeats=d.mc.repeats; ST.MC.mix=d.mc.mix; ST.MC.space=d.mc.space;
+    ST.MC.on = !!d.mc.on;
+    document.querySelectorAll('#algos .alg').forEach((x,j)=>x.classList.toggle('sel',j===ST.MC.algo));
+    $('mcOn').classList.toggle('on',ST.MC.on);
+    $('mcOn').textContent=ST.MC.on?'ENGINE ON':'ENGINE OFF';
+    // 現在アルゴの ACTIVITY/SHAPE をスライダへ反映
+    $('k_mAct').value=ST.MC.act[ST.MC.algo]; $('v_mAct').textContent=ST.MC.act[ST.MC.algo].toFixed(2).slice(1);
+    $('k_mShp').value=ST.MC.shp[ST.MC.algo]; $('v_mShp').textContent=ST.MC.shp[ST.MC.algo].toFixed(2).slice(1);
+    pushMicro();
+  }
+
+  // --- LOOPER フラグ ---
+  if(d.lp){
+    ST.LP.od = !!d.lp.od; $('lOd').classList.toggle('on',ST.LP.od); lSet('od',ST.LP.od);
+  }
+
+  // --- transport / global ---
+  if(d.bpm!==undefined) fireInput('sBpm', d.bpm);
+  if(d.vol!==undefined) fireInput('sVol', d.vol);
+  if(d.octave!==undefined){ ST.octave=d.octave; $('octLbl').textContent='OCT '+ST.octave; }
+
+  // --- XY 保持状態 ---
+  /* 既知のキーだけ戻す。古いファイルには廃止したキーが入っている
+     (mc* は v2.11 以前、sfilt / drum* は v2.13 以前) */
+  if(d.xy){ Object.keys(d.xy).forEach(k=>{ if(ST.XY[k]) ST.XY[k]=d.xy[k]; }); }
+
+  // --- ノートプール & HOLD ---
+  pool = (d.pool||[]).slice();
+  ST.hold = !!d.hold;
+  $('holdBtn').classList.toggle('on',ST.hold);
+  buildLayers();
+
+  // --- LATCH(FX は engage しない。表示のみ) ---
+  ST.latch = !!d.latch;
+  $('latchBtn').classList.toggle('on',ST.latch);
+
+  // --- PLAY/STOP 状態(F-188) ---
+  if(d.playing===false){ if(ctx) setPlaying(false); else ST.playing=false; }
+  else { if(ctx) setPlaying(true); else ST.playing=true; }
+
+  // --- tab ---
+  if(d.tab){
+    const tb=document.querySelector('.tab[data-t="'+d.tab+'"]');
+    if(tb) tb.click();
+  }
+
+  // --- 音・表示の最終同期 ---
+  pushLFO();
+  if(ctx){
+    // ARP OFF の保持和音を復元
+    poolChanged();
+    if(!ST.hold) { /* 押鍵状態は復元しない */ }
+  }
+  refreshXY(); paintDots(); algDots(); paintKeys(); paintSteps(); updateDots();
+}
+
+function loadSong(file){
+  const r=new FileReader();
+  r.onload=()=>{
+    try{ const d=JSON.parse(r.result);
+      if(ctx&&ctx.state==='suspended') ctx.resume();
+      applyState(d);
+    }catch(e){ alert('読み込みに失敗しました: '+e.message); }
+  };
+  r.readAsText(file);
+}
+
+$('saveBtn').addEventListener('click', saveSong);
+$('playBtn').addEventListener('click', ()=>{ if(ctx&&ctx.state==='suspended') ctx.resume(); setPlaying(!ST.playing); });
+$('loadBtn').addEventListener('click', ()=>$('loadFile').click());
+$('loadFile').addEventListener('change', e=>{
+  const f=e.target.files&&e.target.files[0];
+  if(f) loadSong(f);
+  e.target.value='';   // 同じファイルを連続で読めるように
+});
+
+/* SCOPE */
+let sCan,sCtx;
+function drawScope(){
+  requestAnimationFrame(drawScope);
+  if(!analyser) return;
+  analyser.getByteTimeDomainData(scopeArr);
+  const w=sCan.width,h=sCan.height;
+  sCtx.clearRect(0,0,w,h); sCtx.beginPath();
+  sCtx.strokeStyle='#ff7a18';   // --time。共有パッドがマスターフィルター固定になったので追従先がない
+  sCtx.lineWidth=1.5*devicePixelRatio;
+  sCtx.shadowColor=sCtx.strokeStyle; sCtx.shadowBlur=5;
+  const sl=w/scopeArr.length; let x=0;
+  for(let i=0;i<scopeArr.length;i++){ const y=(scopeArr[i]/128)*h/2;
+    i?sCtx.lineTo(x,y):sCtx.moveTo(x,y); x+=sl; }
+  sCtx.stroke();
+}
+function sizeScope(){ sCan.width=sCan.clientWidth*devicePixelRatio; sCan.height=sCan.clientHeight*devicePixelRatio; }
+
+/* START */
+$('go').addEventListener('click',async()=>{
+  $('go').textContent='...';
+  await initAudio(); await ctx.resume();
+  $('ov').style.display='none';
+  sCan=$('scope'); sCtx=sCan.getContext('2d'); sizeScope();
+  window.addEventListener('resize',sizeScope); drawScope();
+  applyXY(ST.XY['mfilt'].x, ST.XY['mfilt'].y);
+  ST.playing=true; resetTransport();
+  scheduler(); uiLoop();
+},{once:true});
+
+// ARP 専用画面の初期同期
+syncScaleUI(); paintChord(); selectLayer('I');
+paintSteps(); paintKeys(); refreshXY(); updateDots(); xycPaintAll();
+// DRUM 画面の初期同期
+paintDrum();
+document.body.addEventListener('touchmove',e=>{ if(!e.target.closest('.scrollPane')) e.preventDefault(); },{passive:false});
+})();
+</script></body>
+</html>
