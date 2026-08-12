@@ -1,6 +1,6 @@
 # Hebith-FX
 
-シンセサイザー兼リアルタイム・エフェクト演奏機。
+A synthesizer and real-time effects instrument for the mobile web.
 
 **https://shitake.github.io/hebith-fx-pages/**
 
