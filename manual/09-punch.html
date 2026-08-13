@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Punch-in FX — Hebith-FX — User Manual</title>
+<meta name="description" content="16 種のエフェクト。LATCH、音価指定、重ねたときの振る舞い。 / Sixteen effects. Latching, note-value timing, and how they stack.">
+<link rel="stylesheet" href="assets/manual.css">
+<script>
+/* 言語とテーマを描画前に確定させる(ちらつき防止)。UI 側は assets/manual.js。 */
+(function(){var d=document.documentElement;try{
+var l=localStorage.getItem('hebith-manual-lang');
+if(l!=='ja'&&l!=='en') l=(navigator.language||'ja').toLowerCase().indexOf('ja')===0?'ja':'en';
+d.setAttribute('data-lang',l); d.setAttribute('lang',l);
+var t=localStorage.getItem('hebith-manual-theme');
+if(t==='light'||t==='dark') d.setAttribute('data-theme',t);
+}catch(e){}})();
+</script>
+</head>
+<body>
+
+<div class="bar-top">
+  <div class="bar-in">
+    <a class="bar-brand disp" href="index.html">Hebith<b>-</b>FX<span class="rev-no">MANUAL v2.14</span></a>
+    <nav class="pagenav" aria-label="ページ">
+      <a href="index.html"><span class="no">00</span><span class="label ja">目次</span><span class="label en">Index</span></a>
+      <a href="01-about.html"><span class="no">01</span><span class="label ja">Hebith-FX</span><span class="label en">About</span></a>
+      <a href="02-first.html"><span class="no">02</span><span class="label ja">最初の一音</span><span class="label en">First Sound</span></a>
+      <a href="03-start.html"><span class="no">03</span><span class="label ja">はじめに</span><span class="label en">Start</span></a>
+      <a href="04-map.html"><span class="no">04</span><span class="label ja">画面</span><span class="label en">Screen</span></a>
+      <a href="05-touch.html"><span class="no">05</span><span class="label ja">操作</span><span class="label en">Controls</span></a>
+      <a href="06-synth.html"><span class="no">06</span><span class="label ja">SYNTH</span><span class="label en">SYNTH</span></a>
+      <a href="07-arp.html"><span class="no">07</span><span class="label ja">ARP</span><span class="label en">ARP</span></a>
+      <a href="08-drum.html"><span class="no">08</span><span class="label ja">DRUM</span><span class="label en">DRUM</span></a>
+      <a href="09-punch.html" aria-current="page"><span class="no">09</span><span class="label ja">PUNCH</span><span class="label en">PUNCH</span></a>
+      <a href="10-bokeh.html"><span class="no">10</span><span class="label ja">BOKEH</span><span class="label en">BOKEH</span></a>
+      <a href="11-song.html"><span class="no">11</span><span class="label ja">保存</span><span class="label en">Songs</span></a>
+      <a href="12-trouble.html"><span class="no">12</span><span class="label ja">困ったとき</span><span class="label en">Trouble</span></a>
+    </nav>
+    <span class="bar-spacer"></span>
+    <div class="lang" role="group" aria-label="Language"></div>
+    <div class="theme" role="group" aria-label="テーマ切替"></div>
+  </div>
+</div>
+
+<div class="wrap" id="top">
+  <section id="punch">
+<div class="eyebrow">Effects — Punch-in <span class="ref">09</span></div>
+<h2 class="disp">Punch-in FX</h2>
+
+<p class="lede ja">16 種のエフェクトです。<b>押している間だけ掛かります</b>。
+  パッド自身が XY コントローラを兼ねていて、押した場所がそのまま二軸の値になります。</p>
+<p class="lede en">Sixteen effects, <b>active only while you hold the pad</b>.
+  Each pad is its own XY controller — where you press sets both axes.</p>
+
+<div class="legend">
+  <span><i class="b-time"></i><span class="ja">TIME 時間</span><span class="en">TIME</span></span>
+  <span><i class="b-pitch"></i><span class="ja">PITCH 音程</span><span class="en">PITCH</span></span>
+  <span><i class="b-dest"></i><span class="ja">DESTROY 破壊</span><span class="en">DESTROY</span></span>
+  <span><i class="b-space"></i><span class="ja">SPACE 空間</span><span class="en">SPACE</span></span>
+</div>
+
+<div class="fxlist">
+      <div class="fxrow time">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M0,35 Q7,15 14,35 T28,35"/><path class="out" d="M28,35 Q35,15 42,35 T56,35 M56,35 Q63,15 70,35 T84,35 M84,35 Q91,15 98,35 T112,35"/><rect x="28" y="8" width="28" height="54" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity=".5"/></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">REPEAT</span><span class="cat">TIME</span><span class="sub">BEAT LOOP</span></div>
+          <div class="desc"><span class="ja">直前の1区間を掴んで反復再生する</span><span class="en">Grabs the last slice and loops it</span></div>
+          <div class="xyl"><span class="ja">X ループ長(音価) · Y ピッチ</span><span class="en">X loop length (note value) · Y pitch</span></div>
+        </div>
+      </div>
+      <div class="fxrow time">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M6,45 C20,45 22,20 40,20 C54,20 56,42 62,42"/><path class="out" d="M62,28 C68,28 70,50 84,50 C102,50 104,25 116,25"/><path class="outf" d="M60,42 l0,-14 l-7,7 z"/></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">REVERSE</span><span class="cat">TIME</span><span class="sub">BACKWARD</span></div>
+          <div class="desc"><span class="ja">捕捉した区間を時間反転して逆再生する</span><span class="en">Reverses the captured slice in time</span></div>
+          <div class="xyl"><span class="ja">X 区間長 · Y 速度</span><span class="en">X slice length · Y speed</span></div>
+        </div>
+      </div>
+      <div class="fxrow time">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="out" d="M4,35 q4,-18 8,0 t8,0 q6,-16 12,0 q9,-13 18,0 q14,-9 28,0 q22,-4 40,0"/><line class="axis" x1="112" y1="20" x2="112" y2="50"/></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">TAPE</span><span class="cat">TIME</span><span class="sub">STOP</span></div>
+          <div class="desc"><span class="ja">再生レートを指数減衰させ、テープのように停止する</span><span class="en">Decays the playback rate to a halt, like tape stopping</span></div>
+          <div class="xyl"><span class="ja">X 停止時間</span><span class="en">X stop time</span></div>
+        </div>
+      </div>
+      <div class="fxrow time">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M4,35 H116"/><g class="outf"><rect x="8" y="20" width="10" height="30"/><rect x="30" y="20" width="10" height="30"/><rect x="52" y="20" width="10" height="30"/><rect x="74" y="20" width="10" height="30"/><rect x="96" y="20" width="10" height="30"/></g></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">STUTTER</span><span class="cat">TIME</span><span class="sub">TRANCE GATE</span></div>
+          <div class="desc"><span class="ja">振幅を周期的にゲートして刻む</span><span class="en">Gates the amplitude periodically to chop it up</span></div>
+          <div class="xyl"><span class="ja">X レート(音価) · Y デューティ</span><span class="en">X rate (note value) · Y duty</span></div>
+        </div>
+      </div>
+      <div class="fxrow pitch">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M4,35 q10,-16 20,0 t20,0" opacity=".3"/><path class="out" d="M48,35 q6,-18 12,0 t12,0 q4,-18 8,0 t8,0 q3,-18 6,0 t6,0 q2,-18 4,0 t4,0"/><path class="outf" d="M92,14 l10,-6 l-2,8 z"/></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">WARP▲</span><span class="cat">PITCH</span><span class="sub">PITCH UP</span></div>
+          <div class="desc"><span class="ja">短窓ループの再生レートを上げ、音程を上昇させる</span><span class="en">Speeds up a short looped window, pitching it up</span></div>
+          <div class="xyl"><span class="ja">X 倍率</span><span class="en">X amount</span></div>
+        </div>
+      </div>
+      <div class="fxrow pitch">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M4,35 q5,-16 10,0 t10,0 t10,0" opacity=".3"/><path class="out" d="M40,35 q10,-16 20,0 t20,0 q14,-14 28,0"/><path class="outf" d="M100,50 l10,6 l-2,-8 z"/></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">WARP▼</span><span class="cat">PITCH</span><span class="sub">PITCH DOWN</span></div>
+          <div class="desc"><span class="ja">短窓ループの再生レートを下げ、音程を下降させる</span><span class="en">Slows a short looped window, pitching it down</span></div>
+          <div class="xyl"><span class="ja">X 倍率</span><span class="en">X amount</span></div>
+        </div>
+      </div>
+      <div class="fxrow pitch">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M4,35 q15,-14 30,0 t30,0 t30,0 t30,0" opacity=".3"/><path class="out" d="M4,35 q3,-14 6,0 q3,14 6,0 q3,-20 6,0 q3,20 6,0 q3,-10 6,0 q3,10 6,0 q3,-18 6,0 q3,18 6,0 q3,-8 6,0 q3,8 6,0 q3,-16 6,0 q3,16 6,0 q3,-12 6,0 q3,12 6,0 q3,-18 6,0 q3,18 6,0 q3,-9 6,0 q3,9 6,0"/></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">RING</span><span class="cat">PITCH</span><span class="sub">MODULATOR</span></div>
+          <div class="desc"><span class="ja">キャリアと掛け合わせ、金属的な側波帯を生む</span><span class="en">Multiplies against a carrier for metallic sidebands</span></div>
+          <div class="xyl"><span class="ja">X 周波数 · Y ミックス</span><span class="en">X frequency · Y mix</span></div>
+        </div>
+      </div>
+      <div class="fxrow pitch">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><line class="dim" x1="4" y1="52" x2="116" y2="52"/><g class="out"><path d="M12,52 C12,30 18,30 18,52"/><path d="M28,52 C28,20 34,20 34,52"/><path d="M44,52 C44,32 50,32 50,52"/><path d="M60,52 C60,22 66,22 66,52"/><path d="M76,52 C76,34 82,34 82,52"/><path d="M92,52 C92,24 98,24 98,52"/></g></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">COMB</span><span class="cat">PITCH</span><span class="sub">RESONATOR</span></div>
+          <div class="desc"><span class="ja">櫛形フィルタで特定周波数を強く共鳴させる</span><span class="en">A comb filter that resonates hard at one frequency</span></div>
+          <div class="xyl"><span class="ja">X チューン · Y FB</span><span class="en">X tune · Y feedback</span></div>
+        </div>
+      </div>
+      <div class="fxrow dest">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M4,35 Q34,8 60,35 T116,35"/><path class="out" d="M4,40 H20 V26 H36 V20 H52 V30 H68 V44 H84 V50 H100 V38 H116"/></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">CRUSH</span><span class="cat">DESTROY</span><span class="sub">BIT REDUCE</span></div>
+          <div class="desc"><span class="ja">ビット深度を削り、量子化ノイズで荒らす</span><span class="en">Strips bit depth until quantisation noise takes over</span></div>
+          <div class="xyl"><span class="ja">X ビット数</span><span class="en">X bit depth</span></div>
+        </div>
+      </div>
+      <div class="fxrow dest">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M4,35 Q34,10 60,35 T116,35" opacity=".3"/><path class="out" d="M4,33 H24 V22 H44 V26 H64 V44 H84 V48 H104 V37 H116"/><g class="outf"><circle cx="4" cy="33" r="1.8"/><circle cx="24" cy="22" r="1.8"/><circle cx="44" cy="26" r="1.8"/><circle cx="64" cy="44" r="1.8"/><circle cx="84" cy="48" r="1.8"/><circle cx="104" cy="37" r="1.8"/></g></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">DECIM</span><span class="cat">DESTROY</span><span class="sub">SAMPLE RATE</span></div>
+          <div class="desc"><span class="ja">サンプルを間引き、ザラついた質感にする</span><span class="en">Thins out samples for a gritty texture</span></div>
+          <div class="xyl"><span class="ja">X 間引き率</span><span class="en">X decimation factor</span></div>
+        </div>
+      </div>
+      <div class="fxrow dest">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><line class="dim" x1="4" y1="18" x2="116" y2="18"/><line class="dim" x1="4" y1="52" x2="116" y2="52"/><path class="in" d="M4,35 Q30,-15 60,35 T116,35" opacity=".25"/><path class="out" d="M4,35 Q18,18 25,18 Q32,18 39,35 Q46,52 53,52 Q60,52 67,35 Q74,18 81,18 Q88,18 95,35 Q102,52 109,52 Q114,52 116,46"/></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">FOLD</span><span class="cat">DESTROY</span><span class="sub">WAVEFOLDER</span></div>
+          <div class="desc"><span class="ja">上下限で波形を折り返し、倍音を足す</span><span class="en">Folds the waveform at its limits, adding harmonics</span></div>
+          <div class="xyl"><span class="ja">X ドライブ · Y ミックス</span><span class="en">X drive · Y mix</span></div>
+        </div>
+      </div>
+      <div class="fxrow dest">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M4,35 Q20,12 36,35 T68,35" opacity=".4"/><line class="out" x1="68" y1="35" x2="116" y2="35"/><line class="out" x1="68" y1="14" x2="68" y2="56" stroke-dasharray="3 2"/></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">KILL</span><span class="cat">DESTROY</span><span class="sub">MUTE</span></div>
+          <div class="desc"><span class="ja">信号を即座にミュートする</span><span class="en">Mutes the signal instantly</span></div>
+          <div class="xyl"><span class="ja">—</span><span class="en">—</span></div>
+        </div>
+      </div>
+      <div class="fxrow space">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M4,35 Q14,18 24,35 T44,35" opacity=".35"/><path class="out" d="M44,35 q5,-16 10,0 t10,0 t10,0 t10,0 t10,0 t10,0"/><rect x="44" y="12" width="10" height="46" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity=".5"/></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">FREEZE</span><span class="cat">SPACE</span><span class="sub">SUSTAIN</span></div>
+          <div class="desc"><span class="ja">極短窓を無限ループさせ、音を静止・持続させる</span><span class="en">Loops a tiny window forever, freezing the sound in place</span></div>
+          <div class="xyl"><span class="ja">X 窓長 · Y ピッチ</span><span class="en">X window · Y pitch</span></div>
+        </div>
+      </div>
+      <div class="fxrow space">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><g class="outf"><circle cx="16" cy="30" r="2.4"/><circle cx="28" cy="44" r="1.8"/><circle cx="34" cy="22" r="2"/><circle cx="46" cy="38" r="2.6"/><circle cx="54" cy="26" r="1.6"/><circle cx="60" cy="48" r="2"/><circle cx="70" cy="32" r="2.4"/><circle cx="78" cy="20" r="1.8"/><circle cx="84" cy="42" r="2.2"/><circle cx="94" cy="30" r="1.6"/><circle cx="100" cy="46" r="2"/><circle cx="106" cy="24" r="2.4"/><circle cx="40" cy="52" r="1.5"/><circle cx="88" cy="54" r="1.4"/><circle cx="22" cy="18" r="1.5"/></g></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">GRAIN</span><span class="cat">SPACE</span><span class="sub">CLOUD</span></div>
+          <div class="desc"><span class="ja">無数の Grain に分解して Grain Cloud を撒く</span><span class="en">Breaks it into countless grains and scatters a cloud</span></div>
+          <div class="xyl"><span class="ja">X 密度 · Y 拡散</span><span class="en">X density · Y spread</span></div>
+        </div>
+      </div>
+      <div class="fxrow space">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M8,35 q4,-18 8,0 t8,0" stroke="currentColor"/><g class="out"><path d="M40,35 q3,-13 6,0 t6,0" opacity=".75"/><path d="M66,35 q2.5,-9 5,0 t5,0" opacity=".5"/><path d="M90,35 q2,-6 4,0 t4,0" opacity=".3"/><path d="M108,35 q1.5,-3 3,0 t3,0" opacity=".18"/></g></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">THROW</span><span class="cat">SPACE</span><span class="sub">DELAY</span></div>
+          <div class="desc"><span class="ja">フィードバックディレイへ送り、減衰する反復を作る</span><span class="en">Sends it to a feedback delay for decaying repeats</span></div>
+          <div class="xyl"><span class="ja">X 時間(音価) · Y FB</span><span class="en">X time (note value) · Y feedback</span></div>
+        </div>
+      </div>
+      <div class="fxrow space">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M10,35 q5,-20 10,0 t10,0" stroke="currentColor"/><path class="out" d="M30,35 C50,20 60,50 80,32 C95,20 105,48 116,35" opacity=".55"/><path class="out" d="M30,35 C52,48 62,22 82,40 C96,50 106,24 116,35" opacity=".35"/></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">SPACE</span><span class="cat">SPACE</span><span class="sub">REVERB</span></div>
+          <div class="desc"><span class="ja">リバーブへ送り、拡散する残響を広げる</span><span class="en">Sends it to reverb, opening up a diffuse tail</span></div>
+          <div class="xyl"><span class="ja">X センド · Y テイル</span><span class="en">X send · Y tail</span></div>
+        </div>
+      </div>
+    </div>
+
+<h3>LATCH</h3>
+<p class="ja">鍵盤の隣の <b>LATCH</b> を点灯させると、パッドは<b>押しっぱなしにしなくても掛かり続けます</b>。
+  掛かっているパッドをもう一度<b>動かさずに</b>タップすると解除され、<b>なぞると</b>解除せず値だけ変わります。
+  LATCH を消すと、掛かっていたものは全部一度に外れます。</p>
+<p class="en">Turn on <b>LATCH</b>, next to the keyboard, and pads <b>stay on after you lift your finger</b>.
+  Tap a latched pad <b>without moving</b> to release it; <b>drag</b> instead and it stays on while you adjust the value.
+  Turning LATCH off releases everything at once.</p>
+
+<h3><span class="ja">拍で数えるエフェクト</span><span class="en">Effects counted in beats</span></h3>
+<p class="ja"><b>REPEAT</b>(ループ長)・<b>STUTTER</b>(レート)・<b>THROW</b>(ディレイ時間)の 3 つは、
+  時間を秒ではなく<b>音価</b>で持ちます。BPM を変えれば長さも一緒に伸び縮みするので、走っている曲から拍が外れません。</p>
+<p class="en"><b>REPEAT</b> (loop length), <b>STUTTER</b> (rate), and <b>THROW</b> (delay time)
+  are measured in <b>note values</b>, not seconds. Change the tempo and they stretch with it, so they never drift off the beat.</p>
+<p><code>1/64</code> <code>1/32</code> <code>1/16T</code> <code>1/16</code> <code>1/8T</code>
+   <code>1/8</code> <code>1/4T</code> <code>1/4</code> <code>1/2</code> <code>1/1</code></p>
+<p class="note ja">この 3 つは、X 軸のラベルに今の音価が併記されます。<b>STUTTER だけは軸が逆</b>で、右へ行くほど速く刻みます —— RATE は速さを指す語だからです。
+  演奏中に BPM を変えると、REPEAT は長さを取り直すため、継ぎ目が一度だけ鳴ります。</p>
+<p class="note en">These three print the current note value on the X-axis label. <b>STUTTER runs the other way</b> —
+  further right means faster, because RATE describes speed. If you change the tempo while REPEAT is engaged,
+  it re-takes its loop and you will hear a single seam.</p>
+
+<h3><span class="ja">重ねて押したとき</span><span class="en">Holding more than one</span></h3>
+<p class="ja">音を掴んで加工する種類(REPEAT / REVERSE / TAPE / WARP▲▼ / FREEZE / GRAIN)は、
+  <b>同時に押しても効くのは最後に押した 1 つだけ</b>です。下になったものは値を保ったまま黙って待ち、
+  上のものを離すと戻ってきます。RING や CRUSH のように音を通しながら変える種類は、いくつでも重ねられます。</p>
+<p class="en">The effects that capture and replay audio (REPEAT / REVERSE / TAPE / WARP▲▼ / FREEZE / GRAIN)
+  are <b>exclusive: only the most recently pressed one sounds</b>. The others wait silently, keeping their values,
+  and come back when you release the one on top. Effects that process the signal as it passes — RING, CRUSH and the like — stack freely.</p>
+  </section>
+
+  <nav class="pager" aria-label="前後のページ">
+    <a class="prev" href="08-drum.html">
+      <div class="dir"><span class="x ja">← 前</span><span class="x en">← Prev</span></div>
+      <div class="ttl">08 <span class="x ja">Destructible Drums</span><span class="x en">Destructible Drums</span></div>
+    </a>
+    <a class="next" href="10-bokeh.html">
+      <div class="dir"><span class="x ja">次 →</span><span class="x en">Next →</span></div>
+      <div class="ttl">10 <span class="x ja">Bokehlous Engine</span><span class="x en">Bokehlous Engine</span></div>
+    </a>
+  </nav>
+
+  <footer>
+    <div class="fl">
+      <span>Hebith-FX · USER MANUAL · v2.14</span>
+      <span class="ja">モバイル Web / インストール不要 / オフライン動作</span>
+      <span class="en">MOBILE WEB / NO INSTALL / WORKS OFFLINE</span>
+    </div>
+  </footer>
+
+</div>
+<script src="assets/manual.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hebith-FX について · About Hebith-FX — User Manual</title>
+<meta name="description" content="何ができる楽器なのか。6 つのパートと、音が通る道。 / What Hebith-FX does. Its six parts, and the path sound takes.">
+<link rel="stylesheet" href="assets/manual.css">
+<script>
+/* 言語とテーマを描画前に確定させる(ちらつき防止)。UI 側は assets/manual.js。 */
+(function(){var d=document.documentElement;try{
+var l=localStorage.getItem('hebith-manual-lang');
+if(l!=='ja'&&l!=='en') l=(navigator.language||'ja').toLowerCase().indexOf('ja')===0?'ja':'en';
+d.setAttribute('data-lang',l); d.setAttribute('lang',l);
+var t=localStorage.getItem('hebith-manual-theme');
+if(t==='light'||t==='dark') d.setAttribute('data-theme',t);
+}catch(e){}})();
+</script>
+</head>
+<body>
+
+<div class="bar-top">
+  <div class="bar-in">
+    <a class="bar-brand disp" href="index.html">Hebith<b>-</b>FX<span class="rev-no">MANUAL v2.14</span></a>
+    <nav class="pagenav" aria-label="ページ">
+      <a href="index.html"><span class="no">00</span><span class="label ja">目次</span><span class="label en">Index</span></a>
+      <a href="01-about.html" aria-current="page"><span class="no">01</span><span class="label ja">Hebith-FX</span><span class="label en">About</span></a>
+      <a href="02-first.html"><span class="no">02</span><span class="label ja">最初の一音</span><span class="label en">First Sound</span></a>
+      <a href="03-start.html"><span class="no">03</span><span class="label ja">はじめに</span><span class="label en">Start</span></a>
+      <a href="04-map.html"><span class="no">04</span><span class="label ja">画面</span><span class="label en">Screen</span></a>
+      <a href="05-touch.html"><span class="no">05</span><span class="label ja">操作</span><span class="label en">Controls</span></a>
+      <a href="06-synth.html"><span class="no">06</span><span class="label ja">SYNTH</span><span class="label en">SYNTH</span></a>
+      <a href="07-arp.html"><span class="no">07</span><span class="label ja">ARP</span><span class="label en">ARP</span></a>
+      <a href="08-drum.html"><span class="no">08</span><span class="label ja">DRUM</span><span class="label en">DRUM</span></a>
+      <a href="09-punch.html"><span class="no">09</span><span class="label ja">PUNCH</span><span class="label en">PUNCH</span></a>
+      <a href="10-bokeh.html"><span class="no">10</span><span class="label ja">BOKEH</span><span class="label en">BOKEH</span></a>
+      <a href="11-song.html"><span class="no">11</span><span class="label ja">保存</span><span class="label en">Songs</span></a>
+      <a href="12-trouble.html"><span class="no">12</span><span class="label ja">困ったとき</span><span class="label en">Trouble</span></a>
+    </nav>
+    <span class="bar-spacer"></span>
+    <div class="lang" role="group" aria-label="Language"></div>
+    <div class="theme" role="group" aria-label="テーマ切替"></div>
+  </div>
+</div>
+
+<div class="wrap" id="top">
+  <section id="about">
+<div class="eyebrow">About Hebith-FX <span class="ref">01</span></div>
+<h2 class="disp ja">Hebith-FX について</h2>
+<h2 class="disp en">About Hebith-FX</h2>
+
+<p class="lede ja">音を作り、走らせ、その場で壊す —— この 3 つを地続きに行うための楽器です。
+  音楽制作ソフトも専用アプリも外部機材も要りません。<b>1 枚の Web ページが、そのまま一台の機材</b>になっています。</p>
+<p class="lede en">Build a sound, set it running, break it in the moment — one instrument for all three,
+  with nothing between them. No music software, no app to install, no outboard gear.
+  <b>A single web page is the whole machine.</b></p>
+
+<p class="ja">スマートフォンを片手で持ち、親指だけで演奏できる配置にしてあります。
+  どこを触っても音は止まりません —— 音色をいじっている最中も、和音は鳴り続けます。</p>
+<p class="en">It is laid out to be played with one thumb, phone held in one hand.
+  Nothing you touch interrupts the sound: a held chord keeps ringing while you reshape its tone.</p>
+
+<h3><span class="ja">6 つのパート</span><span class="en">Six parts</span></h3>
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">パート</span><span class="en">Part</span></th>
+      <th><span class="ja">役割</span><span class="en">Role</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td>SYNTH</td>
+        <td><span class="ja">音そのものを作ります。2 基のオシレーターとノイズ、音ごとのフィルター、2 本のエンベロープ、LFO。同時に 8 音。</span>
+            <span class="en">Makes the sound itself: two oscillators plus noise, a per-note filter, two envelopes, and an LFO. Eight notes at once.</span></td></tr>
+      <tr><td>ARP</td>
+        <td><span class="ja">押さえた和音を捌いて曲にします。スケール・コード進行・パターンのつなぎ替えを持つ、2 系統のアルペジエーター。</span>
+            <span class="en">Turns a held chord into a piece of music. Two arpeggiators with scales, chord progressions, and pattern chaining.</span></td></tr>
+      <tr><td>DRUM</td>
+        <td><span class="ja">16 のボイスと 16 ステップのリズムです。ARP とクロックを共有します。</span>
+            <span class="en">Sixteen voices on a sixteen-step grid, sharing the arpeggiator's clock.</span></td></tr>
+      <tr><td>PUNCH FX</td>
+        <td><span class="ja">走っている音へ割り込む 16 種のエフェクトです。押している間だけ掛かります。</span>
+            <span class="en">Sixteen effects that cut into the running sound, active only while held.</span></td></tr>
+      <tr><td>BOKEH</td>
+        <td><span class="ja">音を Grain に分けて撒き直すグラニュラーエンジンです。11 のアルゴリズムがあります。</span>
+            <span class="en">A granular engine that shatters sound into grains and scatters them. Eleven algorithms.</span></td></tr>
+      <tr><td>LOOPER</td>
+        <td><span class="ja">演奏をその場で焼き付けて回し、上へ重ねます。</span>
+            <span class="en">Bakes what you just played into a loop and lets you stack on top of it.</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3><span class="ja">音が通る道</span><span class="en">How sound flows</span></h3>
+<div class="mflow">
+  <div class="mfn s1"><b class="ja">演奏面</b><b class="en">You play</b>
+    <span class="ja">鍵盤 · ARP · ドラムパッド</span><span class="en">Keyboard · ARP · drum pads</span></div>
+  <div class="mfa">↓</div>
+  <div class="mfn s2"><b class="ja">音源</b><b class="en">Sound source</b>
+    <span class="ja">SYNTH · DRUM が音を作る</span><span class="en">SYNTH and DRUM generate it</span></div>
+  <div class="mfa">↓</div>
+  <div class="mfn s3"><b class="ja">加工</b><b class="en">Mangling</b>
+    <span class="ja">PUNCH FX · BOKEH · LOOPER が壊す</span><span class="en">PUNCH FX, BOKEH, and LOOPER break it</span></div>
+  <div class="mfa">↓</div>
+  <div class="mfn s4"><b class="ja">空間</b><b class="en">Space</b>
+    <span class="ja">ディレイとリバーブが広げる</span><span class="en">Delay and reverb open it up</span></div>
+  <div class="mfa">↓</div>
+  <div class="mfn s5"><b class="ja">出力</b><b class="en">Out</b>
+    <span class="ja">MASTER FILTER を通って出る</span><span class="en">Through MASTER FILTER and out</span></div>
+</div>
+
+<p class="note ja"><b>ドラムも加工の対象です。</b>シンセと同じ道を通しているので、リズムごとループさせ、潰し、止められます。
+  市販のリズムマシンと違うのはここで、Hebith-FX がドラムを持つ理由は正確に刻むことではなく、刻んだものを壊せることの方にあります。</p>
+<p class="note en"><b>The drums run through the mangling stage too.</b> They take the same path as the synth,
+  so you can loop, crush, or freeze the rhythm itself. That is the point of having drums here —
+  not to keep time accurately, but to have something worth breaking.</p>
+
+<h3><span class="ja">Hebith-FX の癖</span><span class="en">What makes it different</span></h3>
+<div class="cols">
+  <div class="card">
+    <h4><span class="ja">操作子は XY ひとつ</span><span class="en">One kind of control</span></h4>
+    <p class="ja">つまみを回す代わりに<b>方眼を押します</b>。押した場所がそのまま二つの値になり、なぞればそのまま動きます。
+      ペアで意味を持つパラメータは 1 枚の枠にまとめてあります。</p>
+    <p class="en">Instead of turning knobs, you <b>press a grid</b>. The point you press becomes two values at once,
+      and dragging moves them together. Parameters that belong together share a single cell.</p>
+  </div>
+  <div class="card">
+    <h4><span class="ja">叩く場所でいじる</span><span class="en">Adjust where you strike</span></h4>
+    <p class="ja">エフェクトのパッドやタイルは、選ぶボタンであると同時に<b>それ自身が XY コントローラ</b>です。
+      叩く場所といじる場所が離れていないので、視線が往復しません。</p>
+    <p class="en">Effect pads and tiles are not just buttons — <b>each one is its own XY controller</b>.
+      What you hit and what you tweak are the same surface, so your eyes never travel.</p>
+  </div>
+  <div class="card">
+    <h4><span class="ja">時間は拍で数える</span><span class="en">Time counted in beats</span></h4>
+    <p class="ja">ループの長さもゲートの速さも、秒ではなく<b>音価</b>で持ちます。
+      速さを変えれば全部が一緒に伸び縮みするので、走っている曲から拍が外れません。</p>
+    <p class="en">Loop lengths and gate rates are held as <b>note values</b>, not seconds.
+      Change the tempo and everything stretches with it, so nothing drifts off the beat.</p>
+  </div>
+  <div class="card">
+    <h4><span class="ja">親指の届くところに</span><span class="en">Within thumb reach</span></h4>
+    <p class="ja">演奏中に触るものほど画面の下にあります。上はスクロールする設定、下はスクロールしない演奏面 ——
+      どのタブもこの二層で組んであります。</p>
+    <p class="en">The more you touch something while playing, the lower it sits.
+      Every tab is built in two layers: settings that scroll above, playing surface pinned below.</p>
+  </div>
+  <div class="card">
+    <h4><span class="ja">曲は 1 ファイル</span><span class="en">A song is one file</span></h4>
+    <p class="ja">音色もパターンもエフェクトの位置も、まとめて 1 つのファイルに書き出せます。
+      サーバーには何も残らず、端末の中で完結します。</p>
+    <p class="en">Tone, patterns, and effect positions all export to a single file.
+      Nothing is stored on a server; it stays on your device.</p>
+  </div>
+  <div class="card">
+    <h4><span class="ja">開けば、あとは要らない</span><span class="en">Load once, then nothing</span></h4>
+    <p class="ja">一度読み込めば通信は使いません。電波の届かない場所でもそのまま演奏できます。</p>
+    <p class="en">Once loaded it needs no network. It keeps playing where there is no signal at all.</p>
+  </div>
+</div>
+
+<p class="note ja">次節でまず音を出してみましょう。開き方から確かめたいときは <a href="03-start.html"><b>はじめに</b></a>、
+  画面の並びから入りたいときは <a href="04-map.html"><b>画面の見取り図</b></a> へ進みます。</p>
+<p class="note en">The next section makes a sound. To start from how to open it, see
+  <a href="03-start.html"><b>Getting Started</b></a>; for the lay of the land, see <a href="04-map.html"><b>Screen Map</b></a>.</p>
+  </section>
+
+  <nav class="pager" aria-label="前後のページ">
+    <a class="prev" href="index.html">
+      <div class="dir"><span class="x ja">← 前</span><span class="x en">← Prev</span></div>
+      <div class="ttl">00 <span class="x ja">使い方</span><span class="x en">How to Play</span></div>
+    </a>
+    <a class="next" href="02-first.html">
+      <div class="dir"><span class="x ja">次 →</span><span class="x en">Next →</span></div>
+      <div class="ttl">02 <span class="x ja">最初の一音</span><span class="x en">Your First Sound</span></div>
+    </a>
+  </nav>
+
+  <footer>
+    <div class="fl">
+      <span>Hebith-FX · USER MANUAL · v2.14</span>
+      <span class="ja">モバイル Web / インストール不要 / オフライン動作</span>
+      <span class="en">MOBILE WEB / NO INSTALL / WORKS OFFLINE</span>
+    </div>
+  </footer>
+
+</div>
+<script src="assets/manual.js" defer></script>
+</body>
+</html>

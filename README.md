@@ -50,6 +50,7 @@ flowchart TD
 
 | 項目 | 内容 |
 |------|------|
+| 使い方 | [ユーザマニュアル](https://shitake.github.io/hebith-fx-pages/manual/)(日本語 / English) |
 | 動作環境 | モバイル Web(スマートフォンでの利用を想定)。タブレット・デスクトップでも動作する |
 | 依存 | なし。一度開けばオフラインで動作する |
 | ライセンス | [MIT](LICENSE) |

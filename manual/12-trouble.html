@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>困ったとき · Troubleshooting — Hebith-FX — User Manual</title>
+<meta name="description" content="音が出ない、ARP が走らない、エフェクトが効かない。 / No sound, the arpeggiator will not run, a pad does nothing.">
+<link rel="stylesheet" href="assets/manual.css">
+<script>
+/* 言語とテーマを描画前に確定させる(ちらつき防止)。UI 側は assets/manual.js。 */
+(function(){var d=document.documentElement;try{
+var l=localStorage.getItem('hebith-manual-lang');
+if(l!=='ja'&&l!=='en') l=(navigator.language||'ja').toLowerCase().indexOf('ja')===0?'ja':'en';
+d.setAttribute('data-lang',l); d.setAttribute('lang',l);
+var t=localStorage.getItem('hebith-manual-theme');
+if(t==='light'||t==='dark') d.setAttribute('data-theme',t);
+}catch(e){}})();
+</script>
+</head>
+<body>
+
+<div class="bar-top">
+  <div class="bar-in">
+    <a class="bar-brand disp" href="index.html">Hebith<b>-</b>FX<span class="rev-no">MANUAL v2.14</span></a>
+    <nav class="pagenav" aria-label="ページ">
+      <a href="index.html"><span class="no">00</span><span class="label ja">目次</span><span class="label en">Index</span></a>
+      <a href="01-about.html"><span class="no">01</span><span class="label ja">Hebith-FX</span><span class="label en">About</span></a>
+      <a href="02-first.html"><span class="no">02</span><span class="label ja">最初の一音</span><span class="label en">First Sound</span></a>
+      <a href="03-start.html"><span class="no">03</span><span class="label ja">はじめに</span><span class="label en">Start</span></a>
+      <a href="04-map.html"><span class="no">04</span><span class="label ja">画面</span><span class="label en">Screen</span></a>
+      <a href="05-touch.html"><span class="no">05</span><span class="label ja">操作</span><span class="label en">Controls</span></a>
+      <a href="06-synth.html"><span class="no">06</span><span class="label ja">SYNTH</span><span class="label en">SYNTH</span></a>
+      <a href="07-arp.html"><span class="no">07</span><span class="label ja">ARP</span><span class="label en">ARP</span></a>
+      <a href="08-drum.html"><span class="no">08</span><span class="label ja">DRUM</span><span class="label en">DRUM</span></a>
+      <a href="09-punch.html"><span class="no">09</span><span class="label ja">PUNCH</span><span class="label en">PUNCH</span></a>
+      <a href="10-bokeh.html"><span class="no">10</span><span class="label ja">BOKEH</span><span class="label en">BOKEH</span></a>
+      <a href="11-song.html"><span class="no">11</span><span class="label ja">保存</span><span class="label en">Songs</span></a>
+      <a href="12-trouble.html" aria-current="page"><span class="no">12</span><span class="label ja">困ったとき</span><span class="label en">Trouble</span></a>
+    </nav>
+    <span class="bar-spacer"></span>
+    <div class="lang" role="group" aria-label="Language"></div>
+    <div class="theme" role="group" aria-label="テーマ切替"></div>
+  </div>
+</div>
+
+<div class="wrap" id="top">
+  <section id="trouble">
+<div class="eyebrow">Troubleshooting <span class="ref">12</span></div>
+<h2 class="disp ja">困ったとき</h2>
+<h2 class="disp en">Troubleshooting</h2>
+
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">症状</span><span class="en">Symptom</span></th>
+      <th><span class="ja">見るところ</span><span class="en">What to check</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td><span class="ja">音が出ない</span><span class="en">No sound at all</span></td>
+        <td><span class="ja">START を押したか確かめてください。端末の消音モードと音量、MASTER VOL が 0 でないかも見てください。</span>
+            <span class="en">Did you press START? Check the device's silent mode and volume, and that MASTER VOL is not at 0.</span></td></tr>
+      <tr><td><span class="ja">ARP が走らない</span><span class="en">The arpeggiator will not run</span></td>
+        <td><span class="ja">PLAY が点いているか、<b>LAYER ON</b> になっているかを確かめてください。
+            そして<b>鳴らす音が要ります</b> —— 鍵盤で和音を押さえるか、CHORD を AUTO か MANUAL にしてください。</span>
+            <span class="en">Is PLAY lit? Is <b>LAYER ON</b> set? And it needs notes to work with —
+            hold a chord on the keyboard, or set CHORD to AUTO or MANUAL.</span></td></tr>
+      <tr><td><span class="ja">鍵盤の音が伸びない</span><span class="en">Keyboard notes do not sustain</span></td>
+        <td><span class="ja">ARP I が動いているか、コード進行が OFF 以外になっています。
+            どちらかが動いていると、鍵盤は ARP への入口になります。伸ばしたい場合は両方を止めてください。</span>
+            <span class="en">Arpeggiator I is running, or the chord progression is not OFF.
+            Either one turns the keyboard into an input for the arpeggiator. Stop both to play it directly.</span></td></tr>
+      <tr><td><span class="ja">エフェクトを押しても変わらない</span><span class="en">A pad does nothing</span></td>
+        <td><span class="ja">音を掴む種類を重ねて押していないか —— 効くのは最後に押した 1 つだけです。
+            KILL のように音を消すものが下に掛かっていないかも見てください。</span>
+            <span class="en">You may be holding two capture-type effects at once — only the last one pressed sounds.
+            Also check that nothing like KILL is latched underneath.</span></td></tr>
+      <tr><td><span class="ja">BOKEH が鳴らない</span><span class="en">BOKEH is silent</span></td>
+        <td><span class="ja">ENGINE が ON か、BLEND の MIX が 0 に寄っていないか、元の音が鳴っているかを確かめてください。</span>
+            <span class="en">Is ENGINE on? Is MIX in the BLEND cell all the way down? Is there any source sound to work with?</span></td></tr>
+      <tr><td><span class="ja">ドラムが鳴らない</span><span class="en">The drums are silent</span></td>
+        <td><span class="ja">ENGINE が ON か、PLAY が点いているか、STEP ページでステップを立ててあるかを確かめてください。</span>
+            <span class="en">Is ENGINE on, is PLAY lit, and have you actually placed steps on the STEP page?</span></td></tr>
+      <tr><td><span class="ja">値を戻したい</span><span class="en">Getting a value back</span></td>
+        <td><span class="ja">MASTER FILTER は、文字を 0.5 秒長押しすると既定値へ戻ります。
+            それ以外の枠はドットが今の場所を指しているので、狙って置き直してください。</span>
+            <span class="en">Hold the MASTER FILTER label for 0.5 s to reset it. Elsewhere, the dot shows where the value sits —
+            aim at it and set it again.</span></td></tr>
+      <tr><td><span class="ja">音が途切れる</span><span class="en">Audio breaks up</span></td>
+        <td><span class="ja">他のタブやアプリを閉じてください。エフェクトを重ねすぎている場合は減らしてください。</span>
+            <span class="en">Close other tabs and apps. If you have many effects stacked, take some off.</span></td></tr>
+    </tbody>
+  </table>
+</div>
+  </section>
+
+  <nav class="pager" aria-label="前後のページ">
+    <a class="prev" href="11-song.html">
+      <div class="dir"><span class="x ja">← 前</span><span class="x en">← Prev</span></div>
+      <div class="ttl">11 <span class="x ja">曲の保存と読み込み</span><span class="x en">Saving &amp; Loading</span></div>
+    </a>
+  </nav>
+
+  <footer>
+    <div class="fl">
+      <span>Hebith-FX · USER MANUAL · v2.14</span>
+      <span class="ja">モバイル Web / インストール不要 / オフライン動作</span>
+      <span class="en">MOBILE WEB / NO INSTALL / WORKS OFFLINE</span>
+    </div>
+  </footer>
+
+</div>
+<script src="assets/manual.js" defer></script>
+</body>
+</html>

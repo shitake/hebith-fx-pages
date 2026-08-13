@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>共通の操作 · How Controls Work — Hebith-FX — User Manual</title>
+<meta name="description" content="押した場所がそのまま値になる。軸の呼び方と、例外が 2 つ。 / The point you press is the value. Axis naming, and two exceptions.">
+<link rel="stylesheet" href="assets/manual.css">
+<script>
+/* 言語とテーマを描画前に確定させる(ちらつき防止)。UI 側は assets/manual.js。 */
+(function(){var d=document.documentElement;try{
+var l=localStorage.getItem('hebith-manual-lang');
+if(l!=='ja'&&l!=='en') l=(navigator.language||'ja').toLowerCase().indexOf('ja')===0?'ja':'en';
+d.setAttribute('data-lang',l); d.setAttribute('lang',l);
+var t=localStorage.getItem('hebith-manual-theme');
+if(t==='light'||t==='dark') d.setAttribute('data-theme',t);
+}catch(e){}})();
+</script>
+</head>
+<body>
+
+<div class="bar-top">
+  <div class="bar-in">
+    <a class="bar-brand disp" href="index.html">Hebith<b>-</b>FX<span class="rev-no">MANUAL v2.14</span></a>
+    <nav class="pagenav" aria-label="ページ">
+      <a href="index.html"><span class="no">00</span><span class="label ja">目次</span><span class="label en">Index</span></a>
+      <a href="01-about.html"><span class="no">01</span><span class="label ja">Hebith-FX</span><span class="label en">About</span></a>
+      <a href="02-first.html"><span class="no">02</span><span class="label ja">最初の一音</span><span class="label en">First Sound</span></a>
+      <a href="03-start.html"><span class="no">03</span><span class="label ja">はじめに</span><span class="label en">Start</span></a>
+      <a href="04-map.html"><span class="no">04</span><span class="label ja">画面</span><span class="label en">Screen</span></a>
+      <a href="05-touch.html" aria-current="page"><span class="no">05</span><span class="label ja">操作</span><span class="label en">Controls</span></a>
+      <a href="06-synth.html"><span class="no">06</span><span class="label ja">SYNTH</span><span class="label en">SYNTH</span></a>
+      <a href="07-arp.html"><span class="no">07</span><span class="label ja">ARP</span><span class="label en">ARP</span></a>
+      <a href="08-drum.html"><span class="no">08</span><span class="label ja">DRUM</span><span class="label en">DRUM</span></a>
+      <a href="09-punch.html"><span class="no">09</span><span class="label ja">PUNCH</span><span class="label en">PUNCH</span></a>
+      <a href="10-bokeh.html"><span class="no">10</span><span class="label ja">BOKEH</span><span class="label en">BOKEH</span></a>
+      <a href="11-song.html"><span class="no">11</span><span class="label ja">保存</span><span class="label en">Songs</span></a>
+      <a href="12-trouble.html"><span class="no">12</span><span class="label ja">困ったとき</span><span class="label en">Trouble</span></a>
+    </nav>
+    <span class="bar-spacer"></span>
+    <div class="lang" role="group" aria-label="Language"></div>
+    <div class="theme" role="group" aria-label="テーマ切替"></div>
+  </div>
+</div>
+
+<div class="wrap" id="top">
+  <section id="touch">
+<div class="eyebrow">How Controls Work <span class="ref">05</span></div>
+<h2 class="disp ja">共通の操作</h2>
+<h2 class="disp en">How Controls Work</h2>
+
+<p class="lede ja">Hebith-FX の操作子は <b>XY</b> ひとつに寄せてあります。方眼の枠が出ていたら、
+  <b>押した場所がそのまま値</b>です。狙って叩いても、押したままなぞってもかまいません。</p>
+<p class="lede en">Almost every control here is an <b>XY</b> surface. Wherever you see a grid,
+  <b>the point you press becomes the value</b>. Tap a spot, or press and drag.</p>
+
+<div class="cols">
+  <div class="card">
+    <h4><span class="ja">ドットは現在値</span><span class="en">The dot is the current value</span></h4>
+    <p class="ja">枠の中の小さな点が、今の値の場所です。選んでいないものにも出ているので、
+      叩く前からどこに置いてあるかが読めます。</p>
+    <p class="en">The small dot marks where the value sits. It shows on every cell, not just the selected one,
+      so you can read the setting before you touch it.</p>
+  </div>
+  <div class="card">
+    <h4><span class="ja">二本指で同時に</span><span class="en">Two fingers at once</span></h4>
+    <p class="ja">別々の枠を二本の指で同時に動かせます。片手でフィルターを開きながら、
+      もう片方でエフェクトを叩けます。</p>
+    <p class="en">You can move two different cells at the same time — open the filter with one hand
+      while hitting an effect with the other.</p>
+  </div>
+  <div class="card">
+    <h4><span class="ja">値を戻す</span><span class="en">Resetting</span></h4>
+    <p class="ja">画面下の <b>MASTER FILTER</b> は、その文字を <b>0.5 秒長押し</b>すると既定値へ戻ります。</p>
+    <p class="en">On the <b>MASTER FILTER</b> pad, <b>press and hold the label for 0.5 s</b> to return it to its default.</p>
+  </div>
+  <div class="card">
+    <h4><span class="ja">軸の呼び方</span><span class="en">Naming the axes</span></h4>
+    <p class="ja">横が <b>X</b>、縦が <b>Y</b> です。X は右へ行くほど、<b>Y は上へ行くほど</b>大きくなります。
+      軸の名前は枠の左と下に書いてあります。</p>
+    <p class="en"><b>X</b> runs across, <b>Y</b> runs up. X increases to the right,
+      <b>Y increases upward</b>. The axis names are printed along the left and bottom edges.</p>
+  </div>
+</div>
+
+<h3><span class="ja">押しても値が動かない場所が 2 つあります</span><span class="en">Two places where pressing does not write a value</span></h3>
+
+<p class="ja">どちらも「押すこと自体が演奏ではない」場所です。<b>少しなぞって初めて</b>値の調整に変わります。</p>
+<p class="en">In both cases the press itself is not a performance gesture.
+  The touch only becomes a value edit <b>once you drag a little</b>.</p>
+
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">場所</span><span class="en">Where</span></th>
+      <th><span class="ja">タップしたとき</span><span class="en">Tap</span></th>
+      <th><span class="ja">なぞったとき</span><span class="en">Drag</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td><span class="ja">DRUM の VOICE パッド</span><span class="en">DRUM voice pads</span></td>
+        <td><span class="ja">その場で鳴り、編集対象に選ばれます</span><span class="en">Plays it and selects it for editing</span></td>
+        <td><span class="ja">LEVEL と TUNE / DECAY を書き換えます</span><span class="en">Writes LEVEL and TUNE / DECAY</span></td></tr>
+      <tr><td><span class="ja">LATCH 中の PUNCH パッド</span><span class="en">PUNCH pads while LATCH is on</span></td>
+        <td><span class="ja">掛かっているエフェクトを解除します</span><span class="en">Releases the latched effect</span></td>
+        <td><span class="ja">解除せず値だけを調整します</span><span class="en">Keeps it on and adjusts the value</span></td></tr>
+    </tbody>
+  </table>
+</div>
+  </section>
+
+  <nav class="pager" aria-label="前後のページ">
+    <a class="prev" href="04-map.html">
+      <div class="dir"><span class="x ja">← 前</span><span class="x en">← Prev</span></div>
+      <div class="ttl">04 <span class="x ja">画面の見取り図</span><span class="x en">Screen Map</span></div>
+    </a>
+    <a class="next" href="06-synth.html">
+      <div class="dir"><span class="x ja">次 →</span><span class="x en">Next →</span></div>
+      <div class="ttl">06 <span class="x ja">Synth Engine</span><span class="x en">Synth Engine</span></div>
+    </a>
+  </nav>
+
+  <footer>
+    <div class="fl">
+      <span>Hebith-FX · USER MANUAL · v2.14</span>
+      <span class="ja">モバイル Web / インストール不要 / オフライン動作</span>
+      <span class="en">MOBILE WEB / NO INSTALL / WORKS OFFLINE</span>
+    </div>
+  </footer>
+
+</div>
+<script src="assets/manual.js" defer></script>
+</body>
+</html>

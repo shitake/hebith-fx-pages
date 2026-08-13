@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>はじめに · Getting Started — Hebith-FX — User Manual</title>
+<meta name="description" content="開き方と START。音が出ないときに見るところ。動作環境。 / Opening it, pressing START, and what to check if you hear nothing.">
+<link rel="stylesheet" href="assets/manual.css">
+<script>
+/* 言語とテーマを描画前に確定させる(ちらつき防止)。UI 側は assets/manual.js。 */
+(function(){var d=document.documentElement;try{
+var l=localStorage.getItem('hebith-manual-lang');
+if(l!=='ja'&&l!=='en') l=(navigator.language||'ja').toLowerCase().indexOf('ja')===0?'ja':'en';
+d.setAttribute('data-lang',l); d.setAttribute('lang',l);
+var t=localStorage.getItem('hebith-manual-theme');
+if(t==='light'||t==='dark') d.setAttribute('data-theme',t);
+}catch(e){}})();
+</script>
+</head>
+<body>
+
+<div class="bar-top">
+  <div class="bar-in">
+    <a class="bar-brand disp" href="index.html">Hebith<b>-</b>FX<span class="rev-no">MANUAL v2.14</span></a>
+    <nav class="pagenav" aria-label="ページ">
+      <a href="index.html"><span class="no">00</span><span class="label ja">目次</span><span class="label en">Index</span></a>
+      <a href="01-about.html"><span class="no">01</span><span class="label ja">Hebith-FX</span><span class="label en">About</span></a>
+      <a href="02-first.html"><span class="no">02</span><span class="label ja">最初の一音</span><span class="label en">First Sound</span></a>
+      <a href="03-start.html" aria-current="page"><span class="no">03</span><span class="label ja">はじめに</span><span class="label en">Start</span></a>
+      <a href="04-map.html"><span class="no">04</span><span class="label ja">画面</span><span class="label en">Screen</span></a>
+      <a href="05-touch.html"><span class="no">05</span><span class="label ja">操作</span><span class="label en">Controls</span></a>
+      <a href="06-synth.html"><span class="no">06</span><span class="label ja">SYNTH</span><span class="label en">SYNTH</span></a>
+      <a href="07-arp.html"><span class="no">07</span><span class="label ja">ARP</span><span class="label en">ARP</span></a>
+      <a href="08-drum.html"><span class="no">08</span><span class="label ja">DRUM</span><span class="label en">DRUM</span></a>
+      <a href="09-punch.html"><span class="no">09</span><span class="label ja">PUNCH</span><span class="label en">PUNCH</span></a>
+      <a href="10-bokeh.html"><span class="no">10</span><span class="label ja">BOKEH</span><span class="label en">BOKEH</span></a>
+      <a href="11-song.html"><span class="no">11</span><span class="label ja">保存</span><span class="label en">Songs</span></a>
+      <a href="12-trouble.html"><span class="no">12</span><span class="label ja">困ったとき</span><span class="label en">Trouble</span></a>
+    </nav>
+    <span class="bar-spacer"></span>
+    <div class="lang" role="group" aria-label="Language"></div>
+    <div class="theme" role="group" aria-label="テーマ切替"></div>
+  </div>
+</div>
+
+<div class="wrap" id="top">
+  <section id="start">
+<div class="eyebrow">Getting Started <span class="ref">03</span></div>
+<h2 class="disp ja">はじめに</h2>
+<h2 class="disp en">Getting Started</h2>
+
+<p class="lede ja">インストールは要りません。次の URL を開き、<b>START</b> を押せば演奏できます。</p>
+<p class="lede en">Nothing to install. Open the URL below and press <b>START</b>.</p>
+
+<p><a href="https://shitake.github.io/hebith-fx-pages/">https://shitake.github.io/hebith-fx-pages/</a></p>
+
+<p class="ja">音が出せるようになるのは <b>START</b> を押した時点からです。
+  ブラウザは利用者が触れるまで音を鳴らせない決まりになっていて、この一押しがその合図になります。</p>
+<p class="en">Audio only becomes available the moment you press <b>START</b>. Browsers are not allowed to make sound
+  until you interact with the page, and that press is the signal.</p>
+
+<h3><span class="ja">音が出ないとき</span><span class="en">If you hear nothing</span></h3>
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">確認する</span><span class="en">Check</span></th>
+      <th><span class="ja">内容</span><span class="en">Detail</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td><span class="ja">消音スイッチ</span><span class="en">Silent switch</span></td>
+        <td><span class="ja">端末の消音(マナー)モードを解除してください。ブラウザの音はこれに従うことがあります。</span>
+            <span class="en">Turn off your device's silent / mute mode. Browser audio can follow it.</span></td></tr>
+      <tr><td><span class="ja">端末の音量</span><span class="en">Device volume</span></td>
+        <td><span class="ja">端末の音量を上げてください。</span><span class="en">Turn the device volume up.</span></td></tr>
+      <tr><td>MASTER VOL</td>
+        <td><span class="ja">画面上部のスライダーが 0 になっていないか確かめてください。</span>
+            <span class="en">Make sure the slider near the top of the screen is not at 0.</span></td></tr>
+      <tr><td>START</td>
+        <td><span class="ja">まだ押していなければ押してください。</span><span class="en">Press it if you have not yet.</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3><span class="ja">動作環境</span><span class="en">Requirements</span></h3>
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">項目</span><span class="en">Item</span></th>
+      <th><span class="ja">内容</span><span class="en">Detail</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td><span class="ja">環境</span><span class="en">Platform</span></td>
+        <td><span class="ja">モバイル Web です。スマートフォンでの利用を想定していますが、タブレット・デスクトップでも動きます。</span>
+            <span class="en">Mobile web, designed for phones. It also runs on tablets and desktops.</span></td></tr>
+      <tr><td><span class="ja">通信</span><span class="en">Network</span></td>
+        <td><span class="ja">一度開けばオフラインで動きます。演奏中に通信は使いません。</span>
+            <span class="en">Once loaded it works offline. Nothing is sent while you play.</span></td></tr>
+      <tr><td><span class="ja">保存先</span><span class="en">Storage</span></td>
+        <td><span class="ja">曲はファイルとして端末に保存します。サーバーには何も残りません。</span>
+            <span class="en">Songs are saved as files on your device. Nothing is stored on a server.</span></td></tr>
+      <tr><td><span class="ja">画面の向き</span><span class="en">Orientation</span></td>
+        <td><span class="ja">縦持ちを前提にした配置です。片手で持って親指で演奏できます。</span>
+            <span class="en">Laid out for portrait. You can hold it in one hand and play with your thumb.</span></td></tr>
+    </tbody>
+  </table>
+</div>
+  </section>
+
+  <nav class="pager" aria-label="前後のページ">
+    <a class="prev" href="02-first.html">
+      <div class="dir"><span class="x ja">← 前</span><span class="x en">← Prev</span></div>
+      <div class="ttl">02 <span class="x ja">最初の一音</span><span class="x en">Your First Sound</span></div>
+    </a>
+    <a class="next" href="04-map.html">
+      <div class="dir"><span class="x ja">次 →</span><span class="x en">Next →</span></div>
+      <div class="ttl">04 <span class="x ja">画面の見取り図</span><span class="x en">Screen Map</span></div>
+    </a>
+  </nav>
+
+  <footer>
+    <div class="fl">
+      <span>Hebith-FX · USER MANUAL · v2.14</span>
+      <span class="ja">モバイル Web / インストール不要 / オフライン動作</span>
+      <span class="en">MOBILE WEB / NO INSTALL / WORKS OFFLINE</span>
+    </div>
+  </footer>
+
+</div>
+<script src="assets/manual.js" defer></script>
+</body>
+</html>

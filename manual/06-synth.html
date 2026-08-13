@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Synth Engine — Hebith-FX — User Manual</title>
+<meta name="description" content="2 オシレーター + ノイズ、フィルター、2 本のエンベロープ、LFO。 / Two oscillators plus noise, a filter, two envelopes, and an LFO.">
+<link rel="stylesheet" href="assets/manual.css">
+<script>
+/* 言語とテーマを描画前に確定させる(ちらつき防止)。UI 側は assets/manual.js。 */
+(function(){var d=document.documentElement;try{
+var l=localStorage.getItem('hebith-manual-lang');
+if(l!=='ja'&&l!=='en') l=(navigator.language||'ja').toLowerCase().indexOf('ja')===0?'ja':'en';
+d.setAttribute('data-lang',l); d.setAttribute('lang',l);
+var t=localStorage.getItem('hebith-manual-theme');
+if(t==='light'||t==='dark') d.setAttribute('data-theme',t);
+}catch(e){}})();
+</script>
+</head>
+<body>
+
+<div class="bar-top">
+  <div class="bar-in">
+    <a class="bar-brand disp" href="index.html">Hebith<b>-</b>FX<span class="rev-no">MANUAL v2.14</span></a>
+    <nav class="pagenav" aria-label="ページ">
+      <a href="index.html"><span class="no">00</span><span class="label ja">目次</span><span class="label en">Index</span></a>
+      <a href="01-about.html"><span class="no">01</span><span class="label ja">Hebith-FX</span><span class="label en">About</span></a>
+      <a href="02-first.html"><span class="no">02</span><span class="label ja">最初の一音</span><span class="label en">First Sound</span></a>
+      <a href="03-start.html"><span class="no">03</span><span class="label ja">はじめに</span><span class="label en">Start</span></a>
+      <a href="04-map.html"><span class="no">04</span><span class="label ja">画面</span><span class="label en">Screen</span></a>
+      <a href="05-touch.html"><span class="no">05</span><span class="label ja">操作</span><span class="label en">Controls</span></a>
+      <a href="06-synth.html" aria-current="page"><span class="no">06</span><span class="label ja">SYNTH</span><span class="label en">SYNTH</span></a>
+      <a href="07-arp.html"><span class="no">07</span><span class="label ja">ARP</span><span class="label en">ARP</span></a>
+      <a href="08-drum.html"><span class="no">08</span><span class="label ja">DRUM</span><span class="label en">DRUM</span></a>
+      <a href="09-punch.html"><span class="no">09</span><span class="label ja">PUNCH</span><span class="label en">PUNCH</span></a>
+      <a href="10-bokeh.html"><span class="no">10</span><span class="label ja">BOKEH</span><span class="label en">BOKEH</span></a>
+      <a href="11-song.html"><span class="no">11</span><span class="label ja">保存</span><span class="label en">Songs</span></a>
+      <a href="12-trouble.html"><span class="no">12</span><span class="label ja">困ったとき</span><span class="label en">Trouble</span></a>
+    </nav>
+    <span class="bar-spacer"></span>
+    <div class="lang" role="group" aria-label="Language"></div>
+    <div class="theme" role="group" aria-label="テーマ切替"></div>
+  </div>
+</div>
+
+<div class="wrap" id="top">
+  <section id="synth">
+<div class="eyebrow">Sound Design — Voice <span class="ref">06</span></div>
+<h2 class="disp">Synth Engine</h2>
+
+<p class="lede ja">2 基のオシレーターとノイズ、音ごとのフィルター、独立した 2 本のエンベロープ、LFO。
+  同時に 8 音まで鳴り、超えると最も古い音から奪われます。</p>
+<p class="lede en">Two oscillators plus noise, a per-note filter, two independent envelopes, and an LFO.
+  Eight notes can sound at once; beyond that the oldest one is taken.</p>
+
+<p class="ja"><b>音を鳴らしたまま音色を変えられます。</b>和音を HOLD で押さえたままカットオフを動かすのが、Hebith-FX の基本の手つきです。</p>
+<p class="en"><b>You can reshape a sound while it is still ringing.</b> Holding a chord and sweeping the cutoff
+  is the core gesture of Hebith-FX.</p>
+
+<h3>OSC A / OSC B</h3>
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">操作子</span><span class="en">Control</span></th>
+      <th><span class="ja">内容</span><span class="en">What it does</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td>SAW / SQR / SIN / TRI</td>
+        <td><span class="ja">波形です。SAW は明るく厚い音、SQR は中が空いた硬い音、SIN は倍音のない丸い音、TRI はその中間です。</span>
+            <span class="en">Waveform. SAW is bright and full, SQR hollow and hard, SIN pure and round, TRI in between.</span></td></tr>
+      <tr><td>OCT</td>
+        <td><span class="ja">オクターブです。−2 〜 +2 の範囲で、A と B に別々に設定できます。</span>
+            <span class="en">Octave, −2 to +2, set independently for A and B.</span></td></tr>
+      <tr><td>DETUNE × LEVEL</td>
+        <td><span class="ja">X がデチューン(±50 セント)、Y が音量です。<b>A と B を少しずらすと音が太くなります。</b></span>
+            <span class="en">X is detune (±50 cents), Y is level. <b>Nudging A and B apart thickens the sound.</b></span></td></tr>
+      <tr><td>NOISE</td>
+        <td><span class="ja">ノイズの量です。フィルターの手前で混ざります。</span>
+            <span class="en">Noise amount, mixed in before the filter.</span></td></tr>
+      <tr><td>PORTAMENTO</td>
+        <td><span class="ja">音から音へ滑る時間です。0 〜 500ms で、0 にすると切れます。ARP が走っている間も効きます。</span>
+            <span class="en">Glide time between notes, 0 – 500 ms. 0 turns it off. It applies while the arpeggiator runs too.</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>SYNTH FILTER</h3>
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">操作子</span><span class="en">Control</span></th>
+      <th><span class="ja">内容</span><span class="en">What it does</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td>LPF / HPF / BPF</td>
+        <td><span class="ja">高い方を削る / 低い方を削る / 一帯だけ残す、の 3 種類です。</span>
+            <span class="en">Cut the highs / cut the lows / keep only a band.</span></td></tr>
+      <tr><td>ENV AMT × KEY TRK</td>
+        <td><span class="ja">X がフィルターエンベロープの深さ(−1 〜 +1。マイナスで逆向き)、Y が音の高さへの追従量です。</span>
+            <span class="en">X is envelope depth (−1 to +1; negative inverts), Y is key tracking.</span></td></tr>
+      <tr><td>CUTOFF × RESO</td>
+        <td><span class="ja">固定帯にある枠です。X が明るさ、Y が癖の強さで、演奏中いちばん触る場所になります。</span>
+            <span class="en">In the fixed strip. X is brightness, Y is resonance — the control you will touch most.</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>ENVELOPE</h3>
+<p class="ja">音量とフィルターに、独立した ADSR が 1 本ずつあります。それぞれ 2 枚の枠に分けてあります。</p>
+<p class="en">Amplitude and filter each get their own ADSR, split across two cells.</p>
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">枠</span><span class="en">Cell</span></th>
+      <th>X →</th>
+      <th>Y ↑</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>AMP A·R</td><td>ATTACK</td><td>RELEASE</td></tr>
+      <tr><td>AMP D·S</td><td>DECAY</td><td>SUSTAIN</td></tr>
+      <tr><td>FLT A·R</td><td>ATTACK</td><td>RELEASE</td></tr>
+      <tr><td>FLT D·S</td><td>DECAY</td><td>SUSTAIN</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="note ja">フィルター側を速く、音量側を緩やかにすると、アシッド系の「ミョーン」とした立ち上がりになります。</p>
+<p class="note en">A fast filter envelope under a slow amplitude envelope gives you the classic acid-style squelch.</p>
+
+<h3>LFO</h3>
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">操作子</span><span class="en">Control</span></th>
+      <th><span class="ja">内容</span><span class="en">What it does</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td>TRI / SQR / S&amp;H</td>
+        <td><span class="ja">揺れの形です。S&amp;H は段階的にランダムへ飛びます。</span>
+            <span class="en">Shape of the modulation. S&amp;H jumps to random steps.</span></td></tr>
+      <tr><td>PITCH / FILTER / AMP</td>
+        <td><span class="ja">揺らす先です。音程 / 明るさ / 音量から選べます。</span>
+            <span class="en">Destination: pitch, brightness, or level.</span></td></tr>
+      <tr><td>FREE / BPM SYNC</td>
+        <td><span class="ja">速さの決め方です。SYNC にすると RATE が音価(1/1 〜 1/32)になり、BPM に追従します。</span>
+            <span class="en">FREE sets rate in Hz; BPM SYNC turns RATE into note values (1/1 – 1/32) that follow the tempo.</span></td></tr>
+      <tr><td>RATE × DEPTH</td>
+        <td><span class="ja">固定帯にある枠です。X が速さ、Y が深さです。<b>DEPTH が 0 だと何も起きません。</b></span>
+            <span class="en">In the fixed strip. X is rate, Y is depth. <b>Nothing happens while DEPTH is 0.</b></span></td></tr>
+    </tbody>
+  </table>
+</div>
+  </section>
+
+  <nav class="pager" aria-label="前後のページ">
+    <a class="prev" href="05-touch.html">
+      <div class="dir"><span class="x ja">← 前</span><span class="x en">← Prev</span></div>
+      <div class="ttl">05 <span class="x ja">共通の操作</span><span class="x en">How Controls Work</span></div>
+    </a>
+    <a class="next" href="07-arp.html">
+      <div class="dir"><span class="x ja">次 →</span><span class="x en">Next →</span></div>
+      <div class="ttl">07 <span class="x ja">Arpeggiator</span><span class="x en">Arpeggiator</span></div>
+    </a>
+  </nav>
+
+  <footer>
+    <div class="fl">
+      <span>Hebith-FX · USER MANUAL · v2.14</span>
+      <span class="ja">モバイル Web / インストール不要 / オフライン動作</span>
+      <span class="en">MOBILE WEB / NO INSTALL / WORKS OFFLINE</span>
+    </div>
+  </footer>
+
+</div>
+<script src="assets/manual.js" defer></script>
+</body>
+</html>

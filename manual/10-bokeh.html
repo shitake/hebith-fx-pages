@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bokehlous Engine — Hebith-FX — User Manual</title>
+<meta name="description" content="グラニュラーエンジンの 11 アルゴリズムと、ルーパー。 / Eleven granular algorithms, plus the looper.">
+<link rel="stylesheet" href="assets/manual.css">
+<script>
+/* 言語とテーマを描画前に確定させる(ちらつき防止)。UI 側は assets/manual.js。 */
+(function(){var d=document.documentElement;try{
+var l=localStorage.getItem('hebith-manual-lang');
+if(l!=='ja'&&l!=='en') l=(navigator.language||'ja').toLowerCase().indexOf('ja')===0?'ja':'en';
+d.setAttribute('data-lang',l); d.setAttribute('lang',l);
+var t=localStorage.getItem('hebith-manual-theme');
+if(t==='light'||t==='dark') d.setAttribute('data-theme',t);
+}catch(e){}})();
+</script>
+</head>
+<body>
+
+<div class="bar-top">
+  <div class="bar-in">
+    <a class="bar-brand disp" href="index.html">Hebith<b>-</b>FX<span class="rev-no">MANUAL v2.14</span></a>
+    <nav class="pagenav" aria-label="ページ">
+      <a href="index.html"><span class="no">00</span><span class="label ja">目次</span><span class="label en">Index</span></a>
+      <a href="01-about.html"><span class="no">01</span><span class="label ja">Hebith-FX</span><span class="label en">About</span></a>
+      <a href="02-first.html"><span class="no">02</span><span class="label ja">最初の一音</span><span class="label en">First Sound</span></a>
+      <a href="03-start.html"><span class="no">03</span><span class="label ja">はじめに</span><span class="label en">Start</span></a>
+      <a href="04-map.html"><span class="no">04</span><span class="label ja">画面</span><span class="label en">Screen</span></a>
+      <a href="05-touch.html"><span class="no">05</span><span class="label ja">操作</span><span class="label en">Controls</span></a>
+      <a href="06-synth.html"><span class="no">06</span><span class="label ja">SYNTH</span><span class="label en">SYNTH</span></a>
+      <a href="07-arp.html"><span class="no">07</span><span class="label ja">ARP</span><span class="label en">ARP</span></a>
+      <a href="08-drum.html"><span class="no">08</span><span class="label ja">DRUM</span><span class="label en">DRUM</span></a>
+      <a href="09-punch.html"><span class="no">09</span><span class="label ja">PUNCH</span><span class="label en">PUNCH</span></a>
+      <a href="10-bokeh.html" aria-current="page"><span class="no">10</span><span class="label ja">BOKEH</span><span class="label en">BOKEH</span></a>
+      <a href="11-song.html"><span class="no">11</span><span class="label ja">保存</span><span class="label en">Songs</span></a>
+      <a href="12-trouble.html"><span class="no">12</span><span class="label ja">困ったとき</span><span class="label en">Trouble</span></a>
+    </nav>
+    <span class="bar-spacer"></span>
+    <div class="lang" role="group" aria-label="Language"></div>
+    <div class="theme" role="group" aria-label="テーマ切替"></div>
+  </div>
+</div>
+
+<div class="wrap" id="top">
+  <section id="bokeh">
+<div class="eyebrow">Granular — Bokehlous <span class="ref">10</span></div>
+<h2 class="disp">Bokehlous Engine</h2>
+
+<p class="lede ja">グラニュラーエンジン <b>Bokehlous</b>。音を細かい Grain に分けて撒き直します。
+  11 のアルゴリズムがあり、<b>タイル自身が XY コントローラ</b>です —— 押した場所がそのまま ACTIVITY × SHAPE になります。</p>
+<p class="lede en">The granular engine, <b>Bokehlous</b>. It breaks sound into grains and scatters them.
+  Eleven algorithms, and <b>each tile is its own XY controller</b> — where you press sets ACTIVITY × SHAPE.</p>
+
+<p class="note ja">タイルを押した瞬間にエンジンが ON になります。止めるときは <b>ENGINE</b> を押してください。</p>
+<p class="note en">Pressing a tile switches the engine on. Press <b>ENGINE</b> to switch it off again.</p>
+
+<div class="bankh k0"><span>LOOP</span><span>01–03</span></div>
+    <div class="fxlist">
+      <div class="fxrow k0">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><g class="axis" stroke-dasharray="2 2"><line x1="30" y1="6" x2="30" y2="64"/><line x1="60" y1="6" x2="60" y2="64"/><line x1="90" y1="6" x2="90" y2="64"/></g><path class="in" d="M2,14 H118"/><g class="outf"><rect x="4" y="42" width="22" height="6"/><rect x="32" y="30" width="22" height="6"/><rect x="62" y="48" width="22" height="6"/><rect x="92" y="34" width="22" height="6"/></g></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">MOSAIC</span><span class="sub">01</span></div>
+          <div class="desc"><span class="ja">スライスを並べ直す</span><span class="en">Reshuffles slices</span></div>
+          <div class="xyl"><span class="ja">長さ .05–.24s · 密度 3–20/s · グリッド整列</span><span class="en">Length .05–.24s · Density 3–20/s · Grid-locked</span></div>
+        </div>
+      </div>
+      <div class="fxrow k0">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><g class="axis" stroke-dasharray="2 2"><line x1="30" y1="6" x2="30" y2="64"/><line x1="60" y1="6" x2="60" y2="64"/><line x1="90" y1="6" x2="90" y2="64"/></g><path class="in" d="M2,12 H118"/><g class="outf"><rect x="4" y="26" width="24" height="4"/><rect x="34" y="26" width="24" height="4"/><rect x="64" y="26" width="24" height="4"/><rect x="94" y="26" width="22" height="4"/></g><g class="outf" opacity=".5"><rect x="4" y="46" width="24" height="8"/><rect x="34" y="46" width="24" height="8"/><rect x="64" y="46" width="24" height="8"/><rect x="94" y="46" width="22" height="8"/></g></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">SUB LOOP</span><span class="sub">02</span></div>
+          <div class="desc"><span class="ja">オクターブ下を重ねる</span><span class="en">Layers an octave below</span></div>
+          <div class="xyl"><span class="ja">長さ .08–.42s · 密度 2–13/s · 原音 + 1oct 下</span><span class="en">Length .08–.42s · Density 2–13/s · Source + 1 oct down</span></div>
+        </div>
+      </div>
+      <div class="fxrow k0">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><g class="axis" stroke-dasharray="2 2"><line x1="30" y1="6" x2="30" y2="64"/><line x1="60" y1="6" x2="60" y2="64"/><line x1="90" y1="6" x2="90" y2="64"/></g><path class="in" d="M2,64 H118"/><g class="outf"><rect x="6" y="50" width="16" height="5"/><rect x="28" y="41" width="16" height="5"/><rect x="50" y="31" width="16" height="5"/><rect x="72" y="18" width="16" height="5"/><rect x="94" y="31" width="16" height="5"/></g></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">ARP LOOP</span><span class="sub">03</span></div>
+          <div class="desc"><span class="ja">ピッチを順に送る(アルペジオ)</span><span class="en">Steps the pitch upward, like an arpeggio</span></div>
+          <div class="xyl"><span class="ja">長さ .04–.19s · 密度 5–26/s · ピッチ順送り</span><span class="en">Length .04–.19s · Density 5–26/s · Pitch steps up</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="bankh k1"><span>GRANULES</span><span>04–06</span></div>
+    <div class="fxlist">
+      <div class="fxrow k1">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M2,10 H118"/><g class="outf"><circle cx="8" cy="26" r="1.7"/><circle cx="14" cy="38" r="1.7"/><circle cx="19" cy="30" r="1.7"/><circle cx="25" cy="47" r="1.7"/><circle cx="30" cy="22" r="1.7"/><circle cx="35" cy="41" r="1.7"/><circle cx="41" cy="33" r="1.7"/><circle cx="46" cy="52" r="1.7"/><circle cx="52" cy="27" r="1.7"/><circle cx="57" cy="44" r="1.7"/><circle cx="62" cy="36" r="1.7"/><circle cx="68" cy="24" r="1.7"/><circle cx="73" cy="49" r="1.7"/><circle cx="78" cy="31" r="1.7"/><circle cx="84" cy="42" r="1.7"/><circle cx="89" cy="28" r="1.7"/><circle cx="95" cy="46" r="1.7"/><circle cx="100" cy="34" r="1.7"/><circle cx="106" cy="25" r="1.7"/><circle cx="111" cy="40" r="1.7"/><circle cx="11" cy="33" r="1.7"/><circle cx="22" cy="55" r="1.7"/><circle cx="38" cy="20" r="1.7"/><circle cx="49" cy="38" r="1.7"/><circle cx="66" cy="52" r="1.7"/><circle cx="80" cy="22" r="1.7"/><circle cx="92" cy="53" r="1.7"/><circle cx="103" cy="45" r="1.7"/><circle cx="116" cy="31" r="1.7"/><circle cx="16" cy="45" r="1.7"/></g></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">GRANULES</span><span class="sub">04</span></div>
+          <div class="desc"><span class="ja">同期しない細かい Grain Cloud</span><span class="en">An asynchronous cloud of fine grains</span></div>
+          <div class="xyl"><span class="ja">長さ .015–.10s · 密度 10–72/s · 散らばり大</span><span class="en">Length .015–.10s · Density 10–72/s · Wide scatter</span></div>
+        </div>
+      </div>
+      <div class="fxrow k1">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M2,10 H118"/><g class="outf"><rect x="6" y="22" width="36" height="5"/><rect x="27" y="34" width="36" height="5" opacity=".72"/><rect x="48" y="45" width="36" height="5" opacity=".48"/><rect x="69" y="56" width="36" height="5" opacity=".28"/></g></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">MULTI DLY</span><span class="sub">05</span></div>
+          <div class="desc"><span class="ja">読み出し位置を Delay Tap のように散らす</span><span class="en">Scatters read positions like delay taps</span></div>
+          <div class="xyl"><span class="ja">長さ .10–.55s · 密度 2–10/s · Delay Tap</span><span class="en">Length .10–.55s · Density 2–10/s · Delay taps</span></div>
+        </div>
+      </div>
+      <div class="fxrow k1">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M2,10 H118"/><g class="outf"><rect x="10" y="24" width="22" height="5"/><rect x="42" y="36" width="26" height="5"/><rect x="20" y="48" width="20" height="5"/><rect x="74" y="26" width="24" height="5"/><rect x="88" y="44" width="26" height="5"/><rect x="54" y="56" width="22" height="5"/></g><g class="outf"><path d="M42,38.5 l6,-4 l0,8 z"/><path d="M74,28.5 l6,-4 l0,8 z"/><path d="M54,58.5 l6,-4 l0,8 z"/></g></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">DIFFUSE</span><span class="sub">06</span></div>
+          <div class="desc"><span class="ja">半分を逆再生してにじませる</span><span class="en">Half the grains reversed, smearing it out</span></div>
+          <div class="xyl"><span class="ja">長さ .04–.30s · 密度 8–54/s · 逆再生 50%</span><span class="en">Length .04–.30s · Density 8–54/s · 50% reversed</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="bankh k2"><span>GLIDE</span><span>07–09</span></div>
+    <div class="fxlist">
+      <div class="fxrow k2">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M2,62 H118"/><g class="out"><path d="M6,54 L22,38"/><path d="M28,56 L44,36"/><path d="M50,52 L66,32"/><path d="M72,55 L88,30"/><path d="M94,50 L110,28"/></g></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">WARP</span><span class="sub">07</span></div>
+          <div class="desc"><span class="ja">Grain が鳴っている間にピッチが Glide する</span><span class="en">Pitch glides across the life of each grain</span></div>
+          <div class="xyl"><span class="ja">長さ .08–.36s · 密度 5–34/s · Grain の中で Glide</span><span class="en">Length .08–.36s · Density 5–34/s · Glide within the grain</span></div>
+        </div>
+      </div>
+      <div class="fxrow k2">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M2,64 H118"/><g class="outf"><rect x="10" y="14" width="30" height="4"/><rect x="66" y="14" width="26" height="4"/><rect x="24" y="27" width="30" height="4"/><rect x="80" y="27" width="24" height="4"/><rect x="6" y="40" width="30" height="4"/><rect x="60" y="40" width="30" height="4"/><rect x="30" y="52" width="28" height="4"/><rect x="88" y="52" width="24" height="4"/></g></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">PITCH</span><span class="sub">08</span></div>
+          <div class="desc"><span class="ja">決まった音程を重ねる</span><span class="en">Layers a fixed transposition</span></div>
+          <div class="xyl"><span class="ja">長さ .05–.26s · 密度 6–40/s · 音程 ½·1·1½·2</span><span class="en">Length .05–.26s · Density 6–40/s · Pitches ½·1·1½·2</span></div>
+        </div>
+      </div>
+      <div class="fxrow k2">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M2,12 H118"/><g class="out"><path d="M2,60 L20,32 L44,32 L62,60"/><path d="M32,60 L50,32 L74,32 L92,60"/><path d="M62,60 L80,32 L104,32 L118,60"/></g></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">BLUR</span><span class="sub">09</span></div>
+          <div class="desc"><span class="ja">長いクロスフェードでぼかす</span><span class="en">Long crossfades that blur the edges</span></div>
+          <div class="xyl"><span class="ja">長さ .15–.70s · 密度 6–24/s · 長いクロスフェード</span><span class="en">Length .15–.70s · Density 6–24/s · Long crossfades</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="bankh k3"><span>HAZE</span><span>10–11</span></div>
+    <div class="fxlist">
+      <div class="fxrow k3">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><g class="outf"><rect x="10" y="18" width="72" height="6" opacity=".5"/><rect x="30" y="32" width="82" height="6" opacity=".68"/><rect x="16" y="46" width="66" height="6" opacity=".42"/></g><g class="outf"><path d="M10,21 l6,-4 l0,8 z"/><path d="M16,49 l6,-4 l0,8 z"/></g></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">HAZE</span><span class="sub">10</span></div>
+          <div class="desc"><span class="ja">長い Grain を逆再生して Fog にする</span><span class="en">Long reversed grains turn it to fog</span></div>
+          <div class="xyl"><span class="ja">長さ .22–.95s · 密度 3–16/s · 逆再生 65%</span><span class="en">Length .22–.95s · Density 3–16/s · 65% reversed</span></div>
+        </div>
+      </div>
+      <div class="fxrow k3">
+        <svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M2,50 H22 L26,62 L32,50 H52 L56,62 L62,50 H86 L90,62 L96,50 H118"/><g class="outf"><rect x="22" y="20" width="10" height="7"/><rect x="52" y="16" width="10" height="7"/><rect x="86" y="24" width="10" height="7"/></g></svg>
+        <div class="body">
+          <div class="top"><span class="nm disp">INTERRUPT</span><span class="sub">11</span></div>
+          <div class="desc"><span class="ja">Grain が出るたび Dry を Duck させる</span><span class="en">Ducks the dry signal as each grain fires</span></div>
+          <div class="xyl"><span class="ja">長さ .03–.32s · 密度 1.5–11/s · Dry を Duck</span><span class="en">Length .03–.32s · Density 1.5–11/s · Ducks the dry</span></div>
+        </div>
+      </div>
+    </div>
+
+<p class="note ja">軸の名前はタイルに書いていません。11 枚とも <b>ACTIVITY × SHAPE</b> で同じだからで、
+  グリッドの上に一度だけ示してあります。値はアルゴリズムごとに別々に保たれるので、
+  切り替えて戻ってきても置いた場所は変わりません。</p>
+<p class="note en">The tiles carry no axis labels — all eleven use the same <b>ACTIVITY × SHAPE</b> pair,
+  printed once above the grid. Each algorithm keeps its own values, so switching away and back leaves your setting intact.</p>
+
+<h3><span class="ja">全アルゴリズム共通の枠</span><span class="en">Shared cells</span></h3>
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">枠</span><span class="en">Cell</span></th>
+      <th><span class="ja">X →</span><span class="en">Across →</span></th>
+      <th><span class="ja">Y ↑</span><span class="en">Up ↑</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td>BUFFER</td><td>TIME</td><td>REPEATS</td></tr>
+      <tr><td>BLEND</td><td>MIX</td><td>SPACE</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="note ja">Grain の出力を入口へ戻す仕組みを持っているので、<b>REPEATS を上げきると、元の音を切っても鳴り続けます</b>。</p>
+<p class="note en">Grain output feeds back into the input, so <b>with REPEATS all the way up it keeps sounding
+  even after the source stops</b>.</p>
+
+<h3>LOOPER</h3>
+<p class="ja">演奏をその場で焼き付けて回します。最大 20 秒です。</p>
+<p class="en">Bakes your performance into a loop on the spot. Up to 20 seconds.</p>
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">操作子</span><span class="en">Control</span></th>
+      <th><span class="ja">内容</span><span class="en">What it does</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td>REC</td><td><span class="ja">録音の開始と終了です。終わった長さが、そのままループの長さになります。</span>
+        <span class="en">Starts and ends recording. The length you record becomes the loop length.</span></td></tr>
+      <tr><td>PLAY</td><td><span class="ja">ループの再生と停止です。</span><span class="en">Plays or stops the loop.</span></td></tr>
+      <tr><td>O.DUB</td><td><span class="ja">重ね録りです。点灯中は再生しながら上へ重ねます。</span>
+        <span class="en">Overdub. While lit, new material layers on top as it plays.</span></td></tr>
+      <tr><td>CLEAR</td><td><span class="ja">ループを消します。</span><span class="en">Erases the loop.</span></td></tr>
+      <tr><td>FADE</td><td><span class="ja">周回ごとに古い音を薄くします。OFF なら薄くなりません。</span>
+        <span class="en">Fades older layers a little each pass. OFF keeps them forever.</span></td></tr>
+    </tbody>
+  </table>
+</div>
+  </section>
+
+  <nav class="pager" aria-label="前後のページ">
+    <a class="prev" href="09-punch.html">
+      <div class="dir"><span class="x ja">← 前</span><span class="x en">← Prev</span></div>
+      <div class="ttl">09 <span class="x ja">Punch-in FX</span><span class="x en">Punch-in FX</span></div>
+    </a>
+    <a class="next" href="11-song.html">
+      <div class="dir"><span class="x ja">次 →</span><span class="x en">Next →</span></div>
+      <div class="ttl">11 <span class="x ja">曲の保存と読み込み</span><span class="x en">Saving &amp; Loading</span></div>
+    </a>
+  </nav>
+
+  <footer>
+    <div class="fl">
+      <span>Hebith-FX · USER MANUAL · v2.14</span>
+      <span class="ja">モバイル Web / インストール不要 / オフライン動作</span>
+      <span class="en">MOBILE WEB / NO INSTALL / WORKS OFFLINE</span>
+    </div>
+  </footer>
+
+</div>
+<script src="assets/manual.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,644 @@
+/* 生成物。編集しないこと。
+   docs/design/assets/design.css + docs/manual/src/extra.css
+   → tools/build-manual.cjs が連結する。 */
+
+/* ============================================================
+   Hebith-FX Design Document — スタイル
+   色はすべてトークン経由。生の色をルールへ直接書かないこと
+   (ライトテーマが破綻するため)。
+
+   テーマの決まり方:
+     :root                     … ダーク(既定)
+     prefers-color-scheme:light … ライト。ただし data-theme="dark" が勝つ
+     [data-theme="light"]      … 明示ライト(OS 設定より優先)
+   ============================================================ */
+
+:root{
+  color-scheme:dark;
+
+  /* --- 面 --- */
+  --bg:#0a0b0e;
+  --panel:#14161c;
+  --panel2:#1b1e26;
+  --frame:#0d0f14;                  /* 波形フレームの地 */
+  --trace:#2a2e3a;                  /* 基板の配線 = 罫線 */
+  --rule:rgba(42,46,58,.5);
+  --rule-soft:rgba(42,46,58,.4);
+  --grid:rgba(255,255,255,.014);    /* 背景の方眼 */
+  --grid-frame:rgba(255,255,255,.03);
+  --stage:rgba(255,255,255,.012);
+  --hover:rgba(255,255,255,.015);
+  --glow:rgba(255,122,24,.06);
+  --veil:rgba(10,11,14,.86);        /* 固定ヘッダの下地 */
+
+  /* --- 文字 --- */
+  --silk:#c9ccd4;                   /* シルク印刷の白 */
+  --silk-dim:#5b616f;
+  --body:#aab0bd;
+  --body-dim:#9aa1ae;
+  --muted:#8a909d;
+  --faint:#7a8090;
+  --ghost:#3a4050;                  /* SVG の入力波形(ゴースト) */
+
+  /* --- 差し色。機能の言語であり、テーマ間で役割を変えない --- */
+  --copper:#c98a3a;                 /* 銅箔 */
+  --on-copper:#0a0b0e;              /* 銅箔の上に載せる文字。両テーマとも暗いインク */
+
+  /* ロゴ「Hebith-FX」。字はグレー、ハイフンだけオレンジ(v2.9 の作法)。
+     ライト側のブロックで再定義しないこと —— テーマに関わらず同じ色で通すための
+     意図的な設計。--brand はダーク地・ライト地の双方から等距離になる明度を選んである。 */
+  --brand:#71757e;
+  --brand-mark:#ff7a18;
+  --time:#ff7a18;
+  --pitch:#a56bff;
+  --dest:#ff2d55;
+  --space:#26d9c3;
+  --loop:#ffd93d;
+  --gran:#4da3ff;
+  --glide:#ff6fb5;
+  --haze:#8affc1;
+  --synth:#7ee8fa;
+  --arp:#ffb454;
+  --dr:#ff5c5c;
+
+  /* --- 部品 --- */
+  --screw-hi:#3a3f4b;
+  --screw-lo:#0e1014;
+  --screw-br:#23262f;
+  --screw-slot:#0a0b0e;
+  --code:#8affc1;
+  --code-bg:rgba(138,255,193,.08);
+  --code-br:rgba(138,255,193,.18);
+  --link:#26d9c3;
+  --link-br:rgba(38,217,195,.3);
+}
+
+/* ライト。v2.9 の色相をそのまま明度反転する(青寄りのニュートラル)。
+   差し色は色相を据え置いたまま明度だけを落とす —— ダークの明るい値を白地へ
+   持ち込むとコントラスト比が AA(4.5)に遠く届かないため(--haze で 1.22)。
+   色の役割はテーマ間で変えず、同じ色相のまま読める明度へ振り直す、という切り分け。 */
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    color-scheme:light;
+
+    --bg:#f2f3f6;
+    --panel:#ffffff;
+    --panel2:#eceef3;
+    --frame:#eef0f4;
+    --trace:#d2d5dd;
+    --rule:rgba(42,46,58,.16);
+    --rule-soft:rgba(42,46,58,.11);
+    --grid:rgba(20,25,40,.030);
+    --grid-frame:rgba(20,25,40,.055);
+    --stage:rgba(20,25,40,.022);
+    --hover:rgba(20,25,40,.035);
+    --glow:rgba(255,122,24,.10);
+    --veil:rgba(242,243,246,.88);
+
+    --silk:#191c22;
+    --silk-dim:#646b7a;
+    --body:#3a4049;
+    --body-dim:#4b515b;
+    --muted:#5a616c;
+    --faint:#666d7b;
+    --ghost:#c2c7d1;
+
+    /* 差し色はライト専用の暗い値。色相・彩度は v2.9 のまま、明度だけを落として
+       最も暗いライト面(--panel2 #eceef3)に対して AA(4.5)を満たす。
+       --copper は据え置く —— 面として使い、その上に --on-copper を載せる対があるため。 */
+    --copper:#c98a3a;
+    --on-copper:#0a0b0e;
+    --time:#b34c00;
+    --pitch:#8536ff;
+    --dest:#d80029;
+    --space:#12786c;
+    --loop:#826900;
+    --gran:#0068d7;
+    --glide:#d30067;
+    --haze:#007c3a;
+    --synth:#027689;
+    --arp:#a05a00;
+    --dr:#d90000;
+
+    --screw-hi:#ffffff;
+    --screw-lo:#c6cad4;
+    --screw-br:#c0c4ce;
+    --screw-slot:#e6e8ee;
+    --code:#007c3a;
+    --code-bg:rgba(0,124,58,.07);
+    --code-br:rgba(0,124,58,.20);
+    --link:#12786c;
+    --link-br:rgba(18,120,108,.35);
+  }
+}
+
+/* 明示ライト。OS がダークでもこちらが勝つ。 */
+:root[data-theme="light"]{
+  color-scheme:light;
+
+  --bg:#f2f3f6;
+  --panel:#ffffff;
+  --panel2:#eceef3;
+  --frame:#eef0f4;
+  --trace:#d2d5dd;
+  --rule:rgba(42,46,58,.16);
+  --rule-soft:rgba(42,46,58,.11);
+  --grid:rgba(20,25,40,.030);
+  --grid-frame:rgba(20,25,40,.055);
+  --stage:rgba(20,25,40,.022);
+  --hover:rgba(20,25,40,.035);
+  --glow:rgba(255,122,24,.10);
+  --veil:rgba(242,243,246,.88);
+
+  --silk:#191c22;
+  --silk-dim:#646b7a;
+  --body:#3a4049;
+  --body-dim:#4b515b;
+  --muted:#5a616c;
+  --faint:#666d7b;
+  --ghost:#c2c7d1;
+
+  /* 差し色はライト専用の暗い値(上のメディアクエリと同値) */
+  --copper:#c98a3a;
+  --on-copper:#0a0b0e;
+  --time:#b34c00;
+  --pitch:#8536ff;
+  --dest:#d80029;
+  --space:#12786c;
+  --loop:#826900;
+  --gran:#0068d7;
+  --glide:#d30067;
+  --haze:#007c3a;
+  --synth:#027689;
+  --arp:#a05a00;
+  --dr:#d90000;
+
+  --screw-hi:#ffffff;
+  --screw-lo:#c6cad4;
+  --screw-br:#c0c4ce;
+  --screw-slot:#e6e8ee;
+  --code:#007c3a;
+  --code-bg:rgba(0,124,58,.07);
+  --code-br:rgba(0,124,58,.20);
+  --link:#12786c;
+  --link-br:rgba(18,120,108,.35);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--silk);
+  font-family:'SF Mono',ui-monospace,Menlo,Consolas,monospace;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  /* 基板のうっすらしたグリッド */
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:22px 22px;
+}
+.disp{font-family:'Avenir Next Condensed','HelveticaNeue-CondensedBold','Arial Narrow',sans-serif;}
+
+.wrap{max-width:940px;margin:0 auto;padding:0 22px;}
+
+/* ===== nameplate / hero ===== */
+.plate{
+  border-bottom:1px solid var(--trace);
+  padding:52px 0 30px;
+  position:relative;
+}
+.plate::before{
+  content:'';position:absolute;top:20px;right:22px;width:9px;height:9px;border-radius:50%;
+  background:var(--time);box-shadow:0 0 12px var(--time);
+}
+.screwTL,.screwTR{position:absolute;top:16px;width:13px;height:13px;border-radius:50%;
+  background:radial-gradient(circle at 38% 34%,var(--screw-hi),var(--screw-lo));border:1px solid var(--screw-br);}
+.screwTL{left:22px;} .screwTR::after,.screwTL::after{content:'';position:absolute;inset:4px 1px;
+  background:var(--screw-slot);transform:rotate(28deg);border-radius:1px;}
+.kicker{
+  font-size:10px;letter-spacing:5px;color:var(--silk-dim);text-transform:uppercase;
+  display:flex;gap:14px;align-items:center;margin-bottom:20px;
+}
+.kicker .bar{height:1px;flex:1;background:var(--trace);}
+h1.name{
+  font-size:clamp(58px,15vw,148px);line-height:.82;letter-spacing:-2px;font-weight:700;
+  color:var(--brand);
+}
+h1.name b{color:var(--brand-mark);}
+.sub{
+  margin-top:18px;font-size:13px;letter-spacing:1px;color:var(--silk-dim);max-width:560px;
+}
+.sub em{font-style:normal;color:var(--silk);}
+.meta{
+  display:flex;flex-wrap:wrap;gap:8px 26px;margin-top:26px;font-size:10px;letter-spacing:2px;
+  color:var(--silk-dim);text-transform:uppercase;
+}
+.meta span b{color:var(--silk);font-weight:400;letter-spacing:1px;}
+
+/* ===== section frame ===== */
+section{padding:46px 0;border-bottom:1px solid var(--trace);}
+.eyebrow{
+  font-size:10px;letter-spacing:4px;color:var(--copper);text-transform:uppercase;
+  display:flex;align-items:baseline;gap:12px;margin-bottom:22px;
+}
+.eyebrow .ref{
+  color:var(--silk-dim);border:1px solid var(--trace);border-radius:3px;
+  padding:2px 7px;font-size:9px;letter-spacing:2px;
+}
+h2{font-size:clamp(26px,5vw,40px);letter-spacing:-.5px;line-height:1.05;font-weight:700;margin-bottom:10px;}
+h2 + .lede{color:var(--silk-dim);font-size:14px;max-width:640px;margin-bottom:14px;}
+h3{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--silk);margin:30px 0 12px;
+   display:flex;align-items:center;gap:10px;}
+h3::before{content:'';width:14px;height:1px;background:var(--copper);}
+p{color:var(--body);font-size:14px;margin-bottom:14px;}
+p strong{color:var(--silk);font-weight:600;}
+a{color:var(--link);text-decoration:none;border-bottom:1px solid var(--link-br);}
+code{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:.88em;color:var(--code);
+  background:var(--code-bg);border:1px solid var(--code-br);border-radius:3px;padding:1px 5px;}
+pre.ascii{font-family:inherit;font-size:11px;line-height:1.5;color:var(--muted);
+  letter-spacing:.5px;overflow-x:auto;margin:0;}
+
+/* ===== the three pillars (design principles) ===== */
+.pillars{display:grid;grid-template-columns:1fr;gap:1px;background:var(--trace);
+  border:1px solid var(--trace);border-radius:8px;overflow:hidden;margin-top:8px;}
+@media(min-width:720px){.pillars{grid-template-columns:repeat(3,1fr);}}
+.pillar{background:var(--panel);padding:22px 20px 24px;}
+.pillar .n{font-size:10px;letter-spacing:2px;color:var(--silk-dim);}
+.pillar .t{font-size:17px;font-weight:700;margin:8px 0 10px;letter-spacing:.3px;}
+.pillar p{font-size:12.5px;margin:0;color:var(--body-dim);line-height:1.65;}
+.pillar.p1 .t{color:var(--time);}
+.pillar.p2 .t{color:var(--space);}
+.pillar.p3 .t{color:var(--haze);}
+
+/* ===== signal flow (the signature) ===== */
+.board{
+  background:
+    radial-gradient(1200px 300px at 50% -10%,var(--glow),transparent),
+    var(--panel);
+  border:1px solid var(--trace);border-radius:10px;padding:26px 20px;margin-top:6px;
+  overflow-x:auto;
+}
+.flow{display:flex;flex-direction:column;align-items:center;gap:0;min-width:280px;}
+.node{
+  position:relative;background:var(--panel2);border:1px solid var(--trace);border-radius:6px;
+  padding:11px 16px;text-align:center;min-width:210px;
+}
+.node .lbl{font-size:12px;letter-spacing:1.5px;font-weight:700;}
+.node .det{font-size:9px;letter-spacing:1px;color:var(--silk-dim);margin-top:3px;}
+.node.accent{border-color:currentColor;}
+.node.accent .lbl{color:currentColor;}
+.wireV{width:1px;height:20px;background:var(--copper);opacity:.6;}
+.wireV.dot{background:repeating-linear-gradient(var(--copper) 0 3px,transparent 3px 6px);}
+.stageWrap{border:1px dashed var(--trace);border-radius:8px;padding:14px 12px 12px;margin:2px 0;
+  position:relative;background:var(--stage);}
+.stageWrap .cap{position:absolute;top:-8px;left:14px;background:var(--bg);padding:0 8px;
+  font-size:8px;letter-spacing:2px;color:var(--silk-dim);}
+.stageWrap .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.chip{background:var(--panel2);border:1px solid var(--trace);border-radius:5px;padding:8px 12px;
+  font-size:11px;letter-spacing:1px;text-align:center;min-width:88px;}
+.chip .c2{font-size:8px;color:var(--silk-dim);display:block;margin-top:2px;letter-spacing:.5px;}
+.worklet{border-color:var(--haze);}
+.worklet .cap{color:var(--haze);}
+.split{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+
+/* ===== spec tables ===== */
+.tbl{width:100%;border-collapse:collapse;margin-top:10px;font-size:12.5px;}
+.tbl th{
+  text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--silk-dim);
+  font-weight:400;padding:7px 12px;border-bottom:1px solid var(--trace);
+}
+.tbl td{padding:9px 12px;border-bottom:1px solid var(--rule);color:var(--body);vertical-align:top;}
+.tbl td:first-child{color:var(--silk);white-space:nowrap;font-size:11px;letter-spacing:1px;}
+.tbl tr:hover td{background:var(--hover);}
+.tag{display:inline-block;font-size:9px;letter-spacing:1px;padding:2px 7px;border-radius:3px;
+  border:1px solid currentColor;white-space:nowrap;}
+
+/* ===== FX matrix (silkscreen legend) ===== */
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:14px 0 18px;font-size:10px;letter-spacing:1px;}
+.legend span{display:flex;align-items:center;gap:6px;color:var(--silk-dim);}
+.legend i{width:9px;height:9px;border-radius:2px;display:inline-block;}
+.matrix{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;}
+@media(min-width:620px){.matrix{grid-template-columns:repeat(4,1fr);}}
+.fx{
+  background:var(--panel);border:1px solid var(--trace);border-radius:6px;padding:12px 10px 11px;
+  position:relative;overflow:hidden;
+}
+.fx::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:currentColor;opacity:.7;}
+.fx .fn{font-size:14px;font-weight:700;letter-spacing:.4px;color:currentColor;line-height:1;}
+.fx .fd{font-size:8.5px;letter-spacing:.8px;color:var(--silk-dim);margin-top:4px;}
+.fx .xy{font-size:8px;color:var(--faint);margin-top:8px;letter-spacing:.3px;line-height:1.5;}
+.fx .xy b{color:var(--body);font-weight:400;}
+.fx.time{color:var(--time);} .fx.pitch{color:var(--pitch);}
+.fx.dest{color:var(--dest);} .fx.space{color:var(--space);}
+
+/* ===== FX waveform gallery ===== */
+.gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px;}
+@media(min-width:560px){.gallery{grid-template-columns:repeat(3,1fr);}}
+@media(min-width:820px){.gallery{grid-template-columns:repeat(4,1fr);}}
+.viz{
+  background:var(--panel);border:1px solid var(--trace);border-radius:7px;overflow:hidden;
+  position:relative;
+}
+.viz .frame{
+  display:block;width:100%;height:70px;background:
+    linear-gradient(90deg,var(--grid-frame) 1px,transparent 1px) 0 50%/20px 100%,
+    linear-gradient(0deg,var(--grid-frame) 1px,transparent 1px) 0 0/100% 50%,
+    var(--frame);
+}
+.viz .cap{display:flex;align-items:center;justify-content:space-between;
+  padding:7px 10px 8px;border-top:1px solid var(--trace);}
+.viz .cap .vn{font-size:11px;font-weight:700;letter-spacing:.5px;color:currentColor;}
+.viz .cap .vt{font-size:7.5px;letter-spacing:.5px;color:var(--silk-dim);text-align:right;}
+.viz.time{color:var(--time);} .viz.pitch{color:var(--pitch);}
+.viz.dest{color:var(--dest);} .viz.space{color:var(--space);}
+.viz .in{stroke:var(--ghost);stroke-width:1.4;fill:none;}     /* 入力(ゴースト) */
+.viz .out{stroke:currentColor;stroke-width:1.6;fill:none;}
+.viz .outf{fill:currentColor;stroke:none;}
+.viz .dim{stroke:currentColor;stroke-width:1;fill:none;opacity:.35;}
+.viz .axis{stroke:var(--trace);stroke-width:1;}
+
+/* ===== FX one-row-per-effect list ===== */
+.fxlist{display:flex;flex-direction:column;gap:5px;margin-top:6px;}
+.fxrow{
+  display:grid;grid-template-columns:88px 1fr;gap:13px;align-items:center;
+  background:var(--panel);border:1px solid var(--trace);border-radius:7px;
+  padding:9px 13px 9px 10px;position:relative;overflow:hidden;
+}
+.fxrow::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:currentColor;opacity:.85;}
+.fxrow .thumb{width:88px;height:46px;display:block;background:var(--frame);border-radius:4px;
+  border:1px solid var(--trace);}
+.fxrow .body{min-width:0;}
+.fxrow .top{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;}
+.fxrow .nm{font-size:15px;font-weight:700;letter-spacing:.4px;color:currentColor;line-height:1;}
+.fxrow .cat{font-size:8px;letter-spacing:1.5px;border:1px solid currentColor;border-radius:3px;
+  padding:1px 5px;color:currentColor;opacity:.85;}
+.fxrow .sub{font-size:8.5px;letter-spacing:1px;color:var(--silk-dim);}
+.fxrow .desc{font-size:12px;color:var(--body);margin-top:5px;line-height:1.4;}
+.fxrow .xyl{font-size:9px;color:var(--silk-dim);letter-spacing:.5px;margin-top:3px;}
+.fxrow.time{color:var(--time);} .fxrow.pitch{color:var(--pitch);}
+.fxrow.dest{color:var(--dest);} .fxrow.space{color:var(--space);}
+.fxrow .in{stroke:var(--ghost);stroke-width:1.4;fill:none;}
+.fxrow .out{stroke:currentColor;stroke-width:1.6;fill:none;}
+.fxrow .outf{fill:currentColor;stroke:none;}
+.fxrow .dim{stroke:currentColor;stroke-width:1;fill:none;opacity:.35;}
+.fxrow .axis{stroke:var(--trace);stroke-width:1;}
+
+/* ===== algorithm banks =====
+   Bokehlous も 1 行 1 アルゴリズムの .fxlist で並べる(Punch-in FX と同じ形)。
+   バンクは見出しで区切り、行の色でも示す —— FX の TIME / PITCH / DESTROY / SPACE
+   と同じ役割を LOOP / GRANULES / GLIDE / HAZE が果たす。 */
+.bankh{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-size:11px;letter-spacing:2px;font-weight:700;
+  margin:24px 0 8px;padding-bottom:7px;border-bottom:1px solid var(--trace);
+}
+.bankh.k0{color:var(--loop);}  .bankh.k1{color:var(--gran);}
+.bankh.k2{color:var(--glide);} .bankh.k3{color:var(--haze);}
+.fxrow.k0{color:var(--loop);}  .fxrow.k1{color:var(--gran);}
+.fxrow.k2{color:var(--glide);} .fxrow.k3{color:var(--haze);}
+
+/* ===== two column ===== */
+.cols{display:grid;gap:22px;}
+@media(min-width:720px){.cols{grid-template-columns:1fr 1fr;}}
+.card{background:var(--panel);border:1px solid var(--trace);border-radius:8px;padding:18px 18px 20px;}
+.card h4{font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;color:var(--silk);}
+ul.clean{list-style:none;}
+ul.clean li{font-size:12.5px;color:var(--body-dim);padding:6px 0 6px 18px;position:relative;
+  border-bottom:1px solid var(--rule-soft);}
+ul.clean li:last-child{border-bottom:none;}
+ul.clean li::before{content:'';position:absolute;left:0;top:13px;width:6px;height:6px;
+  border:1px solid var(--copper);border-radius:1px;transform:rotate(45deg);}
+ul.clean li b{color:var(--silk);letter-spacing:.5px;}
+.warn li::before{border-color:var(--dest);}
+
+/* decision log */
+.log{position:relative;padding-left:26px;}
+.log::before{content:'';position:absolute;left:6px;top:6px;bottom:6px;width:1px;background:var(--trace);}
+.rev{position:relative;padding:0 0 22px;}
+.rev::before{content:'';position:absolute;left:-24px;top:5px;width:11px;height:11px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--copper);}
+.rev .rv{font-size:10px;letter-spacing:2px;color:var(--copper);}
+.rev .rt{font-size:14px;font-weight:700;margin:3px 0 6px;color:var(--silk);}
+.rev p{font-size:12.5px;margin:0;}
+
+footer{padding:40px 0 70px;color:var(--silk-dim);font-size:11px;letter-spacing:1px;}
+footer .fl{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+
+/* ============================================================
+   複数ページ化に伴う部品
+   ============================================================ */
+
+/* ===== 固定バー: 通し番号 + ページ移動 + テーマ ===== */
+.bar-top{
+  position:sticky;top:0;z-index:30;
+  background:var(--veil);backdrop-filter:saturate(150%) blur(10px);
+  border-bottom:1px solid var(--trace);
+}
+.bar-in{
+  max-width:940px;margin:0 auto;padding:0 22px;
+  display:flex;align-items:center;gap:14px;min-height:46px;
+}
+.bar-brand{
+  font-size:12px;letter-spacing:2px;font-weight:700;color:var(--brand);
+  text-decoration:none;border:none;white-space:nowrap;
+}
+.bar-brand b{color:var(--brand-mark);}
+.bar-brand .rev-no{
+  font-size:8px;letter-spacing:2px;color:var(--silk-dim);margin-left:8px;font-weight:400;
+}
+.bar-spacer{flex:1;}
+
+/* ページ移動。狭い画面では横スクロールさせ、折り返さない。 */
+.pagenav{
+  display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;
+}
+.pagenav::-webkit-scrollbar{display:none;}
+.pagenav a{
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--silk-dim);
+  text-decoration:none;border:none;padding:6px 9px;border-radius:4px;white-space:nowrap;
+  display:flex;align-items:center;gap:6px;transition:.15s;
+}
+.pagenav a .no{font-size:8px;color:var(--copper);opacity:.8;}
+.pagenav a:hover{color:var(--silk);background:var(--hover);}
+.pagenav a[aria-current="page"]{color:var(--silk);background:var(--panel2);}
+.pagenav a[aria-current="page"] .no{opacity:1;}
+
+/* 狭い画面ではページ移動を 2 段目へ落とす(1 行に詰めると番号すら切れるため) */
+@media(max-width:900px){
+  .bar-in{flex-wrap:wrap;padding-bottom:6px;gap:10px;}
+  .bar-spacer{display:none;}
+  .pagenav{order:3;flex-basis:100%;margin:0 -22px;padding:0 22px;}
+}
+/* 狭い画面でもページ名は残す —— 番号だけでは、どこへ飛ぶのか読めない。
+   代わりに余白を詰め、はみ出した分は横スクロールで見せる。現在地は
+   nav.js が帯の中央へ寄せる。 */
+@media(max-width:560px){ .pagenav a{padding:6px 7px;gap:4px;} }
+
+/* テーマ切替。AUTO / LIGHT / DARK の 3 状態。 */
+.theme{
+  display:flex;gap:1px;background:var(--trace);border:1px solid var(--trace);
+  border-radius:5px;overflow:hidden;flex-shrink:0;
+}
+.theme button{
+  font:inherit;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;
+  background:var(--panel);color:var(--silk-dim);border:none;cursor:pointer;
+  padding:5px 8px;transition:.15s;
+}
+.theme button:hover{color:var(--silk);}
+.theme button[aria-pressed="true"]{background:var(--copper);color:var(--on-copper);}
+@media(max-width:520px){ .theme button{padding:5px 6px;letter-spacing:1px;} }
+
+/* ===== 目次(index) ===== */
+.toc-grid{display:grid;gap:10px;margin-top:8px;}
+@media(min-width:660px){.toc-grid{grid-template-columns:1fr 1fr;}}
+.toc-card{
+  display:block;text-decoration:none;border:1px solid var(--trace);border-radius:8px;
+  background:var(--panel);padding:16px 18px 18px;transition:.15s;position:relative;overflow:hidden;
+}
+.toc-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:currentColor;opacity:.8;
+}
+.toc-card:hover{border-color:currentColor;background:var(--panel2);}
+.toc-card .no{font-size:9px;letter-spacing:2px;color:currentColor;}
+.toc-card .ttl{font-size:16px;font-weight:700;letter-spacing:.3px;color:var(--silk);margin:6px 0 7px;}
+.toc-card .dsc{font-size:12px;color:var(--body-dim);line-height:1.6;}
+.toc-card .secs{
+  font-size:9px;letter-spacing:1.5px;color:var(--silk-dim);margin-top:10px;text-transform:uppercase;
+}
+.toc-card.c0{color:var(--time);}   .toc-card.c1{color:var(--synth);}
+.toc-card.c2{color:var(--arp);}    .toc-card.c3{color:var(--dest);}
+.toc-card.c4{color:var(--space);}  .toc-card.c5{color:var(--copper);}
+
+/* ===== 前後ページ ===== */
+.pager{
+  display:grid;gap:10px;padding:34px 0 0;border-top:1px solid var(--trace);margin-top:8px;
+}
+@media(min-width:660px){.pager{grid-template-columns:1fr 1fr;}}
+.pager a{
+  text-decoration:none;border:1px solid var(--trace);border-radius:8px;background:var(--panel);
+  padding:14px 16px;transition:.15s;display:block;
+}
+.pager a:hover{border-color:var(--copper);background:var(--panel2);}
+.pager .dir{font-size:9px;letter-spacing:2px;color:var(--copper);text-transform:uppercase;}
+.pager .ttl{font-size:14px;font-weight:700;color:var(--silk);margin-top:5px;}
+.pager .next{text-align:right;}
+.pager .next:only-child{grid-column:2;}
+
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto;transition:none!important;}}
+
+
+/* ============================================================
+   ユーザマニュアル 固有のスタイル
+
+   デザインドキュメントの design.css を土台に、マニュアルにしか
+   出てこない部品だけをここで足す。色は必ずトークン経由で参照し、
+   生の色をここへ書かないこと —— 土台側のライト / ダークが崩れる。
+   ============================================================ */
+
+/* ===== 言語の出し分け =====
+   日本語と英語を対で持ち、data-lang で片方だけ見せる。
+   !important は必須 —— 土台側に .mflow .mfn b{display:block} のような
+   詳細度の高い規則があり、素の display:none では負けて両言語が出る。 */
+[data-lang="ja"] .en{display:none !important;}
+[data-lang="en"] .ja{display:none !important;}
+
+/* 言語切替。テーマ切替(.theme)と同じ見た目にする。 */
+.lang{
+  display:flex;gap:1px;background:var(--trace);border:1px solid var(--trace);
+  border-radius:5px;overflow:hidden;flex-shrink:0;
+}
+.lang button{
+  font:inherit;font-size:8px;letter-spacing:1.5px;
+  background:var(--panel);color:var(--silk-dim);border:none;cursor:pointer;
+  padding:5px 8px;transition:.15s;
+}
+.lang button:hover{color:var(--silk);}
+.lang button[aria-pressed="true"]{background:var(--copper);color:var(--on-copper);}
+@media(max-width:520px){ .lang button{padding:5px 6px;letter-spacing:1px;} }
+
+/* ===== 本文 =====
+   design.css の .lede は h2 の直後だけに効く。日英を対で置くと 2 本目が
+   隣接しなくなるため、クラス単独でも同じ見た目にしておく。 */
+.lede{color:var(--silk-dim);font-size:14px;max-width:640px;margin-bottom:14px;}
+.note{font-size:12.5px;color:var(--silk-dim);}
+b,strong{color:var(--silk);font-weight:600;}
+
+/* 表は横スクロールさせる。狭い画面で列を潰さないため。 */
+.tw{overflow-x:auto;margin:10px 0 18px;-webkit-overflow-scrolling:touch;}
+.tw .tbl{min-width:420px;margin-top:0;}
+
+/* 凡例の色見本。design.css の .legend は色を指定しないので、ここで当てる。 */
+.legend i.b-time{background:var(--time);}   .legend i.b-pitch{background:var(--pitch);}
+.legend i.b-dest{background:var(--dest);}   .legend i.b-space{background:var(--space);}
+
+/* ===== アイキャッチ =====
+   冒頭にエフェクトの図を数枚並べる。図はデザインドキュメントの一覧から
+   借りたもので、ここでは枠と色だけを与える。押すと該当の章へ飛ぶ。 */
+.eyecatch{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));
+  gap:8px;margin-top:30px;
+}
+.eyecatch .ec{
+  display:block;text-decoration:none;border:1px solid var(--trace);border-radius:6px;
+  background:var(--panel);padding:8px 9px 7px;position:relative;overflow:hidden;transition:.15s;
+}
+.eyecatch .ec::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:currentColor;opacity:.85;
+}
+.eyecatch .ec:hover{border-color:currentColor;background:var(--panel2);}
+.eyecatch .thumb{width:100%;height:34px;display:block;background:var(--frame);
+  border:1px solid var(--trace);border-radius:3px;}
+.eyecatch .nm{display:block;margin-top:6px;font-size:8px;letter-spacing:1.5px;color:currentColor;}
+/* SVG の中身は一覧と同じ約束 —— 灰が入力、色が出力 */
+.eyecatch .in{stroke:var(--ghost);stroke-width:1.4;fill:none;}
+.eyecatch .out{stroke:currentColor;stroke-width:1.6;fill:none;}
+.eyecatch .outf{fill:currentColor;stroke:none;}
+.eyecatch .dim{stroke:currentColor;stroke-width:1;fill:none;opacity:.35;}
+.eyecatch .axis{stroke:var(--trace);stroke-width:1;}
+.eyecatch .time{color:var(--time);}   .eyecatch .pitch{color:var(--pitch);}
+.eyecatch .dest{color:var(--dest);}   .eyecatch .space{color:var(--space);}
+.eyecatch .k0{color:var(--loop);}     .eyecatch .k1{color:var(--gran);}
+.eyecatch .k2{color:var(--glide);}    .eyecatch .k3{color:var(--haze);}
+
+/* ===== 画面の見取り図 ===== */
+.map{background:var(--panel);border:1px solid var(--trace);border-radius:8px;
+  padding:12px;margin:14px 0;display:grid;gap:6px;}
+.map .mrow{border:1px solid var(--trace);border-radius:5px;padding:10px 13px;background:var(--panel2);}
+.map .rn{font-size:9px;letter-spacing:2px;color:var(--copper);text-transform:uppercase;}
+.map .rd{font-size:12px;color:var(--body-dim);margin-top:3px;line-height:1.6;}
+/* 固定帯は破線で区別する —— スクロールしない場所であることの印 */
+.map .mrow.fix{border-style:dashed;}
+
+/* ===== 音が通る道 =====
+   縦積み。横並びは狭い画面で矢印が迷子になるため取らない。 */
+.mflow{margin:14px 0;}
+.mflow .mfn{background:var(--panel);border:1px solid var(--trace);border-left-width:3px;
+  border-radius:5px;padding:10px 14px;}
+.mflow .mfn b{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;}
+.mflow .mfn span{font-size:12px;color:var(--body-dim);}
+.mflow .mfa{color:var(--copper);text-align:center;font-size:11px;line-height:1.4;padding:3px 0;}
+.mflow .s1{border-left-color:var(--gran);}   .mflow .s1 b{color:var(--gran);}
+.mflow .s2{border-left-color:var(--haze);}   .mflow .s2 b{color:var(--haze);}
+.mflow .s3{border-left-color:var(--time);}   .mflow .s3 b{color:var(--time);}
+.mflow .s4{border-left-color:var(--space);}  .mflow .s4 b{color:var(--space);}
+.mflow .s5{border-left-color:var(--copper);} .mflow .s5 b{color:var(--copper);}
+
+/* ===== 手順(最初の一音) ===== */
+.steps{counter-reset:s;list-style:none;margin:16px 0 20px;}
+.steps>li{counter-increment:s;position:relative;padding:0 0 20px 40px;
+  border-left:1px solid var(--trace);margin-left:11px;}
+.steps>li:last-child{border-left-color:transparent;padding-bottom:0;}
+.steps>li::before{content:counter(s);position:absolute;left:-11px;top:0;
+  width:22px;height:22px;border-radius:50%;background:var(--bg);
+  border:2px solid var(--copper);color:var(--copper);
+  font-size:10px;display:flex;align-items:center;justify-content:center;}
+.steps h4{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--silk);
+  margin:2px 0 8px;}
+.steps p{font-size:12.5px;margin:0;}
+
+/* ===== 目次カード =====
+   design.css は c0〜c5 の 6 色。12 章あるので 6 色を 2 周させる。 */
+.toc-card.c6{color:var(--haze);}   .toc-card.c7{color:var(--gran);}
+.toc-card.c8{color:var(--glide);}  .toc-card.c9{color:var(--pitch);}
+.toc-card.c10{color:var(--loop);}  .toc-card.c11{color:var(--dr);}

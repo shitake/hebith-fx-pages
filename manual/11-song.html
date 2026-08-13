@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>曲の保存と読み込み · Saving &amp; Loading — Hebith-FX — User Manual</title>
+<meta name="description" content="SAVE と LOAD。何が入り、何が入らないか。 / SAVE and LOAD — what goes into the file and what does not.">
+<link rel="stylesheet" href="assets/manual.css">
+<script>
+/* 言語とテーマを描画前に確定させる(ちらつき防止)。UI 側は assets/manual.js。 */
+(function(){var d=document.documentElement;try{
+var l=localStorage.getItem('hebith-manual-lang');
+if(l!=='ja'&&l!=='en') l=(navigator.language||'ja').toLowerCase().indexOf('ja')===0?'ja':'en';
+d.setAttribute('data-lang',l); d.setAttribute('lang',l);
+var t=localStorage.getItem('hebith-manual-theme');
+if(t==='light'||t==='dark') d.setAttribute('data-theme',t);
+}catch(e){}})();
+</script>
+</head>
+<body>
+
+<div class="bar-top">
+  <div class="bar-in">
+    <a class="bar-brand disp" href="index.html">Hebith<b>-</b>FX<span class="rev-no">MANUAL v2.14</span></a>
+    <nav class="pagenav" aria-label="ページ">
+      <a href="index.html"><span class="no">00</span><span class="label ja">目次</span><span class="label en">Index</span></a>
+      <a href="01-about.html"><span class="no">01</span><span class="label ja">Hebith-FX</span><span class="label en">About</span></a>
+      <a href="02-first.html"><span class="no">02</span><span class="label ja">最初の一音</span><span class="label en">First Sound</span></a>
+      <a href="03-start.html"><span class="no">03</span><span class="label ja">はじめに</span><span class="label en">Start</span></a>
+      <a href="04-map.html"><span class="no">04</span><span class="label ja">画面</span><span class="label en">Screen</span></a>
+      <a href="05-touch.html"><span class="no">05</span><span class="label ja">操作</span><span class="label en">Controls</span></a>
+      <a href="06-synth.html"><span class="no">06</span><span class="label ja">SYNTH</span><span class="label en">SYNTH</span></a>
+      <a href="07-arp.html"><span class="no">07</span><span class="label ja">ARP</span><span class="label en">ARP</span></a>
+      <a href="08-drum.html"><span class="no">08</span><span class="label ja">DRUM</span><span class="label en">DRUM</span></a>
+      <a href="09-punch.html"><span class="no">09</span><span class="label ja">PUNCH</span><span class="label en">PUNCH</span></a>
+      <a href="10-bokeh.html"><span class="no">10</span><span class="label ja">BOKEH</span><span class="label en">BOKEH</span></a>
+      <a href="11-song.html" aria-current="page"><span class="no">11</span><span class="label ja">保存</span><span class="label en">Songs</span></a>
+      <a href="12-trouble.html"><span class="no">12</span><span class="label ja">困ったとき</span><span class="label en">Trouble</span></a>
+    </nav>
+    <span class="bar-spacer"></span>
+    <div class="lang" role="group" aria-label="Language"></div>
+    <div class="theme" role="group" aria-label="テーマ切替"></div>
+  </div>
+</div>
+
+<div class="wrap" id="top">
+  <section id="song">
+<div class="eyebrow">Song Files <span class="ref">11</span></div>
+<h2 class="disp ja">曲の保存と読み込み</h2>
+<h2 class="disp en">Saving &amp; Loading</h2>
+
+<p class="lede ja">画面上部の <b>SAVE</b> を押すと、今の状態がまるごと 1 つのファイルとして端末に保存されます。
+  <b>LOAD</b> でそのファイルを選べば、その場に戻れます。</p>
+<p class="lede en">Press <b>SAVE</b> near the top of the screen and your entire setup is written to a single file
+  on your device. Pick that file with <b>LOAD</b> to come straight back to it.</p>
+
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">項目</span><span class="en">Item</span></th>
+      <th><span class="ja">内容</span><span class="en">Detail</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td><span class="ja">保存されるもの</span><span class="en">Included</span></td>
+        <td><span class="ja">音色、ARP の全パターンとコード進行、ドラムのパターンと音、エフェクトの座標、
+            BPM と音量、押さえていた和音。</span>
+            <span class="en">The tone, every arpeggiator pattern and the chord progression, drum patterns and voices,
+            effect positions, tempo and volume, and the chord you were holding.</span></td></tr>
+      <tr><td><span class="ja">保存されないもの</span><span class="en">Not included</span></td>
+        <td><span class="ja">ルーパーに録った音そのものです。ループは曲ファイルには入りません。</span>
+            <span class="en">The audio recorded into the looper. Loops are not stored in the song file.</span></td></tr>
+      <tr><td><span class="ja">保存先</span><span class="en">Where it goes</span></td>
+        <td><span class="ja">端末のダウンロード先です。ファイル名には保存した日時が入ります。</span>
+            <span class="en">Your device's downloads. The filename carries the date and time.</span></td></tr>
+      <tr><td><span class="ja">古いファイル</span><span class="en">Older files</span></td>
+        <td><span class="ja">以前の版で保存したファイルもそのまま読めます。</span>
+            <span class="en">Files saved by earlier versions still load.</span></td></tr>
+    </tbody>
+  </table>
+</div>
+  </section>
+
+  <nav class="pager" aria-label="前後のページ">
+    <a class="prev" href="10-bokeh.html">
+      <div class="dir"><span class="x ja">← 前</span><span class="x en">← Prev</span></div>
+      <div class="ttl">10 <span class="x ja">Bokehlous Engine</span><span class="x en">Bokehlous Engine</span></div>
+    </a>
+    <a class="next" href="12-trouble.html">
+      <div class="dir"><span class="x ja">次 →</span><span class="x en">Next →</span></div>
+      <div class="ttl">12 <span class="x ja">困ったとき</span><span class="x en">Troubleshooting</span></div>
+    </a>
+  </nav>
+
+  <footer>
+    <div class="fl">
+      <span>Hebith-FX · USER MANUAL · v2.14</span>
+      <span class="ja">モバイル Web / インストール不要 / オフライン動作</span>
+      <span class="en">MOBILE WEB / NO INSTALL / WORKS OFFLINE</span>
+    </div>
+  </footer>
+
+</div>
+<script src="assets/manual.js" defer></script>
+</body>
+</html>

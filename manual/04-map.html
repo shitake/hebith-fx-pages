@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>画面の見取り図 · Screen Map — Hebith-FX — User Manual</title>
+<meta name="description" content="上から下へ、見るもの → 決めるもの → 触るもの。トランスポート。 / Top to bottom: what you watch, set, and touch. Plus the transport.">
+<link rel="stylesheet" href="assets/manual.css">
+<script>
+/* 言語とテーマを描画前に確定させる(ちらつき防止)。UI 側は assets/manual.js。 */
+(function(){var d=document.documentElement;try{
+var l=localStorage.getItem('hebith-manual-lang');
+if(l!=='ja'&&l!=='en') l=(navigator.language||'ja').toLowerCase().indexOf('ja')===0?'ja':'en';
+d.setAttribute('data-lang',l); d.setAttribute('lang',l);
+var t=localStorage.getItem('hebith-manual-theme');
+if(t==='light'||t==='dark') d.setAttribute('data-theme',t);
+}catch(e){}})();
+</script>
+</head>
+<body>
+
+<div class="bar-top">
+  <div class="bar-in">
+    <a class="bar-brand disp" href="index.html">Hebith<b>-</b>FX<span class="rev-no">MANUAL v2.14</span></a>
+    <nav class="pagenav" aria-label="ページ">
+      <a href="index.html"><span class="no">00</span><span class="label ja">目次</span><span class="label en">Index</span></a>
+      <a href="01-about.html"><span class="no">01</span><span class="label ja">Hebith-FX</span><span class="label en">About</span></a>
+      <a href="02-first.html"><span class="no">02</span><span class="label ja">最初の一音</span><span class="label en">First Sound</span></a>
+      <a href="03-start.html"><span class="no">03</span><span class="label ja">はじめに</span><span class="label en">Start</span></a>
+      <a href="04-map.html" aria-current="page"><span class="no">04</span><span class="label ja">画面</span><span class="label en">Screen</span></a>
+      <a href="05-touch.html"><span class="no">05</span><span class="label ja">操作</span><span class="label en">Controls</span></a>
+      <a href="06-synth.html"><span class="no">06</span><span class="label ja">SYNTH</span><span class="label en">SYNTH</span></a>
+      <a href="07-arp.html"><span class="no">07</span><span class="label ja">ARP</span><span class="label en">ARP</span></a>
+      <a href="08-drum.html"><span class="no">08</span><span class="label ja">DRUM</span><span class="label en">DRUM</span></a>
+      <a href="09-punch.html"><span class="no">09</span><span class="label ja">PUNCH</span><span class="label en">PUNCH</span></a>
+      <a href="10-bokeh.html"><span class="no">10</span><span class="label ja">BOKEH</span><span class="label en">BOKEH</span></a>
+      <a href="11-song.html"><span class="no">11</span><span class="label ja">保存</span><span class="label en">Songs</span></a>
+      <a href="12-trouble.html"><span class="no">12</span><span class="label ja">困ったとき</span><span class="label en">Trouble</span></a>
+    </nav>
+    <span class="bar-spacer"></span>
+    <div class="lang" role="group" aria-label="Language"></div>
+    <div class="theme" role="group" aria-label="テーマ切替"></div>
+  </div>
+</div>
+
+<div class="wrap" id="top">
+  <section id="map">
+<div class="eyebrow">Screen Map <span class="ref">04</span></div>
+<h2 class="disp ja">画面の見取り図</h2>
+<h2 class="disp en">Screen Map</h2>
+
+<p class="lede ja">画面は上から下へ、<b>見るもの → 決めるもの → 触るもの</b>の順に積んであります。
+  演奏中に一番よく触るものほど下、親指の届く場所にあります。</p>
+<p class="lede en">The screen stacks top to bottom: <b>things you watch, things you set, things you touch</b>.
+  The controls you reach for most while playing sit lowest, within thumb reach.</p>
+
+<div class="map">
+  <div class="mrow"><div class="rn">Waveform</div>
+    <div class="rd ja">出ている音の波形です。鳴っているかどうかがここで分かります。</div>
+    <div class="rd en">The live waveform. Your first check that sound is coming out.</div></div>
+  <div class="mrow"><div class="rn">BPM · MASTER VOL · PLAY · SONG</div>
+    <div class="rd ja">曲全体の速さと音量、再生・停止、曲の保存と読み込み。</div>
+    <div class="rd en">Tempo and volume, play / stop, and saving or loading a song.</div></div>
+  <div class="mrow"><div class="rn">SYNTH · ARP · DRUM · PUNCH · BOKEH</div>
+    <div class="rd ja">5 枚のタブです。タブの右肩の点は、その系統が今鳴っていることを示します。</div>
+    <div class="rd en">Five tabs. A dot on a tab means that section is currently live.</div></div>
+  <div class="mrow"><div class="rn ja">選んだタブの中身</div><div class="rn en">Selected tab</div>
+    <div class="rd ja">タブごとの設定です。ここは指で上下にスクロールします。</div>
+    <div class="rd en">The settings for that tab. This area scrolls.</div></div>
+  <div class="mrow fix"><div class="rn ja">固定帯(タブごと)</div><div class="rn en">Fixed strip (per tab)</div>
+    <div class="rd ja">そのタブで演奏中に触るものだけを、スクロールしない位置に固定してあります。</div>
+    <div class="rd en">The controls you actually touch while playing, pinned so they never scroll away.</div></div>
+  <div class="mrow fix"><div class="rn">MASTER FILTER</div>
+    <div class="rd ja">全タブ共通の XY パッドです。X が CUTOFF、Y が RESO で、音全体を曇らせたり抜いたりできます。</div>
+    <div class="rd en">The shared XY pad, on every tab. X is CUTOFF, Y is RESO — it sweeps the whole mix.</div></div>
+  <div class="mrow fix"><div class="rn">OCT · LATCH · HOLD</div>
+    <div class="rd ja">鍵盤の音域、エフェクトの掛けっぱなし、和音の保持。</div>
+    <div class="rd en">Keyboard octave, effect latching, and chord hold.</div></div>
+  <div class="mrow fix"><div class="rn ja">鍵盤</div><div class="rn en">Keyboard</div>
+    <div class="rd ja">1 オクターブ + 上の C です。滑らせると音が繋がって変わります。</div>
+    <div class="rd en">One octave plus the top C. Slide across it and the note follows your finger.</div></div>
+</div>
+
+<h3><span class="ja">トランスポート</span><span class="en">Transport</span></h3>
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">操作子</span><span class="en">Control</span></th>
+      <th><span class="ja">範囲</span><span class="en">Range</span></th>
+      <th><span class="ja">内容</span><span class="en">What it does</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td>BPM</td><td>40 – 220</td>
+        <td><span class="ja">曲全体の速さです。ARP・ドラム・一部のエフェクトがこれに追従します。</span>
+            <span class="en">Global tempo. The arpeggiator, drums, and some effects all follow it.</span></td></tr>
+      <tr><td>MASTER VOL</td><td>0 – 1</td>
+        <td><span class="ja">最終出力の音量。</span><span class="en">Final output level.</span></td></tr>
+      <tr><td>PLAY / STOP</td><td>—</td>
+        <td><span class="ja">ARP とドラムの走行です。STOP は<b>頭出しして止まります</b> —— 次の PLAY は先頭からになります。</span>
+            <span class="en">Runs the arpeggiator and drums. STOP <b>rewinds to the top</b>; the next PLAY starts from the beginning.</span></td></tr>
+      <tr><td>SAVE / LOAD</td><td>—</td>
+        <td><span class="ja">曲の書き出しと読み込み。</span><span class="en">Export and import a song.</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p class="note ja"><b>STOP しても音は切れません。</b>新しく鳴り始める音だけが止まり、鳴っている音は自然に減衰します。
+  STOP 中もエフェクトと鍵盤はそのまま使えるので、止めた上に音を差し込めます。</p>
+<p class="note en"><b>STOP does not cut the sound.</b> It only stops new notes from starting; what is already sounding
+  decays naturally. Effects and the keyboard stay live while stopped, so you can play over the silence.</p>
+  </section>
+
+  <nav class="pager" aria-label="前後のページ">
+    <a class="prev" href="03-start.html">
+      <div class="dir"><span class="x ja">← 前</span><span class="x en">← Prev</span></div>
+      <div class="ttl">03 <span class="x ja">はじめに</span><span class="x en">Getting Started</span></div>
+    </a>
+    <a class="next" href="05-touch.html">
+      <div class="dir"><span class="x ja">次 →</span><span class="x en">Next →</span></div>
+      <div class="ttl">05 <span class="x ja">共通の操作</span><span class="x en">How Controls Work</span></div>
+    </a>
+  </nav>
+
+  <footer>
+    <div class="fl">
+      <span>Hebith-FX · USER MANUAL · v2.14</span>
+      <span class="ja">モバイル Web / インストール不要 / オフライン動作</span>
+      <span class="en">MOBILE WEB / NO INSTALL / WORKS OFFLINE</span>
+    </div>
+  </footer>
+
+</div>
+<script src="assets/manual.js" defer></script>
+</body>
+</html>

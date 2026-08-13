@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>最初の一音 · Your First Sound — Hebith-FX — User Manual</title>
+<meta name="description" content="鍵盤 → HOLD → ARP → PUNCH。4 手で演奏が成立するまで。 / Keys, HOLD, ARP, PUNCH — four moves to a running performance.">
+<link rel="stylesheet" href="assets/manual.css">
+<script>
+/* 言語とテーマを描画前に確定させる(ちらつき防止)。UI 側は assets/manual.js。 */
+(function(){var d=document.documentElement;try{
+var l=localStorage.getItem('hebith-manual-lang');
+if(l!=='ja'&&l!=='en') l=(navigator.language||'ja').toLowerCase().indexOf('ja')===0?'ja':'en';
+d.setAttribute('data-lang',l); d.setAttribute('lang',l);
+var t=localStorage.getItem('hebith-manual-theme');
+if(t==='light'||t==='dark') d.setAttribute('data-theme',t);
+}catch(e){}})();
+</script>
+</head>
+<body>
+
+<div class="bar-top">
+  <div class="bar-in">
+    <a class="bar-brand disp" href="index.html">Hebith<b>-</b>FX<span class="rev-no">MANUAL v2.14</span></a>
+    <nav class="pagenav" aria-label="ページ">
+      <a href="index.html"><span class="no">00</span><span class="label ja">目次</span><span class="label en">Index</span></a>
+      <a href="01-about.html"><span class="no">01</span><span class="label ja">Hebith-FX</span><span class="label en">About</span></a>
+      <a href="02-first.html" aria-current="page"><span class="no">02</span><span class="label ja">最初の一音</span><span class="label en">First Sound</span></a>
+      <a href="03-start.html"><span class="no">03</span><span class="label ja">はじめに</span><span class="label en">Start</span></a>
+      <a href="04-map.html"><span class="no">04</span><span class="label ja">画面</span><span class="label en">Screen</span></a>
+      <a href="05-touch.html"><span class="no">05</span><span class="label ja">操作</span><span class="label en">Controls</span></a>
+      <a href="06-synth.html"><span class="no">06</span><span class="label ja">SYNTH</span><span class="label en">SYNTH</span></a>
+      <a href="07-arp.html"><span class="no">07</span><span class="label ja">ARP</span><span class="label en">ARP</span></a>
+      <a href="08-drum.html"><span class="no">08</span><span class="label ja">DRUM</span><span class="label en">DRUM</span></a>
+      <a href="09-punch.html"><span class="no">09</span><span class="label ja">PUNCH</span><span class="label en">PUNCH</span></a>
+      <a href="10-bokeh.html"><span class="no">10</span><span class="label ja">BOKEH</span><span class="label en">BOKEH</span></a>
+      <a href="11-song.html"><span class="no">11</span><span class="label ja">保存</span><span class="label en">Songs</span></a>
+      <a href="12-trouble.html"><span class="no">12</span><span class="label ja">困ったとき</span><span class="label en">Trouble</span></a>
+    </nav>
+    <span class="bar-spacer"></span>
+    <div class="lang" role="group" aria-label="Language"></div>
+    <div class="theme" role="group" aria-label="テーマ切替"></div>
+  </div>
+</div>
+
+<div class="wrap" id="top">
+  <section id="first">
+<div class="eyebrow">Your First Sound <span class="ref">02</span></div>
+<h2 class="disp ja">最初の一音</h2>
+<h2 class="disp en">Your First Sound</h2>
+
+<p class="lede ja">押さえた和音の上で ARP が走り、その音をエフェクトで壊す —— これが Hebith-FX の基本形です。次の 4 手で辿り着けます。</p>
+<p class="lede en">Hold a chord, let the arpeggiator run over it, then break the result with effects.
+  That is the shape of Hebith-FX. Four moves get you there.</p>
+
+<p class="note ja">まだアプリを開いていない場合は、URL を開いて <b>START</b> を押すところから始めてください。
+  手順は <a href="03-start.html"><b>はじめに</b></a> にあります。</p>
+<p class="note en">If you have not opened the app yet, start by loading the URL and pressing <b>START</b> —
+  see <a href="03-start.html"><b>Getting Started</b></a>.</p>
+
+<ol class="steps">
+  <li>
+    <h4><span class="ja">鍵盤を押す</span><span class="en">Press the keyboard</span></h4>
+    <p class="ja">画面いちばん下の鍵盤を押します。音が出れば準備完了です。
+      <b>OCT</b> の <b>−</b> <b>+</b> で音域を上下できます。</p>
+    <p class="en">Press the keys at the very bottom. If you hear a note, you are ready.
+      Use <b>−</b> and <b>+</b> next to <b>OCT</b> to change the octave.</p>
+  </li>
+  <li>
+    <h4><span class="ja">HOLD で和音を保つ</span><span class="en">Hold the chord with HOLD</span></h4>
+    <p class="ja"><b>HOLD</b> を点灯させてから鍵盤を数音押します。指を離しても鳴り続け、<b>押すたびに音が積み上がります</b>。
+      同じ鍵をもう一度押すと、その音だけ抜けます。</p>
+    <p class="en">Turn <b>HOLD</b> on, then press a few keys. They keep sounding after you lift your finger,
+      and <b>each press adds another note</b>. Press a held key again to remove just that note.</p>
+  </li>
+  <li>
+    <h4><span class="ja">ARP を回す</span><span class="en">Set the arpeggiator running</span></h4>
+    <p class="ja"><b>ARP</b> タブを開き、<b>LAYER ON</b> と <b>PLAY</b> が点いていることを確かめてください。
+      押さえた和音が、そのままパターンとして走り出します。</p>
+    <p class="en">Open the <b>ARP</b> tab and make sure <b>LAYER ON</b> and <b>PLAY</b> are lit.
+      The chord you are holding starts running as a pattern.</p>
+  </li>
+  <li>
+    <h4><span class="ja">PUNCH で割り込む</span><span class="en">Cut in with PUNCH</span></h4>
+    <p class="ja"><b>PUNCH</b> タブの 16 枚のパッドを、走っている音の上から叩きます。押している間だけ掛かります。
+      パッドの中の押した場所が、そのまま効果の掛かり方になります。</p>
+    <p class="en">On the <b>PUNCH</b> tab, hit the 16 pads over the running sound.
+      Each is active only while you hold it, and where you press inside the pad sets how it sounds.</p>
+  </li>
+</ol>
+
+<p class="note ja">ここから先は、音そのものを作り込むなら <b>SYNTH</b>、曲の構造を組むなら <b>ARP</b>、
+  リズムを足すなら <b>DRUM</b>、音をにじませるなら <b>BOKEH</b> へ進んでください。</p>
+<p class="note en">From here: <b>SYNTH</b> to shape the tone itself, <b>ARP</b> to build song structure,
+  <b>DRUM</b> to add rhythm, <b>BOKEH</b> to blur it all out.</p>
+  </section>
+
+  <nav class="pager" aria-label="前後のページ">
+    <a class="prev" href="01-about.html">
+      <div class="dir"><span class="x ja">← 前</span><span class="x en">← Prev</span></div>
+      <div class="ttl">01 <span class="x ja">Hebith-FX について</span><span class="x en">About Hebith-FX</span></div>
+    </a>
+    <a class="next" href="03-start.html">
+      <div class="dir"><span class="x ja">次 →</span><span class="x en">Next →</span></div>
+      <div class="ttl">03 <span class="x ja">はじめに</span><span class="x en">Getting Started</span></div>
+    </a>
+  </nav>
+
+  <footer>
+    <div class="fl">
+      <span>Hebith-FX · USER MANUAL · v2.14</span>
+      <span class="ja">モバイル Web / インストール不要 / オフライン動作</span>
+      <span class="en">MOBILE WEB / NO INSTALL / WORKS OFFLINE</span>
+    </div>
+  </footer>
+
+</div>
+<script src="assets/manual.js" defer></script>
+</body>
+</html>

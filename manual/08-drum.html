@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Destructible Drums — Hebith-FX — User Manual</title>
+<meta name="description" content="16 ボイスの 4×4 パッド。VOICE と STEP で使い分ける。 / Sixteen voices on a 4×4 grid, shared between VOICE and STEP.">
+<link rel="stylesheet" href="assets/manual.css">
+<script>
+/* 言語とテーマを描画前に確定させる(ちらつき防止)。UI 側は assets/manual.js。 */
+(function(){var d=document.documentElement;try{
+var l=localStorage.getItem('hebith-manual-lang');
+if(l!=='ja'&&l!=='en') l=(navigator.language||'ja').toLowerCase().indexOf('ja')===0?'ja':'en';
+d.setAttribute('data-lang',l); d.setAttribute('lang',l);
+var t=localStorage.getItem('hebith-manual-theme');
+if(t==='light'||t==='dark') d.setAttribute('data-theme',t);
+}catch(e){}})();
+</script>
+</head>
+<body>
+
+<div class="bar-top">
+  <div class="bar-in">
+    <a class="bar-brand disp" href="index.html">Hebith<b>-</b>FX<span class="rev-no">MANUAL v2.14</span></a>
+    <nav class="pagenav" aria-label="ページ">
+      <a href="index.html"><span class="no">00</span><span class="label ja">目次</span><span class="label en">Index</span></a>
+      <a href="01-about.html"><span class="no">01</span><span class="label ja">Hebith-FX</span><span class="label en">About</span></a>
+      <a href="02-first.html"><span class="no">02</span><span class="label ja">最初の一音</span><span class="label en">First Sound</span></a>
+      <a href="03-start.html"><span class="no">03</span><span class="label ja">はじめに</span><span class="label en">Start</span></a>
+      <a href="04-map.html"><span class="no">04</span><span class="label ja">画面</span><span class="label en">Screen</span></a>
+      <a href="05-touch.html"><span class="no">05</span><span class="label ja">操作</span><span class="label en">Controls</span></a>
+      <a href="06-synth.html"><span class="no">06</span><span class="label ja">SYNTH</span><span class="label en">SYNTH</span></a>
+      <a href="07-arp.html"><span class="no">07</span><span class="label ja">ARP</span><span class="label en">ARP</span></a>
+      <a href="08-drum.html" aria-current="page"><span class="no">08</span><span class="label ja">DRUM</span><span class="label en">DRUM</span></a>
+      <a href="09-punch.html"><span class="no">09</span><span class="label ja">PUNCH</span><span class="label en">PUNCH</span></a>
+      <a href="10-bokeh.html"><span class="no">10</span><span class="label ja">BOKEH</span><span class="label en">BOKEH</span></a>
+      <a href="11-song.html"><span class="no">11</span><span class="label ja">保存</span><span class="label en">Songs</span></a>
+      <a href="12-trouble.html"><span class="no">12</span><span class="label ja">困ったとき</span><span class="label en">Trouble</span></a>
+    </nav>
+    <span class="bar-spacer"></span>
+    <div class="lang" role="group" aria-label="Language"></div>
+    <div class="theme" role="group" aria-label="テーマ切替"></div>
+  </div>
+</div>
+
+<div class="wrap" id="top">
+  <section id="drum">
+<div class="eyebrow">Rhythm — Drum Part <span class="ref">08</span></div>
+<h2 class="disp">Destructible Drums</h2>
+
+<p class="lede ja">16 のボイスを 4×4 のパッドに載せてあります。同じ 16 枚を <b>VOICE</b> と <b>STEP</b> で使い分けます。
+  クロックとハネは ARP と共有するので、全体が同じようにハネます。</p>
+<p class="lede en">Sixteen voices on a 4×4 grid. The same sixteen pads serve both <b>VOICE</b> and <b>STEP</b>.
+  Clock and swing are shared with the arpeggiator, so everything grooves together.</p>
+
+<div class="cols">
+  <div class="card">
+    <h4>VOICE</h4>
+    <p class="ja">パッドがボイスに 1 対 1 で対応します。タップするとその場で鳴り、同時に編集対象として選ばれます。
+      指ドラムとしても、音を選ぶ操作としても使えます。</p>
+    <p class="en">One pad per voice. Tapping plays it and selects it for editing —
+      useful both as finger drums and as a way to pick a sound.</p>
+  </div>
+  <div class="card">
+    <h4>STEP</h4>
+    <p class="ja">同じ 16 枚が、選んだボイスの 16 ステップに変わります。タップごとに
+      鳴らさない → 鳴らす → 強く鳴らす、と変わります。走っている位置には枠が回ります。</p>
+    <p class="en">The same sixteen pads become the sixteen steps of the selected voice.
+      Each tap: off → on → accent. A frame travels across the running step.</p>
+  </div>
+</div>
+
+<h3><span class="ja">16 のボイス</span><span class="en">The sixteen voices</span></h3>
+<p class="ja">VOICE ページでパッドを<b>なぞる</b>と、X が第 2 ノブ、Y が <b>LEVEL</b> になります。
+  第 2 ノブの意味はボイスの性格で変わります。</p>
+<p class="en">On the VOICE page, <b>dragging</b> a pad sets the second knob on X and <b>LEVEL</b> on Y.
+  What the second knob means depends on the voice.</p>
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">ボイス</span><span class="en">Voice</span></th>
+      <th>X</th>
+      <th><span class="ja">ボイス</span><span class="en">Voice</span></th>
+      <th>X</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>KICK</td><td>TUNE</td><td>CRASH</td><td>DECAY</td></tr>
+      <tr><td>SNARE</td><td>DECAY</td><td>BELL</td><td>TUNE</td></tr>
+      <tr><td>RIM</td><td>DECAY</td><td>PLUCK</td><td>TUNE</td></tr>
+      <tr><td>CLAP</td><td>DECAY</td><td>PERC 1</td><td>TUNE</td></tr>
+      <tr><td>CH HH</td><td>DECAY</td><td>PERC 2</td><td>DECAY</td></tr>
+      <tr><td>OH HH</td><td>DECAY</td><td>SHAKER</td><td>DECAY</td></tr>
+      <tr><td>TOM LO</td><td>TUNE</td><td>BLIP</td><td>TUNE</td></tr>
+      <tr><td>TOM HI</td><td>TUNE</td><td>NOISE HIT</td><td>DECAY</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="note ja">TUNE は ±12 半音、DECAY は減衰の長さです。値はボイスごとに別々に保たれます。</p>
+<p class="note en">TUNE spans ±12 semitones; DECAY sets how long the tail is. Each voice keeps its own values.</p>
+
+<h3><span class="ja">その他の操作</span><span class="en">Other controls</span></h3>
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">操作子</span><span class="en">Control</span></th>
+      <th><span class="ja">内容</span><span class="en">What it does</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td>ALL ON / CLEAR</td>
+        <td><span class="ja">選んでいるボイスの 16 ステップを、全部鳴らす状態にする / 全部消す、の 2 つです。</span>
+            <span class="en">Turn every step of the selected voice on, or clear them all.</span></td></tr>
+      <tr><td>ENGINE ON / OFF</td>
+        <td><span class="ja">ドラム全体の走行を切り替えます。</span><span class="en">Runs or stops the whole drum part.</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p class="note ja"><b>ドラムもエフェクトの対象です。</b>シンセと同じ経路に流し込んであるので、
+  REPEAT でループさせ、CRUSH で潰し、FREEZE で止められます。正確に刻むためではなく、刻んだものを壊すために置いてあります。
+  パターンは 1 つで、ARP のようなスロットやチェインは持ちません。</p>
+<p class="note en"><b>The drums run through the effects too.</b> They share the same path as the synth,
+  so you can loop them with REPEAT, crush them, or freeze them. They are here to be broken, not just to keep time.
+  There is a single pattern — no slots or chaining like the arpeggiator.</p>
+  </section>
+
+  <nav class="pager" aria-label="前後のページ">
+    <a class="prev" href="07-arp.html">
+      <div class="dir"><span class="x ja">← 前</span><span class="x en">← Prev</span></div>
+      <div class="ttl">07 <span class="x ja">Arpeggiator</span><span class="x en">Arpeggiator</span></div>
+    </a>
+    <a class="next" href="09-punch.html">
+      <div class="dir"><span class="x ja">次 →</span><span class="x en">Next →</span></div>
+      <div class="ttl">09 <span class="x ja">Punch-in FX</span><span class="x en">Punch-in FX</span></div>
+    </a>
+  </nav>
+
+  <footer>
+    <div class="fl">
+      <span>Hebith-FX · USER MANUAL · v2.14</span>
+      <span class="ja">モバイル Web / インストール不要 / オフライン動作</span>
+      <span class="en">MOBILE WEB / NO INSTALL / WORKS OFFLINE</span>
+    </div>
+  </footer>
+
+</div>
+<script src="assets/manual.js" defer></script>
+</body>
+</html>

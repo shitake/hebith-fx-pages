@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arpeggiator — Hebith-FX — User Manual</title>
+<meta name="description" content="スケール、コード進行、2 レイヤー、パターンとチェイン、ステップ編集。 / Scales, chord progressions, two layers, patterns and chaining, step editing.">
+<link rel="stylesheet" href="assets/manual.css">
+<script>
+/* 言語とテーマを描画前に確定させる(ちらつき防止)。UI 側は assets/manual.js。 */
+(function(){var d=document.documentElement;try{
+var l=localStorage.getItem('hebith-manual-lang');
+if(l!=='ja'&&l!=='en') l=(navigator.language||'ja').toLowerCase().indexOf('ja')===0?'ja':'en';
+d.setAttribute('data-lang',l); d.setAttribute('lang',l);
+var t=localStorage.getItem('hebith-manual-theme');
+if(t==='light'||t==='dark') d.setAttribute('data-theme',t);
+}catch(e){}})();
+</script>
+</head>
+<body>
+
+<div class="bar-top">
+  <div class="bar-in">
+    <a class="bar-brand disp" href="index.html">Hebith<b>-</b>FX<span class="rev-no">MANUAL v2.14</span></a>
+    <nav class="pagenav" aria-label="ページ">
+      <a href="index.html"><span class="no">00</span><span class="label ja">目次</span><span class="label en">Index</span></a>
+      <a href="01-about.html"><span class="no">01</span><span class="label ja">Hebith-FX</span><span class="label en">About</span></a>
+      <a href="02-first.html"><span class="no">02</span><span class="label ja">最初の一音</span><span class="label en">First Sound</span></a>
+      <a href="03-start.html"><span class="no">03</span><span class="label ja">はじめに</span><span class="label en">Start</span></a>
+      <a href="04-map.html"><span class="no">04</span><span class="label ja">画面</span><span class="label en">Screen</span></a>
+      <a href="05-touch.html"><span class="no">05</span><span class="label ja">操作</span><span class="label en">Controls</span></a>
+      <a href="06-synth.html"><span class="no">06</span><span class="label ja">SYNTH</span><span class="label en">SYNTH</span></a>
+      <a href="07-arp.html" aria-current="page"><span class="no">07</span><span class="label ja">ARP</span><span class="label en">ARP</span></a>
+      <a href="08-drum.html"><span class="no">08</span><span class="label ja">DRUM</span><span class="label en">DRUM</span></a>
+      <a href="09-punch.html"><span class="no">09</span><span class="label ja">PUNCH</span><span class="label en">PUNCH</span></a>
+      <a href="10-bokeh.html"><span class="no">10</span><span class="label ja">BOKEH</span><span class="label en">BOKEH</span></a>
+      <a href="11-song.html"><span class="no">11</span><span class="label ja">保存</span><span class="label en">Songs</span></a>
+      <a href="12-trouble.html"><span class="no">12</span><span class="label ja">困ったとき</span><span class="label en">Trouble</span></a>
+    </nav>
+    <span class="bar-spacer"></span>
+    <div class="lang" role="group" aria-label="Language"></div>
+    <div class="theme" role="group" aria-label="テーマ切替"></div>
+  </div>
+</div>
+
+<div class="wrap" id="top">
+  <section id="arp">
+<div class="eyebrow">Performance — Sequence <span class="ref">07</span></div>
+<h2 class="disp">Arpeggiator</h2>
+
+<p class="lede ja">押さえた和音を捌くだけの機能ではありません。スケール・コード進行・パターンのつなぎ替えまで持つので、
+  <b>和音を HOLD しておけば曲が回ります</b>。</p>
+<p class="lede en">More than a note-shuffler. With scales, chord progressions, and pattern chaining,
+  <b>you can hold one chord and let a whole song run over it</b>.</p>
+
+<h3>SCALE / KEY</h3>
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">操作子</span><span class="en">Control</span></th>
+      <th><span class="ja">内容</span><span class="en">What it does</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td>KEY</td><td><span class="ja">主音です。C 〜 B の 12 音から選べます。</span><span class="en">Root note, C through B.</span></td></tr>
+      <tr><td>SCALE</td>
+        <td>MAJOR · MINOR · DORIAN · PHRYGIAN · MIXOLYD · HARM MIN · PENTA MAJ · PENTA MIN · CHROMATIC</td></tr>
+      <tr><td>SCALE LOCK / FREE</td>
+        <td><span class="ja">LOCK は鍵盤で押した音をスケール上へ寄せます。FREE はそのまま鳴らします。</span>
+            <span class="en">LOCK snaps what you play to the scale. FREE lets any note through.</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>CHORD</h3>
+<p class="ja">和音を自分で押さえ続けなくても、コード進行を組んでおけば ARP がその上を走ります。</p>
+<p class="en">Instead of holding a chord yourself, write a progression and let the arpeggiator run over it.</p>
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">操作子</span><span class="en">Control</span></th>
+      <th><span class="ja">内容</span><span class="en">What it does</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td>OFF / AUTO / MANUAL</td>
+        <td><span class="ja">OFF は鍵盤で押した音だけを使います。AUTO は小節数に従って自動で進み、MANUAL は <b>NEXT ▶</b> を押したときだけ進みます。</span>
+            <span class="en">OFF uses only what you play. AUTO advances by bar count. MANUAL advances only when you press <b>NEXT ▶</b>.</span></td></tr>
+      <tr><td><span class="ja">スロット</span><span class="en">Slots</span></td>
+        <td><span class="ja">最大 8 個です。<b>+ SLOT</b> / <b>− SLOT</b> で増減し、スロットをタップすると編集欄が開きます。</span>
+            <span class="en">Up to 8. Use <b>+ SLOT</b> / <b>− SLOT</b>, and tap a slot to open its editor.</span></td></tr>
+      <tr><td>DEGREE</td>
+        <td><span class="ja">スケール上の度数です。<code>1 maj</code> <code>6 min</code> のように、番号と性質で表示します。</span>
+            <span class="en">Scale degree, shown as number plus quality — <code>1 maj</code>, <code>6 min</code>.</span></td></tr>
+      <tr><td>BARS</td><td><span class="ja">そのコードを鳴らす小節数です。1 〜 4 で指定します。</span><span class="en">How many bars the chord lasts, 1 – 4.</span></td></tr>
+      <tr><td>TRIAD / 7TH / SUS4 / +OCT</td>
+        <td><span class="ja">和音の積み方です。3 和音 / 7th 入り / sus4 / オクターブ足しから選べます。</span>
+            <span class="en">Chord voicing: triad, seventh, suspended fourth, or with the octave added.</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>LAYER</h3>
+<p class="ja">ARP は 2 系統あります。<b>I LEAD</b> と <b>II BASS</b> で、それぞれ独立したパターン・速さ・音域を持ちます。
+  タブの操作はすべて<b>選んでいる側のレイヤー</b>に効きます。</p>
+<p class="en">There are two arpeggiators, <b>I LEAD</b> and <b>II BASS</b>, each with its own pattern, rate, and range.
+  Everything on this tab applies to <b>whichever layer is selected</b>.</p>
+<p class="note ja">初期状態で動いているのは I だけです。II を使うには、II を選んでから <b>LAYER ON</b> を押してください。</p>
+<p class="note en">Only layer I runs by default. To use II, select it and press <b>LAYER ON</b>.</p>
+
+<h3>PATTERN</h3>
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">操作子</span><span class="en">Control</span></th>
+      <th><span class="ja">内容</span><span class="en">What it does</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td>A / B / C / D</td>
+        <td><span class="ja">レイヤーごとに 4 つのパターンがあります。切り替えると編集対象も変わります。</span>
+            <span class="en">Four patterns per layer. Switching also changes what you are editing.</span></td></tr>
+      <tr><td>COPY →</td>
+        <td><span class="ja">今のパターンを次のスロットへ複製します(A → B → C → D → A)。</span>
+            <span class="en">Duplicates the current pattern into the next slot (A → B → C → D → A).</span></td></tr>
+      <tr><td>CHAIN</td>
+        <td><span class="ja">パターンを順につないで流します。最大 8 リンクです。リンクをタップで A〜D が巡回し、
+            ダブルタップで小節数(1 / 2 / 4 / 8)が巡回します。</span>
+            <span class="en">Plays patterns back to back, up to 8 links. Tap a link to cycle A–D,
+            double-tap to cycle its bar count (1 / 2 / 4 / 8).</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>STEPS</h3>
+<p class="ja">16 個のマスがパターンの 1 周分です。タップするたびに値が巡回します。編集する内容は 3 ページに分かれています。</p>
+<p class="en">Sixteen cells make one pass of the pattern. Each tap cycles the value. Three pages of editing:</p>
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">ページ</span><span class="en">Page</span></th>
+      <th><span class="ja">タップで巡回する値</span><span class="en">Tap cycles through</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td>GATE</td>
+        <td><span class="ja">鳴らさない → 鳴らす(●)→ 強く鳴らす(A)</span>
+            <span class="en">Off → on (●) → accent (A)</span></td></tr>
+      <tr><td>OCT</td>
+        <td><span class="ja">−1 → 0 → +1 → +2 のオクターブ移動</span>
+            <span class="en">Octave offset: −1 → 0 → +1 → +2</span></td></tr>
+      <tr><td>PITCH</td>
+        <td><span class="ja">スケール上の音を 1 つずつ固定していきます。一周すると解除され、
+            そのステップは動きの規則(MOTION)に戻ります。</span>
+            <span class="en">Pins a specific scale note, stepping up one at a time. Cycle past the top to clear it,
+            and that step returns to the MOTION rule.</span></td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="ja"><b>ALL ON</b> は全ステップを鳴らす状態に、<b>CLEAR</b> はそのページの値を消します。
+  <b>🎲 RANDOMIZE</b> は鳴らすステップにランダムな音程を割り当てて PITCH ページへ切り替えます。
+  ランダムといっても<b>その場で固定される</b>ので、気に入った並びをそのまま手直しできます。</p>
+<p class="en"><b>ALL ON</b> turns every step on; <b>CLEAR</b> wipes the current page.
+  <b>🎲 RANDOMIZE</b> assigns random pitches to the active steps and jumps to the PITCH page.
+  The result is <b>pinned, not re-rolled each pass</b>, so you can keep a phrase you like and edit it by hand.</p>
+
+<h3>MOTION</h3>
+<div class="tw">
+  <table class="tbl">
+    <thead><tr>
+      <th><span class="ja">操作子</span><span class="en">Control</span></th>
+      <th><span class="ja">内容</span><span class="en">What it does</span></th>
+    </tr></thead>
+    <tbody>
+      <tr><td>UP / DOWN / UP-DN</td>
+        <td><span class="ja">和音を下から / 上から / 往復で捌きます。</span>
+            <span class="en">Runs the chord upward, downward, or back and forth.</span></td></tr>
+      <tr><td>RANDOM / AS PLAYED / CHORD</td>
+        <td><span class="ja">毎回ランダム / 押した順 / 全音を同時に鳴らす、から選べます。</span>
+            <span class="en">Random each time, in the order you pressed, or all notes together.</span></td></tr>
+      <tr><td>1/8 · 1/16 · 1/16T · 1/32</td>
+        <td><span class="ja">刻みの細かさです。T は 3 連を表します。</span><span class="en">Step rate. T means triplets.</span></td></tr>
+      <tr><td>LEVEL</td><td><span class="ja">そのレイヤーの音量です。</span><span class="en">Level of this layer.</span></td></tr>
+      <tr><td>STEP LENGTH</td>
+        <td><span class="ja">1 周の長さです。1 〜 16 で、16 より短くすると変拍子になります。</span>
+            <span class="en">Pattern length, 1 – 16. Set it below 16 for odd meters.</span></td></tr>
+      <tr><td>GATE·L × SWING</td>
+        <td><span class="ja">固定帯の枠です。X が音の長さ(レイヤーごと)、Y がハネ(全体共通)です。
+            軸名の <code>·L</code> は「レイヤーごと」の印です。</span>
+            <span class="en">Fixed strip. X is note length (per layer), Y is swing (global).
+            The <code>·L</code> marks a per-layer parameter.</span></td></tr>
+      <tr><td>RANGE·L × OFFSET·L</td>
+        <td><span class="ja">固定帯の枠です。X が何オクターブに広げるか(1 〜 4)、Y が全体の移調(−3 〜 +1)です。</span>
+            <span class="en">Fixed strip. X is octave span (1 – 4), Y is octave offset (−3 to +1).</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<p class="note ja"><b>鍵盤の音が持続するのは、ARP I が止まっていてコード進行も OFF のときだけです。</b>
+  どちらかが動いていると、鍵盤は ARP に音を渡す入口として働きます。</p>
+<p class="note en"><b>Keyboard notes only sustain when arpeggiator I is off and the chord progression is OFF.</b>
+  Otherwise the keyboard acts as an input that feeds notes to the arpeggiator.</p>
+  </section>
+
+  <nav class="pager" aria-label="前後のページ">
+    <a class="prev" href="06-synth.html">
+      <div class="dir"><span class="x ja">← 前</span><span class="x en">← Prev</span></div>
+      <div class="ttl">06 <span class="x ja">Synth Engine</span><span class="x en">Synth Engine</span></div>
+    </a>
+    <a class="next" href="08-drum.html">
+      <div class="dir"><span class="x ja">次 →</span><span class="x en">Next →</span></div>
+      <div class="ttl">08 <span class="x ja">Destructible Drums</span><span class="x en">Destructible Drums</span></div>
+    </a>
+  </nav>
+
+  <footer>
+    <div class="fl">
+      <span>Hebith-FX · USER MANUAL · v2.14</span>
+      <span class="ja">モバイル Web / インストール不要 / オフライン動作</span>
+      <span class="en">MOBILE WEB / NO INSTALL / WORKS OFFLINE</span>
+    </div>
+  </footer>
+
+</div>
+<script src="assets/manual.js" defer></script>
+</body>
+</html>

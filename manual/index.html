@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hebith-FX — User Manual</title>
+<meta name="description" content="マニュアルの入口。全 12 章への案内。 / The way in. Twelve chapters, listed.">
+<link rel="stylesheet" href="assets/manual.css">
+<script>
+/* 言語とテーマを描画前に確定させる(ちらつき防止)。UI 側は assets/manual.js。 */
+(function(){var d=document.documentElement;try{
+var l=localStorage.getItem('hebith-manual-lang');
+if(l!=='ja'&&l!=='en') l=(navigator.language||'ja').toLowerCase().indexOf('ja')===0?'ja':'en';
+d.setAttribute('data-lang',l); d.setAttribute('lang',l);
+var t=localStorage.getItem('hebith-manual-theme');
+if(t==='light'||t==='dark') d.setAttribute('data-theme',t);
+}catch(e){}})();
+</script>
+</head>
+<body>
+
+<div class="bar-top">
+  <div class="bar-in">
+    <a class="bar-brand disp" href="index.html">Hebith<b>-</b>FX<span class="rev-no">MANUAL v2.14</span></a>
+    <nav class="pagenav" aria-label="ページ">
+      <a href="index.html" aria-current="page"><span class="no">00</span><span class="label ja">目次</span><span class="label en">Index</span></a>
+      <a href="01-about.html"><span class="no">01</span><span class="label ja">Hebith-FX</span><span class="label en">About</span></a>
+      <a href="02-first.html"><span class="no">02</span><span class="label ja">最初の一音</span><span class="label en">First Sound</span></a>
+      <a href="03-start.html"><span class="no">03</span><span class="label ja">はじめに</span><span class="label en">Start</span></a>
+      <a href="04-map.html"><span class="no">04</span><span class="label ja">画面</span><span class="label en">Screen</span></a>
+      <a href="05-touch.html"><span class="no">05</span><span class="label ja">操作</span><span class="label en">Controls</span></a>
+      <a href="06-synth.html"><span class="no">06</span><span class="label ja">SYNTH</span><span class="label en">SYNTH</span></a>
+      <a href="07-arp.html"><span class="no">07</span><span class="label ja">ARP</span><span class="label en">ARP</span></a>
+      <a href="08-drum.html"><span class="no">08</span><span class="label ja">DRUM</span><span class="label en">DRUM</span></a>
+      <a href="09-punch.html"><span class="no">09</span><span class="label ja">PUNCH</span><span class="label en">PUNCH</span></a>
+      <a href="10-bokeh.html"><span class="no">10</span><span class="label ja">BOKEH</span><span class="label en">BOKEH</span></a>
+      <a href="11-song.html"><span class="no">11</span><span class="label ja">保存</span><span class="label en">Songs</span></a>
+      <a href="12-trouble.html"><span class="no">12</span><span class="label ja">困ったとき</span><span class="label en">Trouble</span></a>
+    </nav>
+    <span class="bar-spacer"></span>
+    <div class="lang" role="group" aria-label="Language"></div>
+    <div class="theme" role="group" aria-label="テーマ切替"></div>
+  </div>
+</div>
+
+<div class="wrap" id="top">
+  <!-- ===================== NAMEPLATE ===================== -->
+  <header class="plate">
+    <div class="screwTL"></div><div class="screwTR"></div>
+    <div class="kicker"><span>User Manual</span><span class="bar"></span><span>v2.14</span></div>
+    <h1 class="name disp">Hebith<b>-</b>FX</h1>
+    <p class="sub ja">スマートフォンの Web ブラウザだけで完結する、シンセサイザー兼<em>リアルタイム・エフェクト演奏機</em>。
+      音を作り、走らせ、その場で壊すための一台です。インストールも外部機材も要りません。</p>
+    <p class="sub en">A synthesizer and <em>real-time effects instrument</em> that runs entirely in a mobile web browser.
+      Build a sound, set it running, break it in the moment. Nothing to install, no outboard gear.</p>
+    <div class="meta">
+      <span class="ja">環境 / <b>モバイル Web</b></span>
+      <span class="en">PLATFORM / <b>Mobile web</b></span>
+      <span class="ja">通信 / <b>初回のみ・以後オフライン</b></span>
+      <span class="en">NETWORK / <b>First load only</b></span>
+      <span class="ja">費用 / <b>無料 · MIT</b></span>
+      <span class="en">COST / <b>Free · MIT</b></span>
+      <span class="ja">対応 / <b>v2.14</b></span>
+      <span class="en">VERSION / <b>v2.14</b></span>
+    </div>
+
+    <!-- エフェクトの図から数枚。押すと当該の章へ飛ぶ。 -->
+    <div class="eyecatch">
+      <a class="ec time" href="09-punch.html"><svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M0,35 Q7,15 14,35 T28,35"/><path class="out" d="M28,35 Q35,15 42,35 T56,35 M56,35 Q63,15 70,35 T84,35 M84,35 Q91,15 98,35 T112,35"/><rect x="28" y="8" width="28" height="54" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity=".5"/></svg><span class="nm">REPEAT</span></a>
+      <a class="ec pitch" href="09-punch.html"><svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M4,35 q10,-16 20,0 t20,0" opacity=".3"/><path class="out" d="M48,35 q6,-18 12,0 t12,0 q4,-18 8,0 t8,0 q3,-18 6,0 t6,0 q2,-18 4,0 t4,0"/><path class="outf" d="M92,14 l10,-6 l-2,8 z"/></svg><span class="nm">WARP▲</span></a>
+      <a class="ec dest" href="09-punch.html"><svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M4,35 Q34,8 60,35 T116,35"/><path class="out" d="M4,40 H20 V26 H36 V20 H52 V30 H68 V44 H84 V50 H100 V38 H116"/></svg><span class="nm">CRUSH</span></a>
+      <a class="ec space" href="09-punch.html"><svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M10,35 q5,-20 10,0 t10,0" stroke="currentColor"/><path class="out" d="M30,35 C50,20 60,50 80,32 C95,20 105,48 116,35" opacity=".55"/><path class="out" d="M30,35 C52,48 62,22 82,40 C96,50 106,24 116,35" opacity=".35"/></svg><span class="nm">SPACE</span></a>
+      <a class="ec k0" href="10-bokeh.html"><svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><g class="axis" stroke-dasharray="2 2"><line x1="30" y1="6" x2="30" y2="64"/><line x1="60" y1="6" x2="60" y2="64"/><line x1="90" y1="6" x2="90" y2="64"/></g><path class="in" d="M2,14 H118"/><g class="outf"><rect x="4" y="42" width="22" height="6"/><rect x="32" y="30" width="22" height="6"/><rect x="62" y="48" width="22" height="6"/><rect x="92" y="34" width="22" height="6"/></g></svg><span class="nm">MOSAIC</span></a>
+      <a class="ec k1" href="10-bokeh.html"><svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M2,10 H118"/><g class="outf"><circle cx="8" cy="26" r="1.7"/><circle cx="14" cy="38" r="1.7"/><circle cx="19" cy="30" r="1.7"/><circle cx="25" cy="47" r="1.7"/><circle cx="30" cy="22" r="1.7"/><circle cx="35" cy="41" r="1.7"/><circle cx="41" cy="33" r="1.7"/><circle cx="46" cy="52" r="1.7"/><circle cx="52" cy="27" r="1.7"/><circle cx="57" cy="44" r="1.7"/><circle cx="62" cy="36" r="1.7"/><circle cx="68" cy="24" r="1.7"/><circle cx="73" cy="49" r="1.7"/><circle cx="78" cy="31" r="1.7"/><circle cx="84" cy="42" r="1.7"/><circle cx="89" cy="28" r="1.7"/><circle cx="95" cy="46" r="1.7"/><circle cx="100" cy="34" r="1.7"/><circle cx="106" cy="25" r="1.7"/><circle cx="111" cy="40" r="1.7"/><circle cx="11" cy="33" r="1.7"/><circle cx="22" cy="55" r="1.7"/><circle cx="38" cy="20" r="1.7"/><circle cx="49" cy="38" r="1.7"/><circle cx="66" cy="52" r="1.7"/><circle cx="80" cy="22" r="1.7"/><circle cx="92" cy="53" r="1.7"/><circle cx="103" cy="45" r="1.7"/><circle cx="116" cy="31" r="1.7"/><circle cx="16" cy="45" r="1.7"/></g></svg><span class="nm">GRANULES</span></a>
+      <a class="ec k2" href="10-bokeh.html"><svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><path class="in" d="M2,12 H118"/><g class="out"><path d="M2,60 L20,32 L44,32 L62,60"/><path d="M32,60 L50,32 L74,32 L92,60"/><path d="M62,60 L80,32 L104,32 L118,60"/></g></svg><span class="nm">BLUR</span></a>
+      <a class="ec k3" href="10-bokeh.html"><svg class="thumb" viewBox="0 0 120 70" preserveAspectRatio="none"><g class="outf"><rect x="10" y="18" width="72" height="6" opacity=".5"/><rect x="30" y="32" width="82" height="6" opacity=".68"/><rect x="16" y="46" width="66" height="6" opacity=".42"/></g><g class="outf"><path d="M10,21 l6,-4 l0,8 z"/><path d="M16,49 l6,-4 l0,8 z"/></g></svg><span class="nm">HAZE</span></a>
+    </div>
+  </header>
+
+  <!-- ===================== CONTENTS ===================== -->
+  <section id="contents">
+    <div class="eyebrow">Contents <span class="ref ja">全 12 章</span><span class="ref en">12 chapters</span></div>
+    <h2 class="disp ja">Hebith-FX の、弾き方。</h2>
+    <h2 class="disp en">How to play Hebith-FX.</h2>
+    <p class="lede ja">まずは音を出してみてください。<b>02</b> の 4 手で、鍵盤から演奏までひととおり動きます。
+      どんな楽器なのかを先に知りたいときは <b>01</b> から読めます。
+      あとは必要になった章だけ開けば十分です。通して読む必要はありません。</p>
+    <p class="lede en">The quickest way in is to make a sound — the four moves in <b>02</b> take you from
+      the keyboard to a running performance. If you would rather know what the instrument is first, start at <b>01</b>.
+      After that, open whichever chapter you need. There is no need to read it through.</p>
+    <div class="toc-grid">
+      <a class="toc-card c0" href="01-about.html">
+        <div class="no">01</div>
+        <div class="ttl"><span class="x ja">Hebith-FX について</span><span class="x en">About Hebith-FX</span></div>
+        <div class="dsc"><span class="x ja">何ができる楽器なのか。6 つのパートと、音が通る道。</span><span class="x en">What Hebith-FX does. Its six parts, and the path sound takes.</span></div>
+        <div class="secs"><span class="x ja">6 つのパート · 音が通る道 · Hebith-FX の癖</span><span class="x en">Six parts · Signal path · What sets it apart</span></div>
+      </a>
+      <a class="toc-card c1" href="02-first.html">
+        <div class="no">02</div>
+        <div class="ttl"><span class="x ja">最初の一音</span><span class="x en">Your First Sound</span></div>
+        <div class="dsc"><span class="x ja">鍵盤 → HOLD → ARP → PUNCH。4 手で演奏が成立するまで。</span><span class="x en">Keys, HOLD, ARP, PUNCH — four moves to a running performance.</span></div>
+        <div class="secs"><span class="x ja">4 つの手順</span><span class="x en">Four steps</span></div>
+      </a>
+      <a class="toc-card c2" href="03-start.html">
+        <div class="no">03</div>
+        <div class="ttl"><span class="x ja">はじめに</span><span class="x en">Getting Started</span></div>
+        <div class="dsc"><span class="x ja">開き方と START。音が出ないときに見るところ。動作環境。</span><span class="x en">Opening it, pressing START, and what to check if you hear nothing.</span></div>
+        <div class="secs"><span class="x ja">音が出ないとき · 動作環境</span><span class="x en">If you hear nothing · Requirements</span></div>
+      </a>
+      <a class="toc-card c3" href="04-map.html">
+        <div class="no">04</div>
+        <div class="ttl"><span class="x ja">画面の見取り図</span><span class="x en">Screen Map</span></div>
+        <div class="dsc"><span class="x ja">上から下へ、見るもの → 決めるもの → 触るもの。トランスポート。</span><span class="x en">Top to bottom: what you watch, set, and touch. Plus the transport.</span></div>
+        <div class="secs"><span class="x ja">画面の並び · トランスポート</span><span class="x en">Layout · Transport</span></div>
+      </a>
+      <a class="toc-card c4" href="05-touch.html">
+        <div class="no">05</div>
+        <div class="ttl"><span class="x ja">共通の操作</span><span class="x en">How Controls Work</span></div>
+        <div class="dsc"><span class="x ja">押した場所がそのまま値になる。軸の呼び方と、例外が 2 つ。</span><span class="x en">The point you press is the value. Axis naming, and two exceptions.</span></div>
+        <div class="secs"><span class="x ja">XY の作法 · 値が動かない場所</span><span class="x en">XY basics · Where pressing does not write</span></div>
+      </a>
+      <a class="toc-card c5" href="06-synth.html">
+        <div class="no">06</div>
+        <div class="ttl"><span class="x ja">Synth Engine</span><span class="x en">Synth Engine</span></div>
+        <div class="dsc"><span class="x ja">2 オシレーター + ノイズ、フィルター、2 本のエンベロープ、LFO。</span><span class="x en">Two oscillators plus noise, a filter, two envelopes, and an LFO.</span></div>
+        <div class="secs"><span class="x ja">OSC · FILTER · ENVELOPE · LFO</span><span class="x en">OSC · FILTER · ENVELOPE · LFO</span></div>
+      </a>
+      <a class="toc-card c6" href="07-arp.html">
+        <div class="no">07</div>
+        <div class="ttl"><span class="x ja">Arpeggiator</span><span class="x en">Arpeggiator</span></div>
+        <div class="dsc"><span class="x ja">スケール、コード進行、2 レイヤー、パターンとチェイン、ステップ編集。</span><span class="x en">Scales, chord progressions, two layers, patterns and chaining, step editing.</span></div>
+        <div class="secs"><span class="x ja">SCALE · CHORD · LAYER · PATTERN · STEPS · MOTION</span><span class="x en">SCALE · CHORD · LAYER · PATTERN · STEPS · MOTION</span></div>
+      </a>
+      <a class="toc-card c7" href="08-drum.html">
+        <div class="no">08</div>
+        <div class="ttl"><span class="x ja">Destructible Drums</span><span class="x en">Destructible Drums</span></div>
+        <div class="dsc"><span class="x ja">16 ボイスの 4×4 パッド。VOICE と STEP で使い分ける。</span><span class="x en">Sixteen voices on a 4×4 grid, shared between VOICE and STEP.</span></div>
+        <div class="secs"><span class="x ja">VOICE · STEP · 16 のボイス</span><span class="x en">VOICE · STEP · The sixteen voices</span></div>
+      </a>
+      <a class="toc-card c8" href="09-punch.html">
+        <div class="no">09</div>
+        <div class="ttl"><span class="x ja">Punch-in FX</span><span class="x en">Punch-in FX</span></div>
+        <div class="dsc"><span class="x ja">16 種のエフェクト。LATCH、音価指定、重ねたときの振る舞い。</span><span class="x en">Sixteen effects. Latching, note-value timing, and how they stack.</span></div>
+        <div class="secs"><span class="x ja">16 種 · LATCH · 拍で数える · 重ね</span><span class="x en">The sixteen · LATCH · Counted in beats · Stacking</span></div>
+      </a>
+      <a class="toc-card c9" href="10-bokeh.html">
+        <div class="no">10</div>
+        <div class="ttl"><span class="x ja">Bokehlous Engine</span><span class="x en">Bokehlous Engine</span></div>
+        <div class="dsc"><span class="x ja">グラニュラーエンジンの 11 アルゴリズムと、ルーパー。</span><span class="x en">Eleven granular algorithms, plus the looper.</span></div>
+        <div class="secs"><span class="x ja">11 アルゴリズム · 共通の枠 · LOOPER</span><span class="x en">Eleven algorithms · Shared cells · LOOPER</span></div>
+      </a>
+      <a class="toc-card c10" href="11-song.html">
+        <div class="no">11</div>
+        <div class="ttl"><span class="x ja">曲の保存と読み込み</span><span class="x en">Saving &amp; Loading</span></div>
+        <div class="dsc"><span class="x ja">SAVE と LOAD。何が入り、何が入らないか。</span><span class="x en">SAVE and LOAD — what goes into the file and what does not.</span></div>
+        <div class="secs"><span class="x ja">保存されるもの · されないもの</span><span class="x en">Included · Not included</span></div>
+      </a>
+      <a class="toc-card c11" href="12-trouble.html">
+        <div class="no">12</div>
+        <div class="ttl"><span class="x ja">困ったとき</span><span class="x en">Troubleshooting</span></div>
+        <div class="dsc"><span class="x ja">音が出ない、ARP が走らない、エフェクトが効かない。</span><span class="x en">No sound, the arpeggiator will not run, a pad does nothing.</span></div>
+        <div class="secs"><span class="x ja">8 つの症状</span><span class="x en">Eight symptoms</span></div>
+      </a>
+    </div>
+  </section>
+
+  <nav class="pager" aria-label="前後のページ">
+    <a class="next" href="01-about.html">
+      <div class="dir"><span class="x ja">次 →</span><span class="x en">Next →</span></div>
+      <div class="ttl">01 <span class="x ja">Hebith-FX について</span><span class="x en">About Hebith-FX</span></div>
+    </a>
+  </nav>
+
+  <footer>
+    <div class="fl">
+      <span>Hebith-FX · USER MANUAL · v2.14</span>
+      <span class="ja">モバイル Web / インストール不要 / オフライン動作</span>
+      <span class="en">MOBILE WEB / NO INSTALL / WORKS OFFLINE</span>
+    </div>
+  </footer>
+
+</div>
+<script src="assets/manual.js" defer></script>
+</body>
+</html>
