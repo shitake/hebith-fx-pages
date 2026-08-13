@@ -4,6 +4,8 @@ A synthesizer and real-time effects instrument for the mobile web.
 
 **https://shitake.github.io/hebith-fx-pages/**
 
+[User Manual](https://shitake.github.io/hebith-fx-pages/manual/) — 日本語 / English
+
 ```mermaid
 %%{init: {"theme": "base", "themeVariables": {"fontSize": "13px", "primaryColor": "#f3f3f0", "primaryTextColor": "#3a3a37", "primaryBorderColor": "#c6c6c0", "lineColor": "#a5a59e", "edgeLabelBackground": "#fbfbf9", "tertiaryColor": "#fbfbf9", "clusterBkg": "#fbfbf9", "clusterBorder": "#dedcd6"}}}%%
 flowchart TD
@@ -50,7 +52,6 @@ flowchart TD
 
 | 項目 | 内容 |
 |------|------|
-| 使い方 | [ユーザマニュアル](https://shitake.github.io/hebith-fx-pages/manual/)(日本語 / English) |
 | 動作環境 | モバイル Web(スマートフォンでの利用を想定)。タブレット・デスクトップでも動作する |
 | 依存 | なし。一度開けばオフラインで動作する |
 | ライセンス | [MIT](LICENSE) |
